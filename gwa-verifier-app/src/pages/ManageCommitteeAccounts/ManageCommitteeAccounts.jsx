@@ -1,8 +1,12 @@
 import React from "react";
-
-// edit this to create record list page
+import { Typography } from "@mui/material";
+// edit this to manage committee accounts page
 function ManageCommitteeAccounts() {
-  return <div>ManageCommitteeAccounts</div>;
+  return (
+    <div>
+      <Typography variant="h1">Manage Committee Accounts page</Typography>
+    </div>
+  );
 }
 
 export default ManageCommitteeAccounts;

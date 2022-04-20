@@ -1,8 +1,12 @@
 import React from "react";
-
-// edit this to create record list page
+import { Typography } from "@mui/material";
+// edit this to create the login page
 function LogIn() {
-  return <div>LogIn</div>;
+  return (
+    <div>
+      <Typography variant="h1">Login page</Typography>
+    </div>
+  );
 }
 
 export default LogIn;

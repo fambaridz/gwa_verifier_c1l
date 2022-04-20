@@ -1,1 +1,1 @@
-export { default } from "./EditStudentRecord";
+export { default } from "./EditStudentRecord.jsx";

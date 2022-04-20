@@ -1,1 +1,1 @@
-export { default } from "./ManageCommitteeAccounts";
+export { default } from "./ManageCommitteeAccounts.jsx";
