@@ -1,4 +1,3 @@
-import "./index.css";
 import "./index.jsx";
 
 console.log(
