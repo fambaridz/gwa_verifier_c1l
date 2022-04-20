@@ -1,11 +1,11 @@
 import React from "react";
-import ReactDOM from "react-dom";
-import WebFont from "webfontloader";
 
-WebFont.load({google: {families: ["Roboto:300,400,500"]}});
-
-ReactDOM.render(
+function App() {
+  return (
     <div>
-        <h1>Hello From React</h1>
+      <h1>Hello world</h1>
     </div>
-, document.getElementById("root"));
+  );
+}
+
+export default App;

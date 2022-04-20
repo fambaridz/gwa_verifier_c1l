@@ -1,4 +1,6 @@
-import './index.css';
-import './App.jsx';
+import "./index.css";
+import "./index.jsx";
 
-console.log('👋 This message is being logged by "renderer.js", included via webpack');
+console.log(
+  '👋 This message is being logged by "renderer.js", included via webpack'
+);
