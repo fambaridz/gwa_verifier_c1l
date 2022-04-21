@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 06, 2022 at 06:08 PM
+-- Generation Time: Apr 21, 2022 at 08:05 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.28
 
@@ -77,7 +77,7 @@ CREATE TABLE `student` (
 CREATE TABLE `student_record` (
   `id` int(50) NOT NULL,
   `student_number` int(20) NOT NULL,
-  `course_number` int(20) NOT NULL,
+  `course_number` varchar(20) NOT NULL,
   `grade` int(10) NOT NULL,
   `units` float NOT NULL,
   `enrolled` float NOT NULL,
