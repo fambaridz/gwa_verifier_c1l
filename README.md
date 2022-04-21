@@ -12,6 +12,8 @@ Current Path Aliases (_listed in webpack.renderer.config.js_):
 - Components
 - Pages
 
-To run: npm start
+To run:
+- npm install
+- npm start
 
 _Running the app should open a new application window._
