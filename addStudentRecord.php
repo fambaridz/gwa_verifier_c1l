@@ -17,9 +17,13 @@ if (!$con) {
 $data = json_decode(file_get_contents('php://input'), true);  //json_decode == json_parse
 
 $studno = (int)$data['studno'];
+$grade = (int)$data['grade'];
+$units = (float)$data['units'];
+$enrolled = (float)$data['enrolled'];
+$runningtotal = (double)$data['runningtotal'];
 
-//query - insert student no, last name, first name, middle name, suffix, degree, recommended no units, credited units, gwa, status
-$sql = "INSERT INTO student VALUES ('$studno','$data[lname]','$data[fname]','$data[mname]','$data[suffix]','$data[degree]',1,1,1.5,'-')";
+//query
+$sql = "INSERT INTO student_record VALUES (1, '$studno','$data[courseno]','$grade','$units','$enrolled','$runningtotal','$data[term]')";
 
 // run SQL statement
 $result = mysqli_query($con,$sql);
