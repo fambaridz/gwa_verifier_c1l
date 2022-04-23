@@ -1,1 +1,0 @@
-# gwa_verifier_c1l
