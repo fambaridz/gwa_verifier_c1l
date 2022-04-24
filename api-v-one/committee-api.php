@@ -17,15 +17,15 @@ switch("$method") {
 
         //retrieve input
         $committee = json_decode(file_get_contents('php://input'));
-
+        echo gettype($committee);
         //sql query 
-        $sql = "INSERT INTO committee VALUES (  '$committee[email]', 
-                                                '$committee[account_made_by]', 
-                                                '$committee[password]', 
-                                                '$committee[lastname]', 
-                                                '$committee[firstname]', 
-                                                '$committee[middlename]', 
-                                                '$committee[suffix]')";
+        $sql = "INSERT INTO committee VALUES (  '$committee->email', 
+                                                '$committee->account_made_by', 
+                                                '$committee->password', 
+                                                '$committee->lastname', 
+                                                '$committee->firstname', 
+                                                '$committee->middlename', 
+                                                '$committee->suffix')";
 
         //save result
         $result = mysqli_query($con,$sql);
@@ -34,19 +34,28 @@ switch("$method") {
     //GET for retrieving committee users
     case 'GET':
         $sql = "SELECT * FROM committee";
+
         $result = mysqli_query($con,$sql);
+        
+        //Send the query results as JSON
+        $res_send = array();
+        while($row =mysqli_fetch_assoc($result)) $res_send[] = $row;
+
+        echo json_encode($res_send);
+
         break;
     
     //PUT for updating existing committee users
     case 'PUT':
         $committee = json_decode(file_get_contents('php://input'));
-        $sql = "UPDATE committee SET    email = '$committee[email]', 
-                                        password = '$committee[password]', 
-                                        lastname = '$committee[lastname]', 
-                                        firstname = '$committee[firstname]', 
-                                        middlename ='$committee[middlename]', 
-                                        suffix = '$committee[suffix]' WHERE email = email";
-        
+        $sql = "UPDATE committee SET    email = '$committee->email',
+                                        account_made_by = '$committee->account_made_by', 
+                                        password = '$committee->password', 
+                                        lastname = '$committee->lastname', 
+                                        firstname = '$committee->firstname', 
+                                        middlename ='$committee->middlename', 
+                                        suffix = '$committee->suffix' WHERE email = '$committee->email'";
+        echo $committee->email. " ". $committee->account_made_by;
         $result = mysqli_query($con,$sql);
         break;
 }
