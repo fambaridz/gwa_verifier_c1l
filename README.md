@@ -1,17 +1,5 @@
-# Front-end Project Directory Notes
+Commit the layouts you coded for Sprint 2 here.
 
-React + Electron JS
-
-Already Installed:
-- Webpack
-- ReactDOM
-- Material UI
-- Webfontloader (for Material UI Roboto)
-
-Current Path Aliases (_listed in webpack.renderer.config.js_):
-- Components
-- Pages
-
-To run: npm start
-
-_Running the app should open a new application window._
+To run:
+- npm install
+- npm start
