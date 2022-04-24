@@ -32,6 +32,21 @@ const rows = [
   { id: 7, course: 'CMSC 12', numUnits: '3', grade: '1.25', grade2: '3.75', grade3: '3.75' },
 ];
 
+const columns2 = [
+  { field: 'title', headerName: '', width: 680 },
+  { field: 'fromEnroll', headerName: 'From Enrollment', width: 220 },
+  { field: 'total', headerName: 'Cumulative Total', width: 110 },
+];
+
+const rows2 = [
+  { id: 1, title: 'Lorem', fromEnroll: '1.25', total: '3.75'},
+  { id: 2, title: 'Lorem', fromEnroll: '1.25', total: '3.75'},
+  { id: 3, title: 'Lorem', fromEnroll: '1.25', total: '3.75'},
+  { id: 4, title: 'Lorem', fromEnroll: '1.25', total: '3.75'},
+  { id: 5, title: 'Lorem', fromEnroll: '1.25', total: '3.75'},
+  { id: 6, title: 'Lorem', fromEnroll: '1.25', total: '3.75'},
+];
+
 function RecordList() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -91,7 +106,7 @@ function RecordList() {
         <Toolbar>
           <div>
             <Typography variant="h6" style={{ fontWeight: 1000}} component="div" sx={{ flex: 1 }}>
-              Jeff Emerson hah
+              Jeff Emerson Lar
             </Typography>
             <Typography variant="h6" style={{ fontWeight: 1000 }} component="div" sx={{ flex: 1 }}>
               BS Computer Science
@@ -100,26 +115,58 @@ function RecordList() {
               2019-03845
             </Typography>
           </div>
-          <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} endIcon={<Add />}>Mark as Verified</Button>
-          <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} endIcon={<Add />}>Verified</Button>
+          <div style = {{ position: 'absolute', right: 0}}>
+            <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} endIcon={<Add />}>Mark as Verified</Button>
+            <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Verified</Button>
+          </div>
         </Toolbar>
-        <Box sx={{ ml: 3, mr: 3, flexGrow: 1 }}>
-          <TextField fullWidth id="search-bar" label="Search by name..." 
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
+        <Box>
+          <IconButton
+            size="large"
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleOpenOptionsMenu}
+            color="inherit"
+          >
+            <ArrowDropDown />
+          </IconButton>
+          <Menu
+            id="menu-appbar"
+            anchorEl={anchorElUser}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
             }}
-            variant="standard" 
-          />
+            keepMounted
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+            open={Boolean(anchorElUser)}
+            onClose={handleCloseOptionsMenu}
+          >
+            <MenuItem onClick={handleCloseOptionsMenu}>Semester 1 2020-2021</MenuItem>
+            <MenuItem onClick={handleCloseOptionsMenu}>Semester 2 2020-2021</MenuItem>
+            <MenuItem onClick={handleCloseOptionsMenu}>Semester 1 2019-2020</MenuItem>
+            <MenuItem onClick={handleCloseOptionsMenu}>Semester 2 2019-2020</MenuItem>
+          </Menu>
         </Box>
         <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
           <div style={{ height: 400, width: '100%' }}>
             <DataGrid
               rows={rows}
               columns={columns}
+              pageSize={20}
+              rowsPerPageOptions={[20]}
+            />
+          </div>
+        </Box>
+        <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
+          <div style={{ height: 400, width: '100%' }}>
+            <DataGrid
+              rows={rows2}
+              columns={columns2}
               pageSize={20}
               rowsPerPageOptions={[20]}
             />
