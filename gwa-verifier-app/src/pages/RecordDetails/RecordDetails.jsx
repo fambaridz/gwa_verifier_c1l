@@ -105,7 +105,7 @@ function RecordList() {
       <Box sx={{ m: 3.5, flexGrow: 1 }}>
         <Toolbar>
           <div>
-            <Typography variant="h6" style={{ fontWeight: 1000}} component="div" sx={{ flex: 1 }}>
+            <Typography variant="h5" style={{ fontWeight: 1000}} component="div" sx={{ flex: 1 }}>
               Jeff Emerson Lar
             </Typography>
             <Typography variant="h6" style={{ fontWeight: 1000 }} component="div" sx={{ flex: 1 }}>
@@ -115,7 +115,7 @@ function RecordList() {
               2019-03845
             </Typography>
           </div>
-          <div style = {{ position: 'absolute', right: 0}}>
+          <div style = {{ position: 'absolute', right: 0 }} sx={{marginRight:10}}>
             <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} endIcon={<Add />}>Mark as Verified</Button>
             <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Verified</Button>
           </div>
@@ -167,12 +167,37 @@ function RecordList() {
             <DataGrid
               rows={rows2}
               columns={columns2}
-              pageSize={20}
-              rowsPerPageOptions={[20]}
             />
           </div>
         </Box>
       </Box>
+      <Box sx={{ flexGrow: 1 }}>
+        <Toolbar>
+          <div style={{ width: '100%'}}>
+            <Typography component="div" sx={{ flex: 1 }}>
+              Colsec Committee
+            </Typography>
+            <Typography component="div" sx={{ flex: 1 }}>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ab eveniet iste aliquam voluptate, distinctio doloribus quos exercitationem vitae est quasi dolorem, repellat, corporis molestias vero animi. Voluptatibus, aliquid illo?
+            </Typography>
+          </div>
+          <div style={{ background: '#AFAFAF',  width: '100%'}}>
+            <Typography component="div" sx={{ flex: 1 }}>
+              Next Committee
+            </Typography>
+            <Typography component="div" sx={{ flex: 1 }}>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ab eveniet iste aliquam voluptate, distinctio doloribus quos exercitationem vitae est quasi dolorem, repellat, corporis molestias vero animi. Voluptatibus, aliquid illo?
+            </Typography>
+          </div>
+        </Toolbar>
+      </Box>
+      <Box>
+        <div style = {{ position: 'absolute', right: 0 }} sx={{marginRight:10}}>
+            <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Edit</Button>
+            <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Delete</Button>
+        </div>
+      </Box>
+      
     </div>
     
   );
