@@ -7,6 +7,8 @@ import {
   Typography, 
   Toolbar,
   IconButton,
+  Modal,
+  TextField
  } from "@mui/material";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -17,6 +19,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
 import { ArrowDropDown, Add, Edit, Delete } from "@mui/icons-material";
+import "./ManageCommitteeAccounts.css";
 
 // edit this to manage committee accounts page
 function createData(email, name, password) {
@@ -32,7 +35,78 @@ const rows = [
   createData('zcreyes@up.edu.ph', 'Zenn Louie Reyes', 'Reyes')
 ];
 
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  height: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 3,
+}
+
+const AddModal = (props) => {
+	const [open, setOpen] = React.useState(false);
+  return (
+    <Modal
+		open={props.open}
+        onClose={props.handleClose}>
+		<Box sx={style}>
+		<Typography variant="h5" className="modalTypography">Add Committee Account</Typography>
+		<form>
+		<TextField fullWidth={true} sx={{my:1}} label="Username" variant="outlined" required={true} />
+		<TextField fullWidth={true} sx={{my:1}} label="Name" variant="outlined" required={true} />
+		<TextField fullWidth={true} sx={{my:1}} label="Password" variant="outlined" required={true}/>
+		<TextField fullWidth={true} sx={{my:1}} label="Confirm Password" variant="outlined" required={true} />
+		</form>
+		<Button href="#" className="modalButton" variant="contained">Submit</Button>
+		 </Box>
+		</Modal>
+  );
+}
+
+const AddButton = (props) => {
+	return (
+	<Button onClick={props.onClickAdd} variant="contained" style={{ backgroundColor:'#C7C7C7' }} endIcon={<Add />}> Add Committee Account</Button>
+	)
+}
+
+const EditModal = (props) => {
+	const [open, setOpen] = React.useState(false);
+  return (
+    <Modal
+		open={props.open}
+        onClose={props.handleClose}>
+		<Box sx={style}>
+		<Typography variant="h5" className="modalTypography">Edit Committee Account</Typography>
+		<form>
+		<TextField fullWidth={true} sx={{my:1}} label="Username" variant="outlined" />
+		<TextField fullWidth={true} sx={{my:1}} label="Name" variant="outlined" />
+		<TextField fullWidth={true} sx={{my:1}} label="Password" variant="outlined" />
+		<TextField fullWidth={true} sx={{my:1}} label="Confirm Password" variant="outlined" />
+		</form>
+		<Button href="#" className="modalButton" variant="contained" sx={{right: 0}}>Submit</Button>
+		 </Box>
+		</Modal>
+  );
+}
+
+const EditButton = (props) => {
+	return (
+	<Button onClick={props.onClickEdit} variant="text" size="small" startIcon={<Edit color="primary"/>} ></Button>
+	)
+}
+
+
 function ManageCommitteeAccounts() {
+	
+  const [openAdd, setOpenAdd] = React.useState(false);
+  const [openEdit, setOpenEdit] = React.useState(false);
+  
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenOptionsMenu = (event) => {
@@ -92,7 +166,8 @@ function ManageCommitteeAccounts() {
           <Typography variant="h4" style={{ fontWeight: 1000 }} component="div" sx={{ flex: 1 }}>
             Manage Committee Accounts
           </Typography>
-          <Button variant="contained" style={{ backgroundColor:'#C7C7C7' }} endIcon={<Add />}>Add Committee Account</Button>
+		  <AddButton onClickAdd={() => setOpenAdd(true)}/>
+		  <AddModal open={openAdd} handleClose={() => setOpenAdd(false)}/>
         </Toolbar>
         <Box sx={{ ml: 3, mr: 3, flexGrow: 1 }}>
           <div>
@@ -118,7 +193,7 @@ function ManageCommitteeAccounts() {
                       </TableCell>
                       <TableCell>{row.name}</TableCell>
                       <TableCell>{row.password}</TableCell>
-                      <TableCell><Edit /></TableCell>
+                      <TableCell><EditButton onClickEdit={() => setOpenEdit(true)}/></TableCell>
                       <TableCell><Delete /></TableCell>
                     </TableRow>
                   ))}
@@ -128,6 +203,7 @@ function ManageCommitteeAccounts() {
           </div>
         </Box>
       </Box>
+	  <EditModal open={openEdit} handleClose={() => setOpenEdit(false)}/>
     </div>
   );
 }
