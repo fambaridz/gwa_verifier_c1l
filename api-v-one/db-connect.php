@@ -3,7 +3,7 @@ header("Access-Control-Allow-Origin: *"); //add this CORS header to enable any d
 $host = "localhost"; 
 $user = "root"; 
 $password = ""; 
-$dbname = "gwa_verifier_cmsc_128"; 
+$dbname = "gwa_verifier_c1l_db"; 
 $id = '';
 
 //connect to database
