@@ -17,7 +17,6 @@ switch("$method") {
 
         //retrieve input
         $committee = json_decode(file_get_contents('php://input'));
-        echo gettype($committee);
         //sql query 
         $sql = "INSERT INTO committee VALUES (  '$committee->email', 
                                                 '$committee->account_made_by', 
@@ -55,7 +54,13 @@ switch("$method") {
                                         firstname = '$committee->firstname', 
                                         middlename ='$committee->middlename', 
                                         suffix = '$committee->suffix' WHERE email = '$committee->email'";
-        echo $committee->email. " ". $committee->account_made_by;
+        $result = mysqli_query($con,$sql);
+        break;
+
+    case 'DELETE':
+        $committee = json_decode(file_get_contents('php://input'));
+        $sql = "DELETE from committee WHERE email = '$committee->email'";
+    
         $result = mysqli_query($con,$sql);
         break;
 }
