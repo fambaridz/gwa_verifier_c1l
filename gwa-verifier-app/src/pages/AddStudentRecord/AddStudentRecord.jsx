@@ -1,7 +1,8 @@
 import React, { useEffect, useState, PropTypes } from "react";
-import { Container, IconButton, Stack, Box, Typography } from "@mui/material";
+import { Container, IconButton, Stack, Box, Typography, Toolbar, Menu, MenuItem, AppBar } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import { ArrowDropDown } from "@mui/icons-material";
 import { DropzoneArea } from "mui-file-dropzone";
 import StudentRecordForm from "Components/StudentRecordForm";
 // edit this to create the add student record/s page
@@ -38,6 +39,16 @@ function AddStudentRecord() {
   const [files, setFiles] = useState([]);
   const [studentRecords, setStudentRecords] = useState(new Array(5).fill(5));
   const [page, setPage] = useState(0);
+
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const handleOpenOptionsMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseOptionsMenu = () => {
+    setAnchorElUser(null);
+  };
 
   function handleChange(files) {
     setFiles(files);
@@ -94,7 +105,50 @@ function AddStudentRecord() {
     );
   }
   return (
-    <Container sx={{ paddingBottom: 5 }}>
+    <div>
+      <Box>
+        <AppBar position="static" style={{ background: '#AFAFAF' }}>
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Verifier
+            </Typography>
+            <Typography variant="h6" style={{ fontWeight: 800 }} component="div" >
+              IAN SALAZAR
+            </Typography>
+            <div>
+              <IconButton
+                size="large"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleOpenOptionsMenu}
+                color="inherit"
+              >
+                <ArrowDropDown />
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseOptionsMenu}
+              >
+                <MenuItem onClick={handleCloseOptionsMenu}>Manage Accounts</MenuItem>
+                <MenuItem onClick={handleCloseOptionsMenu}>Sign Out</MenuItem>
+              </Menu>
+            </div>
+          </Toolbar>
+        </AppBar>
+      </Box>
+      <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
       {/* {renderStudentRecordForms()} */}
       {files.length === 0 ? (
         <DropzoneArea
@@ -106,6 +160,7 @@ function AddStudentRecord() {
         renderStudentRecordForms()
       )}
     </Container>
+    </div>
   );
 }
 
