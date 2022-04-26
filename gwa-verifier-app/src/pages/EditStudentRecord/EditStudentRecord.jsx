@@ -1,11 +1,21 @@
 import React from "react";
-import { Typography, Container, Box, IconButton, Toolbar, Menu, MenuItem, AppBar } from "@mui/material";
-import { useParams } from "react-router-dom";
+import {
+  Typography,
+  Container,
+  Box,
+  IconButton,
+  Toolbar,
+  Menu,
+  MenuItem,
+  AppBar,
+} from "@mui/material";
+import { useParams, useNavigate } from "react-router-dom";
 import { ArrowDropDown } from "@mui/icons-material";
 import StudentRecordForm from "Components/StudentRecordForm/";
 // edit this to create the edit student record page
 function EditStudentRecord() {
   const params = useParams();
+  const navigate = useNavigate();
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -17,17 +27,26 @@ function EditStudentRecord() {
     setAnchorElUser(null);
   };
 
+  function redirectToStudentRecords() {
+    navigate("/records");
+    console.log("navigate");
+  }
+
   // TODO: change this to the primary key
   const { id } = params;
   return (
     <div>
       <Box>
-        <AppBar position="static" style={{ background: '#AFAFAF' }}>
+        <AppBar position="static" style={{ background: "#AFAFAF" }}>
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Verifier
             </Typography>
-            <Typography variant="h6" style={{ fontWeight: 800 }} component="div" >
+            <Typography
+              variant="h6"
+              style={{ fontWeight: 800 }}
+              component="div"
+            >
               IAN SALAZAR
             </Typography>
             <div>
@@ -45,18 +64,20 @@ function EditStudentRecord() {
                 id="menu-appbar"
                 anchorEl={anchorElUser}
                 anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 keepMounted
                 transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseOptionsMenu}
               >
-                <MenuItem onClick={handleCloseOptionsMenu}>Manage Accounts</MenuItem>
+                <MenuItem onClick={handleCloseOptionsMenu}>
+                  Manage Accounts
+                </MenuItem>
                 <MenuItem onClick={handleCloseOptionsMenu}>Sign Out</MenuItem>
               </Menu>
             </div>
@@ -67,7 +88,7 @@ function EditStudentRecord() {
         {/* <Typography variant="h1">
           Edit student record page w/ the ff. url parameter: {id}
         </Typography> */}
-        <StudentRecordForm />
+        <StudentRecordForm handleCancel={redirectToStudentRecords} />
       </Container>
     </div>
   );
