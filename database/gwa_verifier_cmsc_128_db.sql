@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 21, 2022 at 08:05 AM
+-- Generation Time: Apr 26, 2022 at 08:08 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.28
 
@@ -59,14 +59,21 @@ CREATE TABLE `student` (
   `student_number` int(20) NOT NULL,
   `lastname` varchar(50) NOT NULL,
   `firstname` varchar(50) NOT NULL,
-  `middlename` varchar(50) NOT NULL,
+  `middlename` varchar(50) DEFAULT NULL,
   `suffix` varchar(10) DEFAULT NULL,
   `degree_program` varchar(50) NOT NULL,
-  `reccommended_number_units` int(20) NOT NULL,
+  `recommended_number_units` int(20) NOT NULL,
   `credited_units` int(20) NOT NULL,
   `gwa` float NOT NULL,
   `status` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `student`
+--
+
+INSERT INTO `student` (`student_number`, `lastname`, `firstname`, `middlename`, `suffix`, `degree_program`, `recommended_number_units`, `credited_units`, `gwa`, `status`) VALUES
+(201901234, 'MAKILING', 'MARIA', NULL, NULL, 'BACA', 144, 146, 1.74486, 'UNVERIFIED');
 
 -- --------------------------------------------------------
 
