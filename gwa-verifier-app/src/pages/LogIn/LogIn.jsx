@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import logo from "Assets/logo.png";
-import "./LogIn.css";
+import "./Login.css";
 
 
 function LogIn() {
