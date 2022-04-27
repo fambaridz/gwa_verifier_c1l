@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 21, 2022 at 08:05 AM
+-- Generation Time: Apr 27, 2022 at 08:53 AM
 -- Server version: 10.4.24-MariaDB
--- PHP Version: 7.4.28
+-- PHP Version: 7.4.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `gwa_verifier_cmsc_128`
+-- Database: `gwa_verifier_c1l_db`
 --
 
 -- --------------------------------------------------------
@@ -62,11 +62,18 @@ CREATE TABLE `student` (
   `middlename` varchar(50) NOT NULL,
   `suffix` varchar(10) DEFAULT NULL,
   `degree_program` varchar(50) NOT NULL,
-  `reccommended_number_units` int(20) NOT NULL,
+  `recommended_number_units` int(20) NOT NULL,
   `credited_units` int(20) NOT NULL,
   `gwa` float NOT NULL,
   `status` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `student`
+--
+
+INSERT INTO `student` (`student_number`, `lastname`, `firstname`, `middlename`, `suffix`, `degree_program`, `recommended_number_units`, `credited_units`, `gwa`, `status`) VALUES
+(201501234, 'MAKILING', 'MARIA', '', NULL, 'BACA', 144, 146, 1.74486, NULL);
 
 -- --------------------------------------------------------
 
@@ -78,12 +85,32 @@ CREATE TABLE `student_record` (
   `id` int(50) NOT NULL,
   `student_number` int(20) NOT NULL,
   `course_number` varchar(20) NOT NULL,
-  `grade` int(10) NOT NULL,
+  `grade` float NOT NULL,
   `units` float NOT NULL,
   `enrolled` float NOT NULL,
   `running_total` double NOT NULL,
   `term` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `student_record`
+--
+
+INSERT INTO `student_record` (`id`, `student_number`, `course_number`, `grade`, `units`, `enrolled`, `running_total`, `term`) VALUES
+(1, 201501234, 'ENG 1(AH)', 2, 3, 6, 6, '18 I/15/16'),
+(2, 201501234, 'FIL 20', 2.25, 3, 6.75, 12.75, '18 I/15/16'),
+(3, 201501234, 'IT 1(MST)', 2, 3, 6, 18.75, '18 I/15/16'),
+(4, 201501234, 'PE 1', 2, 0, 0, 18.75, '18 I/15/16'),
+(5, 201501234, 'PHLO1(SSP)', 1.75, 3, 5.25, 24, '18 I/15/16'),
+(6, 201501234, 'PSY 1(SSP)', 1.75, 3, 5.25, 29.25, '18 I/15/16'),
+(7, 201501234, 'SPCM 1(AH)', 1.75, 3, 5.25, 34.5, '18 I/15/16'),
+(8, 201501234, 'ENG 2(AH)', 1.5, 3, 4.5, 39, '18 II/15/16'),
+(9, 201501234, 'HUM 1(AH)', 1.5, 3, 4.5, 43.5, '18 II/15/16'),
+(10, 201501234, 'HUM 2(AH)', 1.5, 3, 4.5, 48, '18 II/15/16'),
+(11, 201501234, 'MATH1(MST)', 2, 3, 6, 54, '18 II/15/16'),
+(12, 201501234, 'MATH2(MST)', 2, 3, 6, 60, '18 II/15/16'),
+(13, 201501234, 'SOSC1(SSP)', 2.5, 3, 7.5, 67.5, '18 II/15/16'),
+(14, 201501234, 'COMA 101', 1.25, 3, 3.75, 71.25, '20 I/16/17');
 
 --
 -- Indexes for dumped tables
@@ -122,7 +149,7 @@ ALTER TABLE `student_record`
 -- AUTO_INCREMENT for table `student_record`
 --
 ALTER TABLE `student_record`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
