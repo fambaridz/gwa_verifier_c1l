@@ -49,60 +49,8 @@ const rows = [
 ];
 
 function RecordList() {
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-  const handleOpenOptionsMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseOptionsMenu = () => {
-    setAnchorElUser(null);
-  };
-
   return (
     <div>
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static" style={{ background: '#AFAFAF' }}>
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Verifier
-            </Typography>
-            <Typography variant="h6" style={{ fontWeight: 800 }} component="div" >
-              KEITH FLORENCE MARTIN
-            </Typography>
-            <div>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleOpenOptionsMenu}
-                color="inherit"
-              >
-                <ArrowDropDown />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseOptionsMenu}
-              >
-                <MenuItem onClick={handleCloseOptionsMenu}>Manage Accounts</MenuItem>
-                <MenuItem onClick={handleCloseOptionsMenu}>Sign Out</MenuItem>
-              </Menu>
-            </div>
-          </Toolbar>
-        </AppBar>
-      </Box>
       <Box sx={{ m: 3.5, flexGrow: 1 }}>
         <Toolbar>
           <Typography variant="h4" style={{ fontWeight: 1000 }} component="div" sx={{ flex: 1 }}>
