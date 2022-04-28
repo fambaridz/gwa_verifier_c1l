@@ -1,10 +1,21 @@
 import React, { useEffect, useState, PropTypes } from "react";
-import { Container, IconButton, Stack, Box, Typography, Toolbar, Menu, MenuItem, AppBar } from "@mui/material";
+import {
+  Container,
+  IconButton,
+  Stack,
+  Box,
+  Typography,
+  Toolbar,
+  Menu,
+  MenuItem,
+  AppBar,
+} from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { ArrowDropDown } from "@mui/icons-material";
 import { DropzoneArea } from "mui-file-dropzone";
 import StudentRecordForm from "Components/StudentRecordForm";
+import { useNavigate } from "react-router-dom";
 // edit this to create the add student record/s page
 
 /*
@@ -36,6 +47,7 @@ interface GradeRecord {
 const acceptedFiles = ["text/csv"];
 
 function AddStudentRecord() {
+  const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const [studentRecords, setStudentRecords] = useState(new Array(5).fill(5));
   const [page, setPage] = useState(0);
@@ -63,6 +75,19 @@ function AddStudentRecord() {
     setPage(page - 1);
   }
 
+  function redirectToStudentRecords() {
+    navigate("/records");
+  }
+
+  function popStack() {
+    const newLength = studentRecords.length - 1;
+    const newPage = page === 0 ? page : page - 1;
+
+    setStudentRecords(new Array(newLength).fill(5));
+    setPage(newPage);
+    if (newLength === 0) redirectToStudentRecords();
+  }
+
   useEffect(() => {
     console.log(files);
     if (files && files.length > 0)
@@ -72,47 +97,45 @@ function AddStudentRecord() {
   function renderStudentRecordForms() {
     return (
       <>
-        {files.length === 1 ? (
-          <StudentRecordForm />
-        ) : (
-          <>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "end",
-                marginBottom: 4,
-              }}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "end",
+            marginBottom: 4,
+          }}
+        >
+          <Stack direction="row" spacing={1} alignItems="center">
+            <IconButton disabled={page === 0} onClick={prevPage}>
+              <KeyboardArrowLeftIcon />
+            </IconButton>
+            <Typography>
+              {page + 1} out of {studentRecords.length}
+            </Typography>
+            <IconButton
+              disabled={page === studentRecords.length - 1}
+              onClick={nextPage}
             >
-              <Stack direction="row" spacing={1} alignItems="center">
-                <IconButton disabled={page === 0} onClick={prevPage}>
-                  <KeyboardArrowLeftIcon />
-                </IconButton>
-                <Typography>
-                  {page + 1} out of {studentRecords.length}
-                </Typography>
-                <IconButton
-                  disabled={page === studentRecords.length - 1}
-                  onClick={nextPage}
-                >
-                  <KeyboardArrowRightIcon />
-                </IconButton>
-              </Stack>
-            </Box>
-            <StudentRecordForm />
-          </>
-        )}
+              <KeyboardArrowRightIcon />
+            </IconButton>
+          </Stack>
+        </Box>
+        <StudentRecordForm handleCancel={popStack} />
       </>
     );
   }
   return (
     <div>
       <Box>
-        <AppBar position="static" style={{ background: '#AFAFAF' }}>
+        <AppBar position="static" style={{ background: "#AFAFAF" }}>
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Verifier
             </Typography>
-            <Typography variant="h6" style={{ fontWeight: 800 }} component="div" >
+            <Typography
+              variant="h6"
+              style={{ fontWeight: 800 }}
+              component="div"
+            >
               IAN SALAZAR
             </Typography>
             <div>
@@ -130,18 +153,20 @@ function AddStudentRecord() {
                 id="menu-appbar"
                 anchorEl={anchorElUser}
                 anchorOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 keepMounted
                 transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'right',
+                  vertical: "top",
+                  horizontal: "right",
                 }}
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseOptionsMenu}
               >
-                <MenuItem onClick={handleCloseOptionsMenu}>Manage Accounts</MenuItem>
+                <MenuItem onClick={handleCloseOptionsMenu}>
+                  Manage Accounts
+                </MenuItem>
                 <MenuItem onClick={handleCloseOptionsMenu}>Sign Out</MenuItem>
               </Menu>
             </div>
@@ -149,17 +174,17 @@ function AddStudentRecord() {
         </AppBar>
       </Box>
       <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
-      {/* {renderStudentRecordForms()} */}
-      {files.length === 0 ? (
-        <DropzoneArea
-          filesLimit={10}
-          acceptedFiles={acceptedFiles}
-          onChange={handleChange}
-        />
-      ) : (
-        renderStudentRecordForms()
-      )}
-    </Container>
+        {/* {renderStudentRecordForms()} */}
+        {files.length === 0 ? (
+          <DropzoneArea
+            filesLimit={10}
+            acceptedFiles={acceptedFiles}
+            onChange={handleChange}
+          />
+        ) : (
+          renderStudentRecordForms()
+        )}
+      </Container>
     </div>
   );
 }

@@ -24,6 +24,8 @@ function StudentRecordForm({
   degree,
   studentNo,
   gradeRecords,
+  handleCancel = () => {},
+  handleSave = () => {},
 }) {
   const [term, setTerm] = useState("");
   function handleChange(event) {
@@ -183,10 +185,20 @@ function StudentRecordForm({
           // style={{ width: '100%' }}
         />
         <Stack direction="row" spacing={2} sx={{ alignSelf: "end" }}>
-          <Button variant="outlined" color="default" size="large">
+          <Button
+            variant="outlined"
+            color="default"
+            size="large"
+            onClick={handleCancel}
+          >
             Cancel
           </Button>
-          <Button variant="contained" color="success" size="large">
+          <Button
+            variant="contained"
+            color="success"
+            size="large"
+            onClick={handleSave}
+          >
             Save Record
           </Button>
         </Stack>
