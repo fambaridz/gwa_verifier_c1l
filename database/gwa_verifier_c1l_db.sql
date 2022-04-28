@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 28, 2022 at 04:46 AM
+-- Generation Time: Apr 28, 2022 at 04:48 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.28
 
@@ -47,6 +47,17 @@ CREATE TABLE `committee_student` (
   `committee_email` varchar(50) NOT NULL,
   `student_number` int(20) NOT NULL,
   `comments` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `degree_curriculums`
+--
+
+CREATE TABLE `degree_curriculums` (
+  `degree_name` varchar(50) NOT NULL,
+  `recommended_number_units` int(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -153,15 +164,40 @@ INSERT INTO `student_record` (`id`, `student_number`, `course_number`, `grade`, 
 (55, 201501234, 'THEA 101', '2', '3', 6, 248.75, 'l/19/20'),
 (56, 201501234, 'COMA 200', '1', '(1)6', 6, 254.75, 'll/19/20');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `subjects`
+--
+
+CREATE TABLE `subjects` (
+  `course_name` varchar(50) NOT NULL,
+  `degree_name` varchar(50) NOT NULL,
+  `course_number` varchar(30) NOT NULL,
+  `number_units` int(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `degree_curriculums`
+--
+ALTER TABLE `degree_curriculums`
+  ADD PRIMARY KEY (`degree_name`);
 
 --
 -- Indexes for table `student_record`
 --
 ALTER TABLE `student_record`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `subjects`
+--
+ALTER TABLE `subjects`
+  ADD PRIMARY KEY (`course_name`,`degree_name`);
 
 --
 -- AUTO_INCREMENT for dumped tables
