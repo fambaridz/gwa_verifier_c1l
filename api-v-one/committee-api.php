@@ -30,6 +30,7 @@ For front-end requests:
 
 /* various API calls for committee: POST, GET, PUT, DELETE */
 
+
 //connect to database
 require_once('db-connect.php'); 
 
