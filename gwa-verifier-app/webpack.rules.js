@@ -25,7 +25,11 @@ module.exports = [
         presets: ['@babel/preset-react'] 
       } 
     } 
-
+  },
+  {
+    test: /\.tsx?$/, 
+    use: 'ts-loader', 
+    exclude: /node_modules/, 
   },
   {
     test: /\.(png|jpg|gif)$/,

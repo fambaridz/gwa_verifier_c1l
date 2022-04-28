@@ -13,6 +13,8 @@ import {
 } from "@mui/material";
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import { ArrowDropDown, Add, Search, Delete } from "@mui/icons-material";
+import { Link } from "react-router-dom";
+import "./RecordDetails.css";
 
 const columns = [
   { field: 'id', field: 'course', headerName: 'Course', width: 360 },
@@ -60,6 +62,11 @@ function RecordList() {
 
   return (
     <div>
+      <Box sx={{ mt: 2.5, ml: 3, fontSize: 14 }}>
+        <Link to="/records" className="back-link">
+          &lt; Back to Student Records
+        </Link>
+      </Box>
       <Box sx={{ m: 3.5, flexGrow: 1 }}>
         <Toolbar>
           <div>

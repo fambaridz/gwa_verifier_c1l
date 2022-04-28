@@ -31,7 +31,7 @@ function PrivateRoute({ children }){
                 Verifier
             </Typography>
             <Typography variant="h6" style={{ fontWeight: 800 }} component="div" >
-                KYNO CASTILLO
+                NAME
             </Typography>
             <div>
               <IconButton
@@ -59,7 +59,7 @@ function PrivateRoute({ children }){
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseOptionsMenu}
               >
-                <MenuItem component={Link} to={'/manage-committee'}>Manage Accounts</MenuItem>  
+                <MenuItem onClick={handleCloseOptionsMenu} component={Link} to={'/manage-committee'}>Manage Accounts</MenuItem>  
                 <MenuItem component={Link} to={'/login'}>Sign Out</MenuItem>
               </Menu>
             </div>

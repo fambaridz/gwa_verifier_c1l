@@ -15,7 +15,8 @@ import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import { ArrowDropDown } from "@mui/icons-material";
 import { DropzoneArea } from "mui-file-dropzone";
 import StudentRecordForm from "Components/StudentRecordForm";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import "./AddStudentRecord.css";
 // edit this to create the add student record/s page
 
 /*
@@ -125,7 +126,12 @@ function AddStudentRecord() {
   }
   return (
     <div>
-      <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
+      <Box sx={{ mt: 2.5, ml: 3, fontSize: 14 }}>
+        <Link to="/records" className="back-link">
+          &lt; Back to Student Records
+        </Link>
+      </Box>
+      <Container sx={{ paddingTop: 3, paddingBottom: 5 }}>
         {/* {renderStudentRecordForms()} */}
         {files.length === 0 ? (
           <DropzoneArea
