@@ -1,1 +1,1 @@
-export { default } from "./RecordList.tsx";
+export { default } from "./RecordList.jsx";
