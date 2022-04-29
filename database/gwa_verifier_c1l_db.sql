@@ -173,6 +173,7 @@ INSERT INTO `student_record` (`id`, `student_number`, `course_number`, `grade`, 
 CREATE TABLE `subjects` (
   `course_name` varchar(50) NOT NULL,
   `degree_name` varchar(50) NOT NULL,
+  `major` varchar(30) DEFAULT NULL,
   `course_number` varchar(30) NOT NULL,
   `number_units` int(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
