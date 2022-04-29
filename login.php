@@ -1,22 +1,25 @@
 <?php
+header("Access-Control-Allow-Origin: *"); //add this CORS header to enable any domain to send HTTP requests to these endpoints:
+header("Access-Control-Allow-Headers: *");
+header("Access-Control-Allow-Methods: *");
 
 //Connects to database
 include_once 'database.php';
 
-$encodedData = file_get_contents('php://input');
-$decodedData = json_decode($encodedData, true);
+$data = json_decode(file_get_contents('php://input'));
+
 //$userEmail = $decodedData['Email'];
 //$userPw = ($decodedData['Password']);
 
 //if input fields is empty
-if (!isset($encodedData->Email) || !isset($encodedData->Password)){
+if (!isset($data->Email) || !isset($data->Password)){
     echo "Input fields is empty";
 } else {        //if input fields is not empty
-    $email = trim($userEmail);
-    $password = trim($userPw);
+    $email = trim($data->Email);
+    $password = trim($data->Password);
         
     //SQL Query
-    $sql = "SELECT * FROM logincreds WHERE user=?";
+    $sql = "SELECT * FROM logincreds WHERE User=?";
     //Prepare statement
     $stmt = mysqli_stmt_init($conn);
 
@@ -36,7 +39,7 @@ if (!isset($encodedData->Email) || !isset($encodedData->Password)){
             $row = mysqli_fetch_assoc($result);
 
             //check if passwords match
-            if(!password_verify($password, $row['Password'])){
+            if(!($password == $row['Pass'])){
                 echo "Email and password do not match";
             } else {
                 echo "You are logged in";
