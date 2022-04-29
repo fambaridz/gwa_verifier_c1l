@@ -25,30 +25,53 @@ if(!$con) {
     die("Connection failed: " . mysqli_connect_error()); 
 }
 
-// query statement
-$sql = "SELECT * FROM `student`";
-
-// query
-$result = mysqli_query($con, $sql);
-
-// resource not found if query returns empty
-if(!$result) {
-    http_response_code(404);
-    die(mysqli_error($con));
-}
-
 // return query as array of JSON objects
 if ($method == 'GET') {
+    // query statement
+    $sql = "SELECT * FROM `student`";
+
+    // query
+    $result = mysqli_query($con, $sql);
+
+    // resource not found if query returns empty
+    if(!$result) {
+        http_response_code(404);
+        die(mysqli_error($con));
+    }
+
     $new = array();
     while($r = mysqli_fetch_assoc($result)) {
         $new[] = $r; 
     }
-    echo json_encode($new);
+    
+
 }
-else {
-    echo mysqli_affected_rows($con);
+// delete
+else if ($method == 'POST') {
+    //
+    $sql = "DELETE FROM `student` WHERE student_number IN (0, 5)";
+    // query
+    $result = mysqli_query($con, $sql);
+
+    // resource not found if query returns empty
+    if(!$result) {
+        http_response_code(404);
+        die(mysqli_error($con));
+    }
+    else {
+        $sql = "SELECT * FROM `student`";
+        // query
+        $result = mysqli_query($con, $sql);
+    }
+
+    $new = array();
+    while($r = mysqli_fetch_assoc($result)) {
+        $new[] = $r; 
+    }
+    
 }
 
+echo json_encode($new);
 // exit
 $con->close();
 
