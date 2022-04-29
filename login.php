@@ -1,39 +1,46 @@
 <?php
 
-$host="localhost";
-$user="root";
-$password="";
-$db="users_128";
+//Connects to database
+include_once 'database.php';
 
-$con = mysqli_connect($host,$user,$password,$db);
+$encodedData = file_get_contents('php://input');
+$decodedData = json_decode($encodedData, true);
+$userEmail = $decodedData['Email'];
+$userPw = ($decodedData['Password']);
 
-if(isset($_POST['username'])){
-    $uname=$_POST['username'];
-    $password2=$_POST['password'];
+//if input fields is empty
+if (!isset($userEmail) || !isset($userPw)){
+    echo "Input fields is empty";
+} else {        //if input fields is not empty
+    $email = trim($userEmail);
+    $password = trim($userPw);
+        
+    //SQL Query
+    $sql = "SELECT * FROM logincreds WHERE user=?";
+    //Prepare statement
+    $stmt = mysqli_stmt_init($conn);
 
-    $sql="select * from logincreds where user='".$uname."' AND pass='".$password2."' limit 1";
-    $result=mysqli_query($con, $sql);
+    //Check if sql query is correct
+    if (!mysqli_stmt_prepare($stmt, $sql)){
+        echo "SQL statement failed";
+    } else {
+        //binds, executes, and get results of sql query
+        mysqli_stmt_bind_param($stmt, "s", $email);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
 
-    if(mysqli_num_rows($result)==1){
-        echo " You are logged in ";
-        exit();
-    }else{
-        echo "Username of password is invalid";
-        exit();
+        //check if email is registered
+        if(mysqli_num_rows($result) == 0){
+            echo "Email is not registered";
+        } else {
+            $row = mysqli_fetch_assoc($result);
+
+            //check if passwords match
+            if(!password_verify($password, $row['Password'])){
+                echo "Email and password do not match";
+            } else {
+                echo "You are logged in";
+            }
+        }
     }
 }
-
-?>
-
-<html>
-<head>
-    <title>Login Page</title>
-</head>
-<body>
-    <form action="#" method="POST">
-        <input type="text" name="username" placeholder="User Name"/>
-        <input type="password" name="password" placeholder="Password"/>
-        <input type="submit" name="submit" value="LOGIN" class="login-button"/>
-    </form>
-</body>
-</html>
