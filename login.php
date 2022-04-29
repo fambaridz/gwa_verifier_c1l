@@ -5,11 +5,11 @@ include_once 'database.php';
 
 $encodedData = file_get_contents('php://input');
 $decodedData = json_decode($encodedData, true);
-$userEmail = $decodedData['Email'];
-$userPw = ($decodedData['Password']);
+//$userEmail = $decodedData['Email'];
+//$userPw = ($decodedData['Password']);
 
 //if input fields is empty
-if (!isset($userEmail) || !isset($userPw)){
+if (!isset($encodedData->Email) || !isset($encodedData->Password)){
     echo "Input fields is empty";
 } else {        //if input fields is not empty
     $email = trim($userEmail);
