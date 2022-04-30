@@ -22,8 +22,8 @@ $units = (float)$data['units'];
 $enrolled = (float)$data['enrolled'];
 $runningtotal = (double)$data['runningtotal'];
 
-//query
-$sql = "INSERT INTO student_record VALUES (1, '$studno','$data[courseno]','$grade','$units','$enrolled','$runningtotal','$data[term]')";
+//query - insert student no, last name, first name, middle name, suffix, degree, recommended no units, credited units, gwa, status
+$sql = "INSERT INTO student_record(student_number, course_number, grade, units, enrolled, running_total, term) VALUES ('$studno','$data[courseno]','$grade','$units','$enrolled','$runningtotal','$data[term]')";
 
 // run SQL statement
 $result = mysqli_query($con,$sql);
