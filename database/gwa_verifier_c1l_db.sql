@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 28, 2022 at 04:48 AM
+-- Generation Time: Apr 30, 2022 at 11:55 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.28
 
@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `committee` (
   `email` varchar(50) NOT NULL,
-  `account_made_by` varchar(50) NOT NULL,
+  `account_made_by` varchar(50) DEFAULT NULL,
   `password` varchar(50) NOT NULL,
   `lastname` varchar(50) NOT NULL,
   `firstname` varchar(50) NOT NULL,
@@ -56,8 +56,12 @@ CREATE TABLE `committee_student` (
 --
 
 CREATE TABLE `degree_curriculums` (
+  `degree_id` int(50) NOT NULL,
   `degree_name` varchar(50) NOT NULL,
-  `recommended_number_units` int(20) NOT NULL
+  `degree_nickname` varchar(30) NOT NULL,
+  `old_new` varchar(20) NOT NULL,
+  `major` varchar(30) NOT NULL,
+  `recommended_units` int(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -172,7 +176,7 @@ INSERT INTO `student_record` (`id`, `student_number`, `course_number`, `grade`, 
 
 CREATE TABLE `subjects` (
   `course_name` varchar(50) NOT NULL,
-  `degree_name` varchar(50) NOT NULL,
+  `degree_id` int(50) NOT NULL,
   `course_number` varchar(30) NOT NULL,
   `number_units` int(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -182,32 +186,68 @@ CREATE TABLE `subjects` (
 --
 
 --
+-- Indexes for table `committee`
+--
+ALTER TABLE `committee`
+  ADD PRIMARY KEY (`email`);
+
+--
+-- Indexes for table `committee_student`
+--
+ALTER TABLE `committee_student`
+  ADD PRIMARY KEY (`committee_email`,`student_number`);
+
+--
 -- Indexes for table `degree_curriculums`
 --
 ALTER TABLE `degree_curriculums`
-  ADD PRIMARY KEY (`degree_name`);
+  ADD PRIMARY KEY (`degree_id`);
+
+--
+-- Indexes for table `student`
+--
+ALTER TABLE `student`
+  ADD PRIMARY KEY (`student_number`);
 
 --
 -- Indexes for table `student_record`
 --
 ALTER TABLE `student_record`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `student_number` (`student_number`);
 
 --
 -- Indexes for table `subjects`
 --
 ALTER TABLE `subjects`
-  ADD PRIMARY KEY (`course_name`,`degree_name`);
+  ADD PRIMARY KEY (`course_name`),
+  ADD KEY `degree_id` (`degree_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
+-- AUTO_INCREMENT for table `degree_curriculums`
+--
+ALTER TABLE `degree_curriculums`
+  MODIFY `degree_id` int(50) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `student_record`
 --
 ALTER TABLE `student_record`
   MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `subjects`
+--
+ALTER TABLE `subjects`
+  ADD CONSTRAINT `Foreign_key` FOREIGN KEY (`degree_id`) REFERENCES `degree_curriculums` (`degree_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
