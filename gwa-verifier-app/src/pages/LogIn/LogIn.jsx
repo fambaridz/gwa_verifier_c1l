@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { 
   Typography,
   Button,
@@ -7,7 +7,7 @@ import {
   FormControl, 
   OutlinedInput,
   InputAdornment,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import logo from "Assets/logo.png";
@@ -21,6 +21,9 @@ function LogIn() {
     password: '',
     showPassword: false,
   });
+
+  const [isLoggedIn, setIsLoggedIn] = React.useState(false);
+
 
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
@@ -37,10 +40,36 @@ function LogIn() {
     event.preventDefault();
   };
 
+  const handleSubmit = (e) =>{
+    e.preventDefault();
+    const credentials = {
+      Email: values.email,
+      Password: values.password
+    }
+    console.log(credentials)
+    fetch(
+      "http://localhost/backend/login.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(credentials)
+      })
+      .then(response => response.json())
+      .then(body => {
+        console.log(body.success)
+        if (body.success=="true") { 
+          setIsLoggedIn(true)
+        }
+      })
+  }
+
   const Password = ()=>{
     return(
         <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
             <OutlinedInput
+              required
               placeholder="Enter your password"
               id="form-password"
               type={values.showPassword ? 'text' : 'password'}
@@ -63,6 +92,13 @@ function LogIn() {
           </FormControl> 
     )
   }
+  if(isLoggedIn){
+    return(
+      <>
+      <Navigate to="/records"/> 
+      </>
+    )
+  }
   return (
     <div className="login-container">
       <div className="login-left">
@@ -75,22 +111,23 @@ function LogIn() {
           <Typography variant="" className="login-right-text">LOGIN TO</Typography>
           <Typography variant="" className="login-right-text">YOUR ACCOUNT</Typography>
         </div>
-        <form className="login-right-section">
+        <form id="login-form" className="login-right-section" onSubmit={handleSubmit}>
           <Typography variant="h7" className="login-form-label">Email</Typography>
           <TextField 
+            required  
             placeholder="Enter your email"
             id="form-email"
             type="email"
             variant="outlined"
             size="small"  
+            value={values.email}
+            onChange={handleChange('email')}
             sx={{m:1, width: "25ch"}}
           />
           <Typography variant="" className="login-form-label">Password</Typography>
           {Password()}
         </form>
-        <Link to="/records" style={{ textDecoration: "none" }}>
-          <Button variant="contained" size="large" sx={{marginBottom:5, width: 300}}> Log In</Button>
-        </Link>
+          <Button type="submit" form="login-form" variant="contained" size="large" sx={{marginBottom:5, width: 300}}> Log In</Button>
       </div>
     </div>
   );
