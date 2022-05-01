@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2022 at 08:03 AM
+-- Generation Time: May 01, 2022 at 08:29 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.28
 
@@ -72,7 +72,10 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 (1, 'BA Communication Arts', 'BACA', 'New', '', 145),
 (2, 'BA Communication Arts', 'BACA', 'New', 'Speech Communication', 145),
 (3, 'BA Communication Arts', 'BACA', 'New', 'Writing', 145),
-(4, 'BA Communication Arts', 'BACA', 'New', 'Theater Arts', 145);
+(4, 'BA Communication Arts', 'BACA', 'New', 'Theater Arts', 145),
+(100, 'BS Applied Physics', 'BSAPHY', 'Old', '', 0),
+(101, 'BA Philosophy', 'BAPHLO', 'Old', '', 0),
+(102, 'BA Sociology', 'BASOCIO', 'Old', '', 0);
 
 -- --------------------------------------------------------
 
@@ -305,7 +308,7 @@ ALTER TABLE `subjects`
 -- AUTO_INCREMENT for table `degree_curriculums`
 --
 ALTER TABLE `degree_curriculums`
-  MODIFY `degree_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `degree_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=103;
 
 --
 -- AUTO_INCREMENT for table `student_record`
