@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2022 at 09:54 AM
+-- Generation Time: May 01, 2022 at 04:23 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.28
 
@@ -106,7 +106,10 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 (35, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Mathematics', 144),
 (36, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Biology', 146),
 (37, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Chemistry', 145),
-(38, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Physics', 141);
+(38, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Physics', 141),
+(53, 'BS Applied Physics', 'BSAPHY', 'Old', 'Computational Physics', 0),
+(54, 'BS Applied Physics', 'BSAPHY', 'Old', 'Experimental Physics', 0),
+(55, 'BS Applied Physics', 'BSAPHY', 'Old', 'Instrumentation Physics', 0);
 
 -- --------------------------------------------------------
 
@@ -288,7 +291,33 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `number_uni
 ('Drama for Children', 4, 'THEA 154', 3),
 ('Theater Space and Stage Design', 4, 'THEA 155', 3),
 ('The Dynamics and Aesthetics of Community Theater', 4, 'THEA 156', 3),
-('Play Production', 4, 'THEA 157', 3);
+('Play Production', 4, 'THEA 157', 3),
+('Computational Physics', 8, 'PHYS 115', 4),
+('Physic of Scientific Instruments', 28, 'APHY 101', 3),
+('Practicum', 28, 'APHY 198', 3),
+('Undergraduate Seminar', 28, 'APHY 199', 1),
+('Undergraduate Thesis', 28, 'APHY 200', 3),
+('Mathematical Methods of Physics I', 28, 'PHYS 111', 4),
+('Mathematical Methods of Physics II', 28, 'PHYS 112', 4),
+('Theoretical Mechanics I', 28, 'PHYS 121', 3),
+('Electronic Theory I', 28, 'PHYS 131', 3),
+('Electromagnetic Theory II', 28, 'PHYS 132', 3),
+('Quantum Physics I', 28, 'PHYS 141', 3),
+('Statistical Physics I', 28, 'PHYS 151', 3),
+('Experimental Physics II', 28, 'PHYS 192', 3),
+('Research Methods in Physics', 28, 'PHYS 195', 3),
+('The Life and Works of Jose Rizal', 28, 'PI 10', 3),
+('Mathematical Modeling', 53, 'AMAT 110', 3),
+('Computer Programming', 53, 'AMAT 150', 3),
+('Modelling and Simulation in Environmental Physics', 53, 'APHY 140', 3),
+('Computational Physics', 53, 'PHYS 116', 3),
+('Introduction to Materials Development', 54, 'APHY 150', 3),
+('Microscopy and Spectroscopy for Materials Characterization', 54, 'APHY 160', 3),
+('Solid State Physics', 54, 'PHYS 170', 3),
+('Electronic Circuits', 55, 'APHY 103', 3),
+('Digital Computer Electronics', 55, 'APHY 104', 3),
+('Microcomputer-based Instrumentation', 55, 'APHY 105', 3),
+('Embedded Systems Programming for instrumentation', 55, 'APHY 132', 3);
 
 --
 -- Indexes for dumped tables
