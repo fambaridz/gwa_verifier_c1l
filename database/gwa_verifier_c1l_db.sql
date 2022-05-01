@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2022 at 11:22 AM
+-- Generation Time: May 01, 2022 at 11:52 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -94,8 +94,8 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 (23, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Chemistry', 140),
 (24, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Mathematics', 142),
 (25, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Physics', 140),
-(26, 'BS Statistics', 'BSStat', 'New', '', 143),
-(27, 'BS Agricultural Chemistry', 'BSAgChem', 'New', '', 190),
+(26, 'BS Statistics', 'BSSTAT', 'New', '', 143),
+(27, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', '', 190),
 (28, 'BA Communication Arts', 'BACA', 'Old', '', 141),
 (29, 'BA Communication Arts', 'BACA', 'Old', 'Speech Communication', 141),
 (30, 'BA Communication Arts', 'BACA', 'Old', 'Writing', 141),
@@ -104,23 +104,23 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 (33, 'BA Sociology', 'BASOCIO', 'Old', '', 0),
 (34, 'BS Applied Mathematics', 'BSAMAT', 'Old', '', 145),
 (35, 'BS Applied Physics', 'BSAPHY', 'Old', '', 0),
-(36, 'BS Biology', 'BSBIO', 'Old',  'Cell and Molecular Biolgoy', 153),
+(36, 'BS Biology', 'BSBIO', 'Old', 'Cell and Molecular Biolgoy', 153),
 (37, 'BS Biology', 'BSBIO', 'Old', 'Ecology', 153),
 (38, 'BS Biology', 'BSBIO', 'Old', 'Genetics', 153),
 (39, 'BS Biology', 'BSBIO', 'Old', 'Microbiology', 153),
 (40, 'BS Biology', 'BSBIO', 'Old', 'Plant Biology', 153),
 (41, 'BS Biology', 'BSBIO', 'Old', 'Systematics', 153),
 (42, 'BS Biology', 'BSBIO', 'Old', 'Wildlife Biology and Zoology', 153),
-(43, 'BS Chemistry', 'BSChem', 'Old', '', 160),
-(44, 'BA Statistics', 'BSStat', 'Old', '', 149),
-(45, 'BA Computer Science', 'BSCS', 'Old', '', 141),
-(46, 'BS Agricultural Chemistry', 'BSAgChem', 'Old', '', 194),
-(47, 'BS Mathematics', 'BSMath', 'Old', '', 139),
-(48, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', '', 0),
-(49, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Mathematics', 144),
-(50, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Biology', 146),
-(51, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Chemistry', 145),
-(52, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Physics', 141);
+(43, 'BS Chemistry', 'BSCHEM', 'Old', '', 160),
+(44, 'BS Computer Science', 'BSCS', 'Old', '', 141),
+(45, 'BS Mathematics', 'BSMATH', 'Old', '', 139),
+(46, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', '', 0),
+(47, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Mathematics', 144),
+(48, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Biology', 146),
+(49, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Chemistry', 145),
+(50, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Physics', 141),
+(51, 'BS Statistics', 'BSSTAT', 'Old', '', 149),
+(52, 'BS Agricultural Chemistry', 'BSAGCHEM', 'Old', '', 194);
 
 -- --------------------------------------------------------
 
