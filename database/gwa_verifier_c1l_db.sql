@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2022 at 08:41 AM
+-- Generation Time: May 01, 2022 at 09:54 AM
 -- Server version: 10.4.24-MariaDB
--- PHP Version: 7.4.29
+-- PHP Version: 7.4.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -94,19 +94,19 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 (23, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Chemistry', 140),
 (24, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Mathematics', 142),
 (25, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Physics', 140),
-(100, 'BS Applied Physics', 'BSAPHY', 'Old', '', 0),
-(101, 'BA Philosophy', 'BAPHLO', 'Old', '', 0),
-(102, 'BA Sociology', 'BASOCIO', 'Old', '', 0),
-(103, 'BS Chemistry', 'BSChem', 'Old', '', 160),
-(104, 'BA Statistics', 'BSStat', 'Old', '', 149),
-(105, 'BA Computer Science', 'BSCS', 'Old', '', 141),
-(106, 'BS Agricultural Chemistry', 'BSAgChem', 'Old', '', 194),
-(107, 'BS Mathematics', 'BSMath', 'Old', '', 139),
-(109, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', '', 0),
-(110, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Mathematics', 144),
-(111, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Biology', 146),
-(112, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Chemistry', 145),
-(113, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Physics', 141);
+(26, 'BA Philosophy', 'BAPHLO', 'Old', '', 0),
+(27, 'BA Sociology', 'BASOCIO', 'Old', '', 0),
+(28, 'BS Applied Physics', 'BSAPHY', 'Old', '', 0),
+(29, 'BS Chemistry', 'BSChem', 'Old', '', 160),
+(30, 'BA Statistics', 'BSStat', 'Old', '', 149),
+(31, 'BA Computer Science', 'BSCS', 'Old', '', 141),
+(32, 'BS Agricultural Chemistry', 'BSAgChem', 'Old', '', 194),
+(33, 'BS Mathematics', 'BSMath', 'Old', '', 139),
+(34, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', '', 0),
+(35, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Mathematics', 144),
+(36, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Biology', 146),
+(37, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Chemistry', 145),
+(38, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Physics', 141);
 
 -- --------------------------------------------------------
 
@@ -339,7 +339,7 @@ ALTER TABLE `subjects`
 -- AUTO_INCREMENT for table `degree_curriculums`
 --
 ALTER TABLE `degree_curriculums`
-  MODIFY `degree_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=105;
+  MODIFY `degree_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
 
 --
 -- AUTO_INCREMENT for table `student_record`
