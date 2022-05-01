@@ -96,7 +96,17 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 (25, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Physics', 140),
 (100, 'BS Applied Physics', 'BSAPHY', 'Old', '', 0),
 (101, 'BA Philosophy', 'BAPHLO', 'Old', '', 0),
-(102, 'BA Sociology', 'BASOCIO', 'Old', '', 0);
+(102, 'BA Sociology', 'BASOCIO', 'Old', '', 0),
+(103, 'BS Chemistry', 'BSChem', 'Old', '', 160),
+(104, 'BA Statistics', 'BSStat', 'Old', '', 149),
+(105, 'BA Computer Science', 'BSCS', 'Old', '', 141),
+(106, 'BS Agricultural Chemistry', 'BSAgChem', 'Old', '', 194),
+(107, 'BS Mathematics', 'BSMath', 'Old', '', 139),
+(109, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', '', 0),
+(110, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Mathematics', 144),
+(111, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Biology', 146),
+(112, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Chemistry', 145),
+(113, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Physics', 141);
 
 -- --------------------------------------------------------
 
