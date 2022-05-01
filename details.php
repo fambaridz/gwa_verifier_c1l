@@ -1,29 +1,65 @@
 <?php
-header("Access-Control-Allow-Origin: *"); //add this CORS header to enable any domain to send HTTP requests
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: *");
 $host = "localhost"; 
 $user = "root"; 
 $password = ""; 
-$dbname = "gwa_verifier_c1l_db";  // temporary database for testing
+$dbname = "gwa_verifier_c1l_db";
  
 $con = mysqli_connect($host, $user, $password,$dbname);
  
 $method = $_SERVER['REQUEST_METHOD'];
 
-// $data = json_decode(file_get_contents('php://input'), true); // to be used when retrieving data from fetch body
+// for DELETE method
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+  header("HTTP/1.1 200 OK");
+  return;
+}
+
+$body = json_decode(file_get_contents('php://input'));
+// expected body contents and methods:
+// { action: 'get-courses', student_number: this.state.student_number }, METHOD: POST
+// { action: 'get-comments', student_number: this.state.student_number }, METHOD: POST
+// { action: 'status-change', student_number: this.state.student_number,  prevStatus: this.state.status, newStatus: value}, METHOD: POST
+// { action: 'delete-record', student_number: this.state.student_number}, METHOD: DELETE
 
 if (!$con) {
   die("Connection failed: " . mysqli_connect_error());
 }
  
-switch ($method) {
-    case 'GET':
-      // TODO: id value should be dyanmic; get id from fetch body
-      $sql = "select * from student_record where student_number='202011111'"; 
+// create and execute queries based on $body->action
+switch ($body->action) {
+    case 'get-courses':
+      // gets the courses and course details of a student record
+      $sql = "SELECT * FROM student_record WHERE student_number = '$body->student_number'";
+      $result = mysqli_query($con,$sql);
+      break;
+    case 'get-comments':
+      // gets the comments from committees for a student record
+      $sql = "SELECT committee_email, comments FROM committee_student WHERE student_number = '$body->student_number'";
+      $result = mysqli_query($con,$sql);
+      break;
+    case 'delete-record':
+      // deletes a student record
+      $sql = "DELETE FROM student_record WHERE student_number = '$body->student_number'; DELETE FROM student WHERE student_number = '$body->student_number'; DELETE FROM committee_student WHERE student_number = '$body->student_number'";
+      $result = mysqli_multi_query($con,$sql);
+      break;
+    case 'status-change':
+      // changes the status of a student record
+      // valid status changes: UNVERIFIED <-> DEFICIENT <-> SATISFIED or UNSATISFIED
+      if(
+        ($body->prevStatus == "UNVERIFIED" and $body->newStatus == "DEFICIENT") or
+        ($body->prevStatus == "SATISFIED" and $body->newStatus != "UNVERIFIED") or
+        ($body->prevStatus == "UNSATISFIED" and $body->newStatus != "UNVERIFIED") or
+        ($body->prevStatus == "DEFICIENT")
+        ) {
+          $sql = "UPDATE student SET status = '$body->newStatus' WHERE student.student_number = '$body->student_number'"; 
+          $result = mysqli_query($con,$sql);
+      } else {
+        exit(json_encode("Invalid status"));
+      }
       break;
 }
- 
-// run SQL statement
-$result = mysqli_query($con,$sql);
  
 // die if SQL statement failed
 if (!$result) {
@@ -31,14 +67,19 @@ if (!$result) {
   die(mysqli_error($con));
 }
  
-if ($method == 'GET') {
-    // if (!$id) echo '['; // CHECK: is "if (!$id)" needed?
-    echo '[';
-    for ($i=0 ; $i<mysqli_num_rows($result) ; $i++) {
-      echo ($i>0?',':'').json_encode(mysqli_fetch_object($result));
-    }
-    echo ']';
-}else {
+// return result to frontend
+if ($body->action == "get-courses" or $body->action == "get-comments") {
+  echo '[';
+  for ($i=0 ; $i<mysqli_num_rows($result) ; $i++) {
+    echo ($i>0?',':'').json_encode(mysqli_fetch_object($result));
+  }
+  echo ']';
+} elseif ($body->action == "status-change") {
+  echo json_encode('Successfully updated '.$body->student_number.' student record status to '.$body->newStatus);
+} elseif ($body->action == "delete-record") {
+  echo json_encode('Successfully deleted ' . $body->student_number.' student record');
+}
+else {
     echo mysqli_affected_rows($con);
 }
  
