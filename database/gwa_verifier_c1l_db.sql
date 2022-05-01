@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2022 at 11:52 AM
+-- Generation Time: May 01, 2022 at 04:07 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -342,7 +342,52 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `number_uni
 ('The Life and Works of Jose Rizal', 5, 'PI 10', 3),
 ('Principles of Government and Politics', 5, 'POSC 10', 3),
 ('Readings in Speculative Thought', 5, 'SPEC', 3),
-('Science, Technology, and Society', 5, 'STS 1', 3);
+('Science, Technology, and Society', 5, 'STS 1', 3),
+('Rural Sociology', 6, 'AERS 160', 3),
+('Introduction to Social and Cultural Anthropology', 6, 'ANTH 10', 3),
+('Critical Perspectives in the Arts', 6, 'ARTS 1', 3),
+('Critical Perspectives in Communication', 6, 'COMM 10', 3),
+('General Economics', 6, 'ECON 11', 3),
+('Ethics and Moral Reasoning in Everyday Life', 6, 'ETHICS 1', 3),
+('Philippine History', 6, 'HIST 1', 3),
+('Introduction to History', 6, 'HIST 10', 3),
+('Wellness and Basic Injury Management', 6, 'HK 11', 0),
+('Human Kinetics Activities', 6, 'HK 12', 0),
+('Advanced Human Kinetics Activities', 6, 'HK 13', 0),
+('Kasaysayan ng Pilipinas', 6, 'KAS 1', 3),
+('National Service Training Program I', 6, 'NSTP 1', 0),
+('National Service Training Program II', 6, 'NSTP 2', 0),
+('The Life and Works of Jose Rizal', 6, 'PI 10', 3),
+('Principles of Government and Politics', 6, 'POSC 10', 3),
+('Foundations of Psychology', 6, 'PSY 10', 3),
+('General Principles of Sociology', 6, 'SOC 10', 3),
+('Social Organization', 6, 'SOC 100', 3),
+('Gender Relations', 6, 'SOC 107', 3),
+('Sociology of the Family', 6, 'SOC 110', 3),
+('Sociology of Politics', 6, 'SOC 112', 3),
+('Sociology of Economic Life', 6, 'SOC 114', 3),
+('Sociology of Religion', 6, 'SOC 116', 3),
+('Urban Sociology', 6, 'SOC 120', 3),
+('Social Psychology', 6, 'SOC 130', 3),
+('Attitudes and Persuasion', 6, 'SOC 135', 3),
+('Introduction to Demography', 6, 'SOC 140', 3),
+('Classical Sociological Theories', 6, 'SOC 151', 3),
+('Contemporary Sociological Theories', 6, 'SOC 152', 3),
+('Social Change', 6, 'SOC 160', 3),
+('Sociology of Development', 6, 'SOC 165', 3),
+('Social Program Evaluation', 6, 'SOC 166', 3),
+('Social Problems', 6, 'SOC 170', 3),
+('Deviance', 6, 'SOC 175', 3),
+('Collective Behavior', 6, 'SOC 180', 3),
+('Special Topics', 6, 'SOC 191', 3),
+('Introduction to Qualitative Social Research', 6, 'SOC 192', 3),
+('Research Methodologies in the Social Sciences', 6, 'SOC 195', 2),
+('Research Methodologies in the Social Sciences Laboratory', 6, 'SOC 195.1', 1),
+('Internship', 6, 'SOC 198', 3),
+('Undergraduate Seminar', 6, 'SOC 199', 1),
+('Undergraduate Thesis', 6, 'SOC 200', 3),
+('Statistics for Social Sciences', 6, 'STAT 166', 3),
+('Science, Technology, and Society', 6, 'STS 1', 3);
 
 --
 -- Indexes for dumped tables
