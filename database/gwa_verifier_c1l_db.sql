@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2022 at 11:18 AM
+-- Generation Time: May 01, 2022 at 11:22 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -247,12 +247,16 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `number_uni
 ('English Prose Styles', 1, 'ENG 101', 3),
 ('Argumentative Writing', 1, 'ENG 104', 3),
 ('Ethics and Moral Reasoning in Everyday Life', 1, 'ETHICS 1', 3),
+('Philippine History', 1, 'HIST 1', 3),
 ('Wellness and Basic Injury Management', 1, 'HK 11', 0),
+('Human Kinetics Activities', 1, 'HK 12', 0),
+('Advanced Human Kinetics Activities', 1, 'HK 13', 0),
 ('Critical Theories', 1, 'HUM 100', 3),
 ('Visual Culture', 1, 'HUM 101', 3),
 ('New Media Art', 1, 'HUM 102', 3),
 ('Culture and Arts Management', 1, 'HUM 104', 3),
 ('Philippine Art and Society', 1, 'HUM 170', 3),
+('Kasaysayan ng Pilipinas', 1, 'KAS 1', 3),
 ('National Service Training Program I', 1, 'NSTP 1', 0),
 ('National Service Training Program II', 1, 'NSTP 2', 0),
 ('The Life and Works of Jose Rizal', 1, 'PI 10', 3),
