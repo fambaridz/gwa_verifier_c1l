@@ -21,6 +21,7 @@ import Button from '@mui/material/Button';
 import { Add, Edit, Delete } from "@mui/icons-material";
 import "./ManageCommitteeAccounts.css";
 import { Link, useNavigate } from "react-router-dom";
+import { ThemeProvider } from "@mui/private-theming";
 
 //TODO Clean up code ~Zenn
 
@@ -56,7 +57,7 @@ function addUserForm() {
 			<TextField fullWidth={true} sx={{my:1}} label="Password" variant="outlined" type="password" required={true} />
 			<TextField fullWidth={true} sx={{my:1}} label="Confirm Password" variant="outlined" type="password"required={true} />
 			
-			<Button type="submit" className="modalButton" variant="contained">Submit</Button>
+			<Button type="submit" className="modalButton" color="success" variant="contained">Submit</Button>
 			</form>;
 }
 
@@ -74,7 +75,7 @@ function editUserForm() {
 			<TextField fullWidth={true} sx={{my:1}} label="Password" variant="outlined" type="password" disabled={true} />
 			<TextField fullWidth={true} sx={{my:1}} label="Confirm Password" variant="outlined" type="password"disabled={true} />
 			
-			<Button type="submit" className="modalButton" variant="contained">Submit</Button>
+			<Button type="submit" className="modalButton" color="success" variant="contained">Submit</Button>
 			</form>;
 }
 	const style = {
@@ -109,7 +110,9 @@ function editUserForm() {
 
 	const AddButton = (props) => {
 		return (
-		<Button onClick={props.onClickAdd} variant="contained" style={{ backgroundColor:'#C7C7C7' }} endIcon={<Add />}> Add Committee Account</Button>
+			<ThemeProvider>
+				<Button onClick={props.onClickAdd} variant="contained" color="secondary" endIcon={<Add />}> Add Committee Account</Button>
+			</ThemeProvider>
 		)
 	}
 
@@ -143,7 +146,7 @@ function editUserForm() {
           		&lt; Back to Student Records
         	</Link>
       	</Box>
-		<Box sx={{ mt: 1.5, ml: 3.5, mr: 3.5, mb: 3.5, flexGrow: 1 }}>
+		<Box sx={{ mt: 0.5, ml: 3.5, mr: 3.5, mb: 3.5, flexGrow: 1 }}>
 			<Toolbar>
 				<Typography variant="h4" style={{ fontWeight: 1000 }} component="div" sx={{ flex: 1 }}>
 					Manage Committee Accounts

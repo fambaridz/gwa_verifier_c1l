@@ -25,7 +25,7 @@ function PrivateRoute({ children }){
   return(
     <div>
       <Box sx={{flexGrow: 1}}>
-        <AppBar position="static" style={{ background: '#AFAFAF' }}>
+        <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Verifier

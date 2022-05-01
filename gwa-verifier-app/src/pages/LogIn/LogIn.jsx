@@ -88,7 +88,7 @@ function LogIn() {
           <Typography variant="" className="login-form-label">Password</Typography>
           {Password()}
         </form>
-        <Link to="/records">
+        <Link to="/records" style={{ textDecoration: "none" }}>
           <Button variant="contained" size="large" sx={{marginBottom:5, width: 300}}> Log In</Button>
         </Link>
       </div>

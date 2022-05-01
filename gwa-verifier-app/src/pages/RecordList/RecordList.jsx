@@ -10,6 +10,8 @@ import {
 import { DataGrid } from "@mui/x-data-grid";
 import { Add, Search, Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { ThemeProvider } from "@mui/material";
+import theme from ".//../../theme";
 
 function RecordList() {
   let navigate = useNavigate();
@@ -29,7 +31,7 @@ function RecordList() {
       width: 290,
       renderCell: (params) => (
         <>
-          <Button onClick={() => redirectToRecordDetails(params)}>
+          <Button variant="text" color="black" onClick={() => redirectToRecordDetails(params)}>
             {params.value}
           </Button>
         </>
@@ -131,18 +133,20 @@ function RecordList() {
           >
             Student Records
           </Typography>
-          <Button
-            onClick={() => {
-              redirectToAddStudentRecords();
-            }}
-            variant="contained"
-            style={{ backgroundColor: "#C7C7C7" }}
-            endIcon={<Add />}
-          >
-            Add Student Record
-          </Button>
+          <ThemeProvider>
+            <Button
+              onClick={() => {
+                redirectToAddStudentRecords();
+              }}
+              variant="contained"
+              color="secondary"
+              endIcon={<Add />}
+            >
+              Add Student Record
+            </Button>
+          </ThemeProvider>
         </Toolbar>
-        <Box sx={{ ml: 3, mr: 3, flexGrow: 1 }}>
+        {/* <Box sx={{ ml: 3, mr: 3, flexGrow: 1 }}>
           <TextField
             fullWidth
             id="search-bar"
@@ -156,7 +160,7 @@ function RecordList() {
             }}
             variant="standard"
           />
-        </Box>
+        </Box> */}
         <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
           <div style={{ height: 400, width: "100%" }}>
             <DataGrid
