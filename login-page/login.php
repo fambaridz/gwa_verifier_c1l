@@ -1,5 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: *"); //add this CORS header to enable any domain to send HTTP requests to these endpoints:
+header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: *");
 
@@ -8,15 +8,13 @@ include_once 'database.php';
 
 $data = json_decode(file_get_contents('php://input'));
 
-//$userEmail = $decodedData['Email'];
-//$userPw = ($decodedData['Password']);
-
 //if input fields is empty
 if (!isset($data->Email) || !isset($data->Password)){
     echo "Input fields is empty";
 } else {        //if input fields is not empty
     $email = trim($data->Email);
-    $password = trim($data->Password);
+    //$password = trim($data->Password);
+    $hashed_password = hash('sha256', trim($data->Password));
         
     //SQL Query
     $sql = "SELECT * FROM logincreds WHERE User=?";
@@ -38,8 +36,8 @@ if (!isset($data->Email) || !isset($data->Password)){
         } else {
             $row = mysqli_fetch_assoc($result);
 
-            //check if passwords match
-            if(!($password == $row['Pass'])){
+            //check if passwords match 
+            if(!($hashed_password == $row['Pass'])){
                 echo "Email and password do not match";
             } else {
                 echo "You are logged in";
@@ -47,3 +45,13 @@ if (!isset($data->Email) || !isset($data->Password)){
         }
     }
 }
+
+$conn->close();
+/* 
+
+References:
+Prepare statements: https://www.youtube.com/watch?v=I4JYwRIjX6c
+Handle json objects: https://www.w3schools.com/js/js_json_php.asp
+Decrypt password: https://www.php.net/manual/en/function.password-verify.php
+
+*/
