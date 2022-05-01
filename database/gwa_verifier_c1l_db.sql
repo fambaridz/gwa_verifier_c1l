@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2022 at 09:54 AM
+-- Generation Time: May 01, 2022 at 11:18 AM
 -- Server version: 10.4.24-MariaDB
--- PHP Version: 7.4.28
+-- PHP Version: 7.4.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -288,7 +288,42 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `number_uni
 ('Drama for Children', 4, 'THEA 154', 3),
 ('Theater Space and Stage Design', 4, 'THEA 155', 3),
 ('The Dynamics and Aesthetics of Community Theater', 4, 'THEA 156', 3),
-('Play Production', 4, 'THEA 157', 3);
+('Play Production', 4, 'THEA 157', 3),
+('Critical Perspectives in the Arts', 5, 'ARTS 1', 3),
+('Critical Perspectives in Communication', 5, 'COMM 10', 3),
+('General Economics', 5, 'ECON 11', 3),
+('Ethics and Moral Reasoning in Everyday Life', 5, 'ETHICS 1', 3),
+('Philippine History', 5, 'HIST 1', 3),
+('Wellness and Basic Injury Management', 5, 'HK 11', 0),
+('Human Kinetics Activities', 5, 'HK 12', 0),
+('Advanced Human Kinetics Activities', 5, 'HK 13', 0),
+('Kasaysayan ng Pilipinas', 5, 'KAS 1', 3),
+('National Service Training Program I', 5, 'NSTP 1', 0),
+('National Service Training Program II', 5, 'NSTP 2', 0),
+('Fundamental Approaches to Philosophy', 5, 'PHLO 11', 3),
+('Ancient Philosophy', 5, 'PHLO 110', 3),
+('Medieval Philosophy', 5, 'PHLO 111', 3),
+('Modern Philosophy', 5, 'PHLO 112', 3),
+('Contemporary Philosophy', 5, 'PHLO 113', 3),
+('Logic', 5, 'PHLO 12', 3),
+('Philosophical Reasoning', 5, 'PHLO 120', 3),
+('Epistemology', 5, 'PHLO 150', 3),
+('Philosophy of Science', 5, 'PHLO 160', 3),
+('Ethics', 5, 'PHLO 171', 3),
+('Practical Ethics', 5, 'PHLO 173', 3),
+('Biomedical Ethics', 5, 'PHLO 174', 3),
+('Social and Political Philosophy', 5, 'PHLO 176', 3),
+('Environmental Ethics', 5, 'PHLO 178', 3),
+('Aesthetics', 5, 'PHLO 181', 3),
+('Philosophy and Semiotics', 5, 'PHLO 182', 3),
+('Feminist Philosophy', 5, 'PHLO 184', 3),
+('Critical Perspectives in Filipino Philosophy', 5, 'PHLO 185', 3),
+('Philosophy of Language', 5, 'PHLO 195', 3),
+('Philosophic Problems', 5, 'PHLO 197', 3),
+('The Life and Works of Jose Rizal', 5, 'PI 10', 3),
+('Principles of Government and Politics', 5, 'POSC 10', 3),
+('Readings in Speculative Thought', 5, 'SPEC', 3),
+('Science, Technology, and Society', 5, 'STS 1', 3);
 
 --
 -- Indexes for dumped tables
