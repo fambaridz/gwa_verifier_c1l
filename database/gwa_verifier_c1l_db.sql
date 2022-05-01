@@ -504,7 +504,32 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `number_uni
 ('The Dynamics and Aesthetics of Community Theater', 31, 'THEA 114', 3),
 ('Drama for Children', 31, 'THEA 115', 3),
 ('National Service Training Program I', 28, 'NSTP 1', 0),
-('National Service Training Program II', 28, 'NSTP 2', 0);
+('National Service Training Program II', 28, 'NSTP 2', 0),
+('Finite Mathematics', 34, 'AMAT 19', 3),
+('Algebra and Trigonometry', 34, 'MATH 17', 5),
+('College English', 34, 'ENG 1', 3),
+('Foundations of Physical Fitness', 34, 'PE 1', 0),
+('Logic Set Theory', 34, 'MATH 101', 3),
+('Mathematical Analysis II', 34, 'MATH 37', 5),
+('Computer Programming', 34, 'AMAT 150', 3),
+('Speech Communication', 34, 'SPCM 1', 3),
+('Basic Course', 34, 'PE 2', 0),
+('Advanced Course', 34, 'PE 3', 0),
+('Linear Algebra', 34, 'MATH 120', 3),
+('Mathematical Analysis III', 34, 'MATH 38', 3),
+('Mathematical Modeling', 34, 'AMAT 110', 3),
+('The Life and Works of Jose Rizal', 34, 'PI 10', 3),
+('National Service Training Program I', 34, 'NSTP 1', 0),
+('National Service Training Program II', 34, 'NSTP 2', 0),
+('Introduction to Probability Theory', 34, 'MATH 181', 3),
+('Ordinary Differential Equations', 34, 'MATH 151', 3),
+('Numerical Analysis I', 34, 'MATH 174', 3),
+('Research Methods in Mathematics', 34, 'MATH 195', 3),
+('Numerical Analysis II', 34, 'MATH 175', 3),
+('Practicum', 34, 'AMAT 198', 3),
+('Special Problems', 34, 'AMAT 190', 3),
+('Undergraduate Seminar', 34, 'AMAT 199', 1),
+
 
 --
 -- Indexes for dumped tables
