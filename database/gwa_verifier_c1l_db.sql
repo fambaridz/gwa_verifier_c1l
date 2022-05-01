@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 01, 2022 at 05:38 AM
+-- Generation Time: May 01, 2022 at 08:03 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.28
 
@@ -185,7 +185,6 @@ INSERT INTO `student_record` (`id`, `student_number`, `course_number`, `grade`, 
 --
 
 CREATE TABLE `subjects` (
-  `course_id` int(50) NOT NULL,
   `course_name` varchar(80) NOT NULL,
   `degree_id` int(50) NOT NULL,
   `course_number` varchar(30) NOT NULL,
@@ -196,66 +195,66 @@ CREATE TABLE `subjects` (
 -- Dumping data for table `subjects`
 --
 
-INSERT INTO `subjects` (`course_id`, `course_name`, `degree_id`, `course_number`, `number_units`) VALUES
-(1, 'Acting', 4, 'THEA 151', 3),
-(2, 'Ang Pagsulat ng Kwentong Popular', 3, 'FIL 150', 3),
-(3, 'Argumentative Writing', 1, 'ENG 104', 3),
-(4, 'Asian Theater', 4, 'THEA 153', 3),
-(5, 'Communication in Public Relations', 2, 'SPCM 154', 3),
-(6, 'Creative Writing', 3, 'ENG 152', 3),
-(7, 'Critical Perspectives in Communication', 1, 'COMM 10', 3),
-(8, 'Critical Perspectives in the Arts', 1, 'ARTS 1', 3),
-(9, 'Critical Theories', 1, 'HUM 100', 3),
-(10, 'Critical Writing', 3, 'ENG 151', 3),
-(11, 'Culture and Arts Management', 1, 'HUM 104', 3),
-(12, 'Directing', 4, 'THEA 152', 3),
-(13, 'Drama for Children', 4, 'THEA 154', 3),
-(14, 'English Prose Styles', 1, 'ENG 101', 3),
-(15, 'Ethics and Moral Reasoning in Everyday Life', 1, 'ETHICS 1', 3),
-(16, 'Group Discussion and Leadership', 2, 'SPCM 153', 3),
-(17, 'History of the Theatre', 1, 'THEA 101', 3),
-(18, 'Introduction to Discourse Analysis', 1, 'COMA 103', 3),
-(19, 'Introduction to Research', 1, 'COMA 192', 3),
-(20, 'Language and Communication', 1, 'COMA 101', 3),
-(21, 'Language and Culture', 1, 'COMA 102', 3),
-(22, 'Mythology and Folklore', 3, 'ENG 156', 3),
-(23, 'National Service Training Program I', 1, 'NSTP 1', 0),
-(24, 'National Service Training Program II', 1, 'NSTP 2', 0),
-(25, 'New Media Art', 1, 'HUM 102', 3),
-(26, 'Nonverbal Communication', 2, 'SPCM 159', 3),
-(27, 'Occasional Speeches', 1, 'SPCM 104', 3),
-(28, 'Oral Interpretation', 2, 'SPCM 151', 3),
-(29, 'Philippine Art and Society', 1, 'HUM 170', 3),
-(30, 'Philippine Literature in English', 3, 'ENG 153', 3),
-(31, 'Philippine Public Address', 2, 'SPCM 152', 3),
-(32, 'Philippine Theatre', 1, 'THEA 103', 3),
-(33, 'Play Production', 4, 'THEA 157', 3),
-(34, 'Playwriting', 3, 'ENG 158', 3),
-(35, 'Practicum', 1, 'COMA 200a', 3),
-(36, 'Principles of Public Relations and Advertising', 1, 'COMA 105', 3),
-(37, 'Reading Young Adult Narratives', 3, 'ENG 157', 3),
-(38, 'Rereading the Literary Canons', 1, 'ENG 100', 3),
-(39, 'Rhetoric', 1, 'SPCM 101', 3),
-(40, 'Rhetorical Criticism', 2, 'SPCM 155', 3),
-(41, 'Science and Technology in Literature', 3, 'ENG 154', 3),
-(42, 'Science, Technology, and Society', 1, 'STS 1', 3),
-(43, 'Special Problems', 1, 'COMA 190', 3),
-(44, 'Speech Communication in Conflict Resolution', 2, 'SPCM 158', 3),
-(45, 'Speech Communication Strategies for Classroom Instruction', 2, 'SPCM 156', 3),
-(46, 'Speech Making and Evaluation', 2, 'SPCM 157', 3),
-(47, 'Teorya at Praktika ng Pagsasalin', 3, 'FIL 155', 3),
-(48, 'The Dynamics and Aesthetics of Community Theater', 4, 'THEA 156', 3),
-(49, 'The Life and Works of Jose Rizal', 1, 'PI 10', 3),
-(50, 'Theater Space and Stage Design', 4, 'THEA 155', 3),
-(51, 'Theatre Communication', 1, 'THEA 102', 3),
-(52, 'Undergraduate Seminar', 1, 'COMA 199', 1),
-(53, 'Undergraduate Thesis', 1, 'COMA 200', 3),
-(54, 'Visual Culture', 1, 'HUM 101', 3),
-(55, 'Voice and Diction', 1, 'SPCM 102', 3),
-(56, 'Wellness and Basic Injury Management', 1, 'HK 11', 0),
-(57, 'Workplace Communication', 1, 'COMA 150', 3),
-(58, 'Workshop', 1, 'COMA 193', 3),
-(59, 'Writing Creative Nonfiction', 3, 'ENG 155', 3);
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `number_units`) VALUES
+('Critical Perspectives in the Arts', 1, 'ARTS 1', 3),
+('Language and Communication', 1, 'COMA 101', 3),
+('Language and Culture', 1, 'COMA 102', 3),
+('Introduction to Discourse Analysis', 1, 'COMA 103', 3),
+('Principles of Public Relations and Advertising', 1, 'COMA 105', 3),
+('Workplace Communication', 1, 'COMA 150', 3),
+('Special Problems', 1, 'COMA 190', 3),
+('Introduction to Research', 1, 'COMA 192', 3),
+('Workshop', 1, 'COMA 193', 3),
+('Undergraduate Seminar', 1, 'COMA 199', 1),
+('Undergraduate Thesis', 1, 'COMA 200', 3),
+('Practicum', 1, 'COMA 200a', 3),
+('Critical Perspectives in Communication', 1, 'COMM 10', 3),
+('Rereading the Literary Canons', 1, 'ENG 100', 3),
+('English Prose Styles', 1, 'ENG 101', 3),
+('Argumentative Writing', 1, 'ENG 104', 3),
+('Ethics and Moral Reasoning in Everyday Life', 1, 'ETHICS 1', 3),
+('Wellness and Basic Injury Management', 1, 'HK 11', 0),
+('Critical Theories', 1, 'HUM 100', 3),
+('Visual Culture', 1, 'HUM 101', 3),
+('New Media Art', 1, 'HUM 102', 3),
+('Culture and Arts Management', 1, 'HUM 104', 3),
+('Philippine Art and Society', 1, 'HUM 170', 3),
+('National Service Training Program I', 1, 'NSTP 1', 0),
+('National Service Training Program II', 1, 'NSTP 2', 0),
+('The Life and Works of Jose Rizal', 1, 'PI 10', 3),
+('Rhetoric', 1, 'SPCM 101', 3),
+('Voice and Diction', 1, 'SPCM 102', 3),
+('Occasional Speeches', 1, 'SPCM 104', 3),
+('Science, Technology, and Society', 1, 'STS 1', 3),
+('History of the Theatre', 1, 'THEA 101', 3),
+('Theatre Communication', 1, 'THEA 102', 3),
+('Philippine Theatre', 1, 'THEA 103', 3),
+('Oral Interpretation', 2, 'SPCM 151', 3),
+('Philippine Public Address', 2, 'SPCM 152', 3),
+('Group Discussion and Leadership', 2, 'SPCM 153', 3),
+('Communication in Public Relations', 2, 'SPCM 154', 3),
+('Rhetorical Criticism', 2, 'SPCM 155', 3),
+('Speech Communication Strategies for Classroom Instruction', 2, 'SPCM 156', 3),
+('Speech Making and Evaluation', 2, 'SPCM 157', 3),
+('Speech Communication in Conflict Resolution', 2, 'SPCM 158', 3),
+('Nonverbal Communication', 2, 'SPCM 159', 3),
+('Critical Writing', 3, 'ENG 151', 3),
+('Creative Writing', 3, 'ENG 152', 3),
+('Philippine Literature in English', 3, 'ENG 153', 3),
+('Science and Technology in Literature', 3, 'ENG 154', 3),
+('Writing Creative Nonfiction', 3, 'ENG 155', 3),
+('Mythology and Folklore', 3, 'ENG 156', 3),
+('Reading Young Adult Narratives', 3, 'ENG 157', 3),
+('Playwriting', 3, 'ENG 158', 3),
+('Ang Pagsulat ng Kwentong Popular', 3, 'FIL 150', 3),
+('Teorya at Praktika ng Pagsasalin', 3, 'FIL 155', 3),
+('Acting', 4, 'THEA 151', 3),
+('Directing', 4, 'THEA 152', 3),
+('Asian Theater', 4, 'THEA 153', 3),
+('Drama for Children', 4, 'THEA 154', 3),
+('Theater Space and Stage Design', 4, 'THEA 155', 3),
+('The Dynamics and Aesthetics of Community Theater', 4, 'THEA 156', 3),
+('Play Production', 4, 'THEA 157', 3);
 
 --
 -- Indexes for dumped tables
@@ -296,8 +295,7 @@ ALTER TABLE `student_record`
 -- Indexes for table `subjects`
 --
 ALTER TABLE `subjects`
-  ADD PRIMARY KEY (`course_id`),
-  ADD KEY `degree_id` (`degree_id`);
+  ADD PRIMARY KEY (`degree_id`,`course_number`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -314,12 +312,6 @@ ALTER TABLE `degree_curriculums`
 --
 ALTER TABLE `student_record`
   MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
-
---
--- AUTO_INCREMENT for table `subjects`
---
-ALTER TABLE `subjects`
-  MODIFY `course_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- Constraints for dumped tables
