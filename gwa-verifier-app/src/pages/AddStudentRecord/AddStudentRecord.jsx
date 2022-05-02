@@ -55,14 +55,19 @@ function AddStudentRecord() {
   const [page, setPage] = useState(0);
 
   const [saving, setSaving] = useState(false);
-  const [uidPageMap, setUidPageMap] = useState({});
+
+  /*
+  the index represents the page number
+  0, 1, 2, ..., pageNum = length - 1 
+  [ uid1, uid2, uid3]
+   */
+  const [uidPageMap, setUidPageMap] = useState([]);
 
   function handleChange(files) {
     let studNoPlaceholder = 201904060;
     const studRecords = {};
     const gradeRecords = {};
-    let _page = 0;
-    const uidPageMap = {};
+    const uidPageMap = [];
     let counter = 0;
     while (counter < files.length) {
       const key = uuidv4();
@@ -75,9 +80,7 @@ function AddStudentRecord() {
           degree: "BSCS",
         },
       });
-      Object.assign(uidPageMap, {
-        [_page]: key,
-      });
+      uidPageMap.push(key);
       // placeholder data: create 10 grade records
       Object.assign(gradeRecords, {
         [key]: [...Array(10)].map(() => ({
@@ -92,8 +95,6 @@ function AddStudentRecord() {
       });
       studNoPlaceholder++;
       counter++;
-
-      _page++;
     }
 
     setStudentRecords(studRecords);
@@ -142,11 +143,18 @@ function AddStudentRecord() {
   }
 
   function popStack() {
-    const newLength = studentRecords.length - 1;
+    const uid = uidPageMap[page];
+    const copyOfStudentRecords = { ...studentRecords };
+    const copyOfUidPageMap = [...uidPageMap];
+    delete copyOfStudentRecords[uid];
+    copyOfUidPageMap.splice(page, 1);
+
+    const newLength = Object.keys(studentRecords).length - 1;
     const newPage = page === 0 ? page : page - 1;
 
-    setStudentRecords(new Array(newLength).fill(5));
+    setStudentRecords(copyOfStudentRecords);
     setPage(newPage);
+    setUidPageMap(copyOfUidPageMap);
     if (newLength === 0) redirectToStudentRecords();
   }
 
