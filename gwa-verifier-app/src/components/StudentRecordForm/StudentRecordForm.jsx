@@ -12,8 +12,9 @@ import {
   InputLabel,
   TextareaAutosize,
 } from "@mui/material";
-
+import LoadingButton from "@mui/lab/LoadingButton";
 import AddIcon from "@mui/icons-material/Add";
+import SaveIcon from "@mui/icons-material/Save";
 import GradeRecordTable from "../GradeRecordTable";
 
 function StudentRecordForm({
@@ -24,6 +25,7 @@ function StudentRecordForm({
   degree,
   studentNo,
   gradeRecords,
+  loading = false,
   handleCancel = () => {},
   handleSave = () => {},
 }) {
@@ -193,14 +195,17 @@ function StudentRecordForm({
           >
             Cancel
           </Button>
-          <Button
+          <LoadingButton
             variant="contained"
             color="success"
             size="large"
             onClick={handleSave}
+            loading={loading}
+            loadingPosition="start"
+            startIcon={<SaveIcon />}
           >
-            Save Record
-          </Button>
+            Save
+          </LoadingButton>
         </Stack>
       </Stack>
     </>

@@ -47,6 +47,7 @@
           "@electron-forge/plugin-webpack",
           {
             "mainConfig": "./webpack.main.config.js",
+            "devContentSecurityPolicy": "connect-src 'self' * https://eoqmx7kqcyj1866.m.pipedream.net",
             "renderer": {
               "config": "./webpack.renderer.config.js",
               "entryPoints": [
@@ -87,6 +88,7 @@
     "@emotion/styled": "^11.8.1",
     "@fontsource/roboto": "^4.5.5",
     "@mui/icons-material": "^5.6.2",
+    "@mui/lab": "^5.0.0-alpha.79",
     "@mui/material": "^5.6.2",
     "@mui/x-data-grid": "^5.9.0",
     "electron-squirrel-startup": "^1.0.0",
