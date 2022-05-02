@@ -13,7 +13,7 @@ if (!isset($data->Email) || !isset($data->Password)){
     echo "Input fields is empty";
 } else {        //if input fields is not empty
     $email = trim($data->Email);
-    //$password = trim($data->Password);
+    //$hashed_password = trim($data->Password);
     $hashed_password = hash('sha256', trim($data->Password));
         
     //SQL Query
