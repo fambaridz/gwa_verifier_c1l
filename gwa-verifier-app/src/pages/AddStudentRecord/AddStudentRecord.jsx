@@ -1,45 +1,34 @@
-import React, { useEffect, useState, PropTypes } from "react";
-import {
-  Container,
-  IconButton,
-  Stack,
-  Box,
-  Typography,
-  Toolbar,
-  Menu,
-  MenuItem,
-  AppBar,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Container, IconButton, Stack, Box, Typography } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import { ArrowDropDown } from "@mui/icons-material";
+
 import { DropzoneArea } from "mui-file-dropzone";
 import StudentRecordForm from "Components/StudentRecordForm";
 import { useNavigate } from "react-router-dom";
-// edit this to create the add student record/s page
 
+const BACKEND_URI = "https://eoqmx7kqcyj1866.m.pipedream.net";
 /*
 type annotation for StudentRecord model
 I commented this out since this feature is only available on Tyescript
 interface StudentRecord {
-  firstName: string;
-  middleName: string;
-  lastName: string;
+  studno: string; <-- primary key
+  fname: string;
+  mname: string;
+  lname: string;
   suffix: string;
-  studentNo: string;
   degree: string;
-  
-  gradeRecords: {
-    [key: string]: GradeRecord; <-- "key" here is the "term" while the value is the GradeRecord
-  }
 }
 
 interface GradeRecord {
+  id: number; <-- primary key
+  studno: string | number;
   courseNo: string;
   grade: number;
   units: number;
   weight: number;
   cumulative: number;
+  term: string;
 }
 
  */
@@ -49,18 +38,11 @@ const acceptedFiles = ["text/csv"];
 function AddStudentRecord() {
   const navigate = useNavigate();
   const [files, setFiles] = useState([]);
-  const [studentRecords, setStudentRecords] = useState(new Array(5).fill(5));
+
+  const [studentRecords, setStudentRecords] = useState({});
+  const [gradeRecords, setGradeRecords] = useState({});
   const [page, setPage] = useState(0);
-
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-  const handleOpenOptionsMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseOptionsMenu = () => {
-    setAnchorElUser(null);
-  };
+  const [saving, setSaving] = useState(false);
 
   function handleChange(files) {
     setFiles(files);
@@ -90,9 +72,84 @@ function AddStudentRecord() {
 
   useEffect(() => {
     console.log(files);
-    if (files && files.length > 0)
-      setStudentRecords(new Array(files.length).fill(0));
+    if (files && files.length > 0) {
+      let studNoPlaceholder = 201904060;
+      const studRecords = {};
+      const gradeRecords = {};
+      let counter = 0,
+        id = 0;
+      while (counter < files.length) {
+        Object.assign(studRecords, {
+          [`${studNoPlaceholder}_${counter}`]: {
+            lname: "Salazar",
+            fname: "Ian",
+            mname: "Ilapan",
+            suffix: "JR",
+            degree: "BSCS",
+          },
+        });
+        // placeholder data: create 10 grade records
+        while (id < 10) {
+          const key = `${studNoPlaceholder}_${id}`;
+          Object.assign(gradeRecords, {
+            [key]: {
+              studNo: studNoPlaceholder,
+              courseNo: "CMSC 127",
+              grade: 10,
+              units: 3,
+              enrolled: 30,
+              runningTotal: 30,
+              term: "1S2021-2022",
+            },
+          });
+          id++;
+        }
+        studNoPlaceholder++;
+        counter++;
+        id = 0;
+      }
+
+      setStudentRecords(studRecords);
+      setGradeRecords(gradeRecords);
+    }
   }, [files]);
+
+  async function handleSave() {
+    setSaving(true);
+
+    // create all student info
+    let promises = Object.keys(studentRecords).map((key) => {
+      const studentRecord = studentRecords[key];
+      const { ...rest } = studentRecord;
+      return fetch(BACKEND_URI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          studNo: key,
+          ...rest,
+        }),
+      });
+    });
+    let res = await Promise.all(promises);
+
+    console.log(res);
+    // now, for the grade records
+    promises = Object.keys(gradeRecords).map((key) => {
+      const gradeRecord = gradeRecords[key];
+
+      return fetch(BACKEND_URI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(gradeRecord),
+      });
+    });
+    res = await Promise.all(promises);
+    setSaving(false);
+  }
 
   function renderStudentRecordForms() {
     return (
@@ -105,87 +162,43 @@ function AddStudentRecord() {
           }}
         >
           <Stack direction="row" spacing={1} alignItems="center">
-            <IconButton disabled={page === 0} onClick={prevPage}>
+            <IconButton disabled={page === 0 && !saving} onClick={prevPage}>
               <KeyboardArrowLeftIcon />
             </IconButton>
             <Typography>
-              {page + 1} out of {studentRecords.length}
+              {page + 1} out of {Object.keys(studentRecords).length}
             </Typography>
             <IconButton
-              disabled={page === studentRecords.length - 1}
+              disabled={
+                page === Object.keys(studentRecords).length - 1 && !saving
+              }
               onClick={nextPage}
             >
               <KeyboardArrowRightIcon />
             </IconButton>
           </Stack>
         </Box>
-        <StudentRecordForm handleCancel={popStack} />
+        <StudentRecordForm
+          handleCancel={popStack}
+          handleSave={handleSave}
+          loading={saving}
+        />
       </>
     );
   }
   return (
-    <div>
-      <Box>
-        <AppBar position="static" style={{ background: "#AFAFAF" }}>
-          <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Verifier
-            </Typography>
-            <Typography
-              variant="h6"
-              style={{ fontWeight: 800 }}
-              component="div"
-            >
-              IAN SALAZAR
-            </Typography>
-            <div>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleOpenOptionsMenu}
-                color="inherit"
-              >
-                <ArrowDropDown />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorElUser}
-                anchorOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "right",
-                }}
-                open={Boolean(anchorElUser)}
-                onClose={handleCloseOptionsMenu}
-              >
-                <MenuItem onClick={handleCloseOptionsMenu}>
-                  Manage Accounts
-                </MenuItem>
-                <MenuItem onClick={handleCloseOptionsMenu}>Sign Out</MenuItem>
-              </Menu>
-            </div>
-          </Toolbar>
-        </AppBar>
-      </Box>
-      <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
-        {/* {renderStudentRecordForms()} */}
-        {files.length === 0 ? (
-          <DropzoneArea
-            filesLimit={10}
-            acceptedFiles={acceptedFiles}
-            onChange={handleChange}
-          />
-        ) : (
-          renderStudentRecordForms()
-        )}
-      </Container>
-    </div>
+    <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
+      {/* {renderStudentRecordForms()} */}
+      {files.length === 0 ? (
+        <DropzoneArea
+          filesLimit={10}
+          acceptedFiles={acceptedFiles}
+          onChange={handleChange}
+        />
+      ) : (
+        renderStudentRecordForms()
+      )}
+    </Container>
   );
 }
 
