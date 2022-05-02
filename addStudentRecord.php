@@ -15,17 +15,20 @@ if (!$con) {
 
 // get the body of fetch then decode it
 $data = json_decode(file_get_contents('php://input'), true);  //json_decode == json_parse
+$lst = $data['lst'];    //get list of inputs
+$studno = $data['studno'];  //student number
 
-$studno = (int)$data['studno'];
-$grade = (int)$data['grade'];
-$units = (float)$data['units'];
-$enrolled = (float)$data['enrolled'];
-$runningtotal = (double)$data['runningtotal'];
+foreach($lst as $i) {
+  $grade = (int)$i['grade'];
+  $units = (float)$i['units'];
+  $enrolled = (float)$i['enrolled'];
+  $runningtotal = (double)$i['total'];
 
-//query - insert student no, last name, first name, middle name, suffix, degree, recommended no units, credited units, gwa, status
-$sql = "INSERT INTO student_record(student_number, course_number, grade, units, enrolled, running_total, term) VALUES ('$studno','$data[courseno]','$grade','$units','$enrolled','$runningtotal','$data[term]')";
+  //query - insert student no, last name, first name, middle name, suffix, degree, recommended no units, credited units, gwa, status
+  $sql = "INSERT INTO student_record(student_number, course_number, grade, units, enrolled, running_total, term) VALUES ('$studno','$i[courseno]','$grade','$units','$enrolled','$runningtotal','$i[term]')";
 
-// run SQL statement
-$result = mysqli_query($con,$sql);
+  // run SQL statement
+  $result = mysqli_query($con,$sql);
+}
  
 $con->close();
