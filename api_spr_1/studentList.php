@@ -11,10 +11,8 @@ $id = '';
 // - CONNECTS TO MYSQL SERVER
 // - QUERIES FOR ALL ROWS IN TABLE 'STUDENT'
 // - RETURNS QUERY RESPONSE AS ARRAY OF JSON OBJECTS TO FRONTEND
+// - 'POST' METHOD DELETES SPECIFIC ROW IN SERVER
 
-// TBD:
-// - SEPARATE QUERY/RETURNS FOR VERIFICATION/QUALIFICATION STATUS
-// -->
 // credentials
 $con = mysqli_connect($host, $user, $password, $dbname);
 
@@ -48,8 +46,12 @@ if ($method == 'GET') {
 }
 // delete
 else if ($method == 'POST') {
-    //
-    $sql = "DELETE FROM `student` WHERE student_number IN (0, 5)";
+
+    // accesses POST body 
+    $json = file_get_contents('php://input');
+    $target = json_decode($json);
+    // accesses value json object 'target' property for deletion
+    $sql = "DELETE FROM `student` WHERE student_number = '{$target->target}'";
     // query
     $result = mysqli_query($con, $sql);
 
