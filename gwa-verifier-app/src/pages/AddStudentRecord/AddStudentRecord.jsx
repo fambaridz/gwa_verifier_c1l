@@ -1,13 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { Container, IconButton, Stack, Box, Typography } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Container,
+  IconButton,
+  Stack,
+  Box,
+  Typography,
+  Button,
+} from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 
 import { DropzoneArea } from "mui-file-dropzone";
 import StudentRecordForm from "Components/StudentRecordForm";
 import { useNavigate } from "react-router-dom";
+import SplitButton from "Components/SplitButton";
+import { v4 as uuidv4 } from "uuid";
 
-const BACKEND_URI = "https://eoqmx7kqcyj1866.m.pipedream.net";
+const BACKEND_URI = "http://localhost/gwa-verifier-backend";
 /*
 type annotation for StudentRecord model
 I commented this out since this feature is only available on Tyescript
@@ -22,7 +31,6 @@ interface StudentRecord {
 
 interface GradeRecord {
   id: number; <-- primary key
-  studno: string | number;
   courseNo: string;
   grade: number;
   units: number;
@@ -31,23 +39,95 @@ interface GradeRecord {
   term: string;
 }
 
+interface GradeRecordMap {
+  [studentNo: number]: GradeRecord[];
+} 
+
  */
 
 const acceptedFiles = ["text/csv"];
 
 function AddStudentRecord() {
   const navigate = useNavigate();
-  const [files, setFiles] = useState([]);
 
   const [studentRecords, setStudentRecords] = useState({});
   const [gradeRecords, setGradeRecords] = useState({});
   const [page, setPage] = useState(0);
+
   const [saving, setSaving] = useState(false);
+  const [uidPageMap, setUidPageMap] = useState({});
 
   function handleChange(files) {
-    setFiles(files);
+    let studNoPlaceholder = 201904060;
+    const studRecords = {};
+    const gradeRecords = {};
+    let _page = 0;
+    const uidPageMap = {};
+    let counter = 0;
+    while (counter < files.length) {
+      const key = uuidv4();
+      Object.assign(studRecords, {
+        [key]: {
+          lname: "Salazar",
+          fname: "Ian",
+          mname: "Ilapan",
+          suffix: "JR",
+          degree: "BSCS",
+        },
+      });
+      Object.assign(uidPageMap, {
+        [_page]: key,
+      });
+      // placeholder data: create 10 grade records
+      Object.assign(gradeRecords, {
+        [key]: [...Array(10)].map(() => ({
+          studNo: studNoPlaceholder,
+          courseNo: "CMSC 127",
+          grade: 10,
+          units: 3,
+          enrolled: 30,
+          runningTotal: 30,
+          term: "1S2021-2022",
+        })),
+      });
+      studNoPlaceholder++;
+      counter++;
+
+      _page++;
+    }
+
+    setStudentRecords(studRecords);
+    setGradeRecords(gradeRecords);
+    setUidPageMap(uidPageMap);
   }
 
+  function handleStudentRecordsChange(e, studNo) {
+    e.preventDefault();
+    // console.log(e.target);
+    // console.log(typeof e.target.name);
+    // console.log(typeof e.target.value);
+    // const { name, value } = e.target;
+    const copy = {
+      ...studentRecords[studNo],
+      [e.target.name]: e.target.value,
+    };
+
+    setStudentRecords({ ...studentRecords, [studNo]: { ...copy } });
+  }
+  function getField(name) {
+    const uid = uidPageMap[page];
+    if (!uid) return "";
+
+    const studentRecord = studentRecords[uid];
+    if (!studentRecord) return "";
+    // console.log(page);
+    // console.log(studNo);
+    // console.dir(studentRecord);
+    // console.log(studentRecord[name]);
+    const res = studentRecord[name];
+    if (!res) return "";
+    return res;
+  }
   function nextPage() {
     if (page === studentRecords.length - 1) return;
     setPage(page + 1);
@@ -70,50 +150,6 @@ function AddStudentRecord() {
     if (newLength === 0) redirectToStudentRecords();
   }
 
-  useEffect(() => {
-    console.log(files);
-    if (files && files.length > 0) {
-      let studNoPlaceholder = 201904060;
-      const studRecords = {};
-      const gradeRecords = {};
-      let counter = 0,
-        id = 0;
-      while (counter < files.length) {
-        Object.assign(studRecords, {
-          [`${studNoPlaceholder}_${counter}`]: {
-            lname: "Salazar",
-            fname: "Ian",
-            mname: "Ilapan",
-            suffix: "JR",
-            degree: "BSCS",
-          },
-        });
-        // placeholder data: create 10 grade records
-        while (id < 10) {
-          const key = `${studNoPlaceholder}_${id}`;
-          Object.assign(gradeRecords, {
-            [key]: {
-              studNo: studNoPlaceholder,
-              courseNo: "CMSC 127",
-              grade: 10,
-              units: 3,
-              enrolled: 30,
-              runningTotal: 30,
-              term: "1S2021-2022",
-            },
-          });
-          id++;
-        }
-        studNoPlaceholder++;
-        counter++;
-        id = 0;
-      }
-
-      setStudentRecords(studRecords);
-      setGradeRecords(gradeRecords);
-    }
-  }, [files]);
-
   async function handleSave() {
     setSaving(true);
 
@@ -134,7 +170,6 @@ function AddStudentRecord() {
     });
     let res = await Promise.all(promises);
 
-    console.log(res);
     // now, for the grade records
     promises = Object.keys(gradeRecords).map((key) => {
       const gradeRecord = gradeRecords[key];
@@ -179,8 +214,38 @@ function AddStudentRecord() {
           </Stack>
         </Box>
         <StudentRecordForm
-          handleCancel={popStack}
-          handleSave={handleSave}
+          firstName={getField("fname")}
+          middleName={getField("mname")}
+          lastName={getField("lname")}
+          suffix={getField("suffix")}
+          studentNo={getField("studNo")}
+          handleInputChange={(e) => {
+            const uuid = uidPageMap[page];
+            handleStudentRecordsChange(e, uuid);
+          }}
+          footer={
+            <Stack direction="row" spacing={2} sx={{ alignSelf: "end" }}>
+              <Button
+                variant="outlined"
+                color="default"
+                size="large"
+                onClick={popStack}
+              >
+                Cancel
+              </Button>
+
+              <SplitButton
+                label="Save one"
+                onClick={() => {}}
+                menuItems={[
+                  {
+                    value: "Save all",
+                    cb: () => console.log("Calling  callback"),
+                  },
+                ]}
+              />
+            </Stack>
+          }
           loading={saving}
         />
       </>
@@ -189,7 +254,7 @@ function AddStudentRecord() {
   return (
     <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
       {/* {renderStudentRecordForms()} */}
-      {files.length === 0 ? (
+      {Object.keys(studentRecords).length === 0 ? (
         <DropzoneArea
           filesLimit={10}
           acceptedFiles={acceptedFiles}
