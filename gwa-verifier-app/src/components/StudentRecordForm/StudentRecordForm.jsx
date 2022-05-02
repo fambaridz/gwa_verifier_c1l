@@ -16,6 +16,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from "@mui/icons-material/Save";
 import GradeRecordTable from "../GradeRecordTable";
+import SplitButton from "../SplitButton";
 
 function StudentRecordForm({
   firstName,
@@ -26,6 +27,8 @@ function StudentRecordForm({
   studentNo,
   gradeRecords,
   loading = false,
+  handleInputChange = () => {},
+  footer = null,
   handleCancel = () => {},
   handleSave = () => {},
 }) {
@@ -51,6 +54,7 @@ function StudentRecordForm({
           </Grid>
           <Grid item xs={10}>
             <TextField
+              name="fname"
               placeholder="Jane"
               inputProps={{
                 "aria-label": "first-name",
@@ -59,6 +63,8 @@ function StudentRecordForm({
                 width: "100%",
                 maxWidth: 600,
               }}
+              value={firstName}
+              onChange={handleInputChange}
             />
           </Grid>
 
@@ -67,6 +73,7 @@ function StudentRecordForm({
           </Grid>
           <Grid item xs={10}>
             <TextField
+              name="mname"
               variant="outlined"
               placeholder="Jane Doe"
               inputProps={{
@@ -76,6 +83,8 @@ function StudentRecordForm({
                 width: "100%",
                 maxWidth: 600,
               }}
+              value={middleName}
+              onChange={handleInputChange}
             />
           </Grid>
 
@@ -84,6 +93,7 @@ function StudentRecordForm({
           </Grid>
           <Grid item xs={10}>
             <TextField
+              name="lname"
               placeholder="Doe"
               inputProps={{
                 "aria-label": "last-name",
@@ -92,6 +102,8 @@ function StudentRecordForm({
                 width: "100%",
                 maxWidth: 600,
               }}
+              value={lastName}
+              onChange={handleInputChange}
             />
           </Grid>
 
@@ -100,6 +112,7 @@ function StudentRecordForm({
           </Grid>
           <Grid item xs={10}>
             <TextField
+              name="suffix"
               placeholder="Sr."
               inputProps={{
                 "aria-label": "suffix",
@@ -108,6 +121,8 @@ function StudentRecordForm({
                 width: "100%",
                 maxWidth: 600,
               }}
+              value={suffix}
+              onChange={handleInputChange}
             />
           </Grid>
 
@@ -116,6 +131,7 @@ function StudentRecordForm({
           </Grid>
           <Grid item xs={10}>
             <TextField
+              name="degree"
               placeholder="BACA"
               inputProps={{
                 "aria-label": "degree",
@@ -124,6 +140,8 @@ function StudentRecordForm({
                 width: "100%",
                 maxWidth: 600,
               }}
+              value={degree}
+              onChange={handleInputChange}
             />
           </Grid>
 
@@ -132,6 +150,7 @@ function StudentRecordForm({
           </Grid>
           <Grid item xs={10}>
             <TextField
+              name="studNo"
               placeholder="2019-12345"
               inputProps={{
                 "aria-label": "student-no",
@@ -140,6 +159,8 @@ function StudentRecordForm({
                 width: "100%",
                 maxWidth: 600,
               }}
+              value={studentNo}
+              onChange={handleInputChange}
             />
           </Grid>
         </Grid>
@@ -186,27 +207,29 @@ function StudentRecordForm({
           }}
           // style={{ width: '100%' }}
         />
-        <Stack direction="row" spacing={2} sx={{ alignSelf: "end" }}>
-          <Button
-            variant="outlined"
-            color="default"
-            size="large"
-            onClick={handleCancel}
-          >
-            Cancel
-          </Button>
-          <LoadingButton
-            variant="contained"
-            color="success"
-            size="large"
-            onClick={handleSave}
-            loading={loading}
-            loadingPosition="start"
-            startIcon={<SaveIcon />}
-          >
-            Save
-          </LoadingButton>
-        </Stack>
+        {footer || (
+          <Stack direction="row" spacing={2} sx={{ alignSelf: "end" }}>
+            <Button
+              variant="outlined"
+              color="default"
+              size="large"
+              onClick={handleCancel}
+            >
+              Cancel
+            </Button>
+            <LoadingButton
+              variant="contained"
+              color="success"
+              size="large"
+              onClick={handleSave}
+              loading={loading}
+              loadingPosition="start"
+              startIcon={<SaveIcon />}
+            >
+              Save
+            </LoadingButton>
+          </Stack>
+        )}
       </Stack>
     </>
   );
