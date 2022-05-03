@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { 
   Typography,
   Button,
@@ -10,7 +11,7 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import logo from "Assets/logo.png";
-import "./Login.css";
+import "./LogIn.css";
 
 
 function LogIn() {
@@ -87,7 +88,9 @@ function LogIn() {
           <Typography variant="" className="login-form-label">Password</Typography>
           {Password()}
         </form>
-        <Button variant="contained" size="large" sx={{marginBottom:5, width: 300}}> Log In</Button>
+        <Link to="/records">
+          <Button variant="contained" size="large" sx={{marginBottom:5, width: 300}}> Log In</Button>
+        </Link>
       </div>
     </div>
   );

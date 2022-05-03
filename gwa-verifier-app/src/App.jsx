@@ -17,6 +17,7 @@ import LoginPage from "Pages/LogIn";
 import EditStudentRecordPage from "Pages/EditStudentRecord";
 import AddStudentRecordPage from "Pages/AddStudentRecord";
 import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
+import PrivateRoute from "./PrivateRoute.jsx";
 
 // a placeholder component to test if the material ui components are being rendered
 // you can delete this TL anytime
@@ -53,7 +54,6 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        {/* replace this list component with the navbar */}
         <List>
           {routes.map((route, idx) => (
             <ListItem key={idx}>
@@ -62,15 +62,34 @@ function App() {
           ))}
         </List>
         <Routes>
-          <Route path="/records" element={<RecordListPage />} />
-          <Route path="/records/:id" element={<RecordDetailsPage />} />
+          <Route path="/records" element={
+            <PrivateRoute>
+              <RecordListPage />
+            </PrivateRoute>
+          } />
+          <Route path="/records/:id" element={
+            <PrivateRoute>
+              <RecordDetailsPage />
+            </PrivateRoute>
+            } />
           <Route
             path="/manage-committee"
-            element={<ManageCommitteeAccountsPage />}
-          />
+            element={
+              <PrivateRoute>
+                <ManageCommitteeAccountsPage />
+              </PrivateRoute> 
+          }/>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/records/add" element={<AddStudentRecordPage />} />
-          <Route path="/records/:id/edit" element={<EditStudentRecordPage />} />
+          <Route path="/records/add" element={
+            <PrivateRoute>
+               <AddStudentRecordPage />
+            </PrivateRoute>
+            } />
+          <Route path="/records/:id/edit" element={
+            <PrivateRoute>
+              <EditStudentRecordPage />
+            </PrivateRoute>
+          } />
         </Routes>
       </Router>
     </ThemeProvider>
