@@ -5,7 +5,6 @@ import {
   Button,
   FormControl,
   IconButton,
-  InputAdornment,
   InputLabel,
   Menu,
   MenuItem,
@@ -15,7 +14,6 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -56,12 +54,12 @@ const rows2 = [
 ];
 
 function RecordList() {
-  const [anchorElUser, setAnchorElUser, semester, setSemester, anchorEl, setAnchorEl] = React.useState(null);
-
+  const [anchorElUser, setAnchorElUser, semester, setSemester] = React.useState(null);
+  
   const handleOpenOptionsMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
-
+  
   const handleCloseOptionsMenu = () => {
     setAnchorElUser(null);
   };
@@ -69,7 +67,8 @@ function RecordList() {
   const handleChange = (event) => {
     setSemester(event.target.value);
   };
-
+  
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
