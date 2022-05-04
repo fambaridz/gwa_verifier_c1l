@@ -8,16 +8,13 @@ import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
-
-const options = [
-  "Create a merge commit",
-  "Squash and merge",
-  "Rebase and merge",
-];
+import { LoadingButton } from "@mui/lab";
 
 export default function SplitButton({
   label,
   onClick,
+  loading = false,
+  loadingText = null,
   menuItems = [
     {
       value: "",
@@ -53,17 +50,28 @@ export default function SplitButton({
         aria-label="split button"
         color="primary"
       >
-        <Button onClick={onClick}>{label}</Button>
-        <Button
+        {/* <Button onClick={onClick}>{label}</Button> */}
+        <LoadingButton
+          variant="contained"
+          size="large"
+          onClick={onClick}
+          loading={loading}
+          loadingIndicator={loadingText ? loadingText : label}
+        >
+          {label}
+        </LoadingButton>
+        <LoadingButton
+          variant="contained"
           size="small"
           aria-controls={open ? "split-button-menu" : undefined}
           aria-expanded={open ? "true" : undefined}
           aria-label="select merge strategy"
           aria-haspopup="menu"
           onClick={handleToggle}
+          loading={loading}
         >
           <ArrowDropDownIcon />
-        </Button>
+        </LoadingButton>
       </ButtonGroup>
       <Popper
         open={open}

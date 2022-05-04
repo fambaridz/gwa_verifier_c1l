@@ -15,7 +15,8 @@ import StudentRecordForm from "Components/StudentRecordForm";
 import { useNavigate } from "react-router-dom";
 import SplitButton from "Components/SplitButton";
 import { v4 as uuidv4 } from "uuid";
-
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "Components/Alert";
 const BACKEND_URI = "http://localhost/gwa-verifier-backend";
 /*
 type annotation for StudentRecord model
@@ -55,6 +56,9 @@ function AddStudentRecord() {
   const [page, setPage] = useState(0);
 
   const [saving, setSaving] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [severity, setSeverity] = useState("success");
+  const [message, setMessage] = useState("Alert");
 
   /*
   the index represents the page number
@@ -65,6 +69,7 @@ function AddStudentRecord() {
 
   function handleChange(files) {
     let studNoPlaceholder = 201904060;
+    studNoPlaceholder += Math.floor(Math.random() * 1000);
     const studRecords = {};
     const gradeRecords = {};
     const uidPageMap = [];
@@ -73,6 +78,7 @@ function AddStudentRecord() {
       const key = uuidv4();
       Object.assign(studRecords, {
         [key]: {
+          studno: studNoPlaceholder,
           lname: "Salazar",
           fname: "Ian",
           mname: "Ilapan",
@@ -84,8 +90,8 @@ function AddStudentRecord() {
       // placeholder data: create 10 grade records
       Object.assign(gradeRecords, {
         [key]: [...Array(10)].map(() => ({
-          studNo: studNoPlaceholder,
-          courseNo: "CMSC 127",
+          studno: studNoPlaceholder,
+          courseno: "CMSC 127",
           grade: 10,
           units: 3,
           enrolled: 30,
@@ -121,10 +127,7 @@ function AddStudentRecord() {
 
     const studentRecord = studentRecords[uid];
     if (!studentRecord) return "";
-    // console.log(page);
-    // console.log(studNo);
-    // console.dir(studentRecord);
-    // console.log(studentRecord[name]);
+
     const res = studentRecord[name];
     if (!res) return "";
     return res;
@@ -158,7 +161,7 @@ function AddStudentRecord() {
     if (newLength === 0) redirectToStudentRecords();
   }
 
-  async function handleSave() {
+  async function saveAll() {
     setSaving(true);
 
     // create all student info
@@ -191,6 +194,38 @@ function AddStudentRecord() {
       });
     });
     res = await Promise.all(promises);
+    setSaving(false);
+  }
+
+  async function saveOne() {
+    setSaving(true);
+
+    // save the data w/ respect to the current page
+
+    const uid = uidPageMap[page];
+
+    const studentRecord = studentRecords[uid];
+
+    try {
+      const res = await fetch(`${BACKEND_URI}/addStudent.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(studentRecord),
+      });
+      if (!res.ok) {
+        const error = (data && data.message) || response.status;
+        throw new Error(error);
+      }
+      setSeverity("success");
+      setMessage("Student record created");
+    } catch (error) {
+      console.warn(error);
+      setSeverity("error");
+      setMessage("Error in saving student record.");
+    }
+    setOpen(true);
     setSaving(false);
   }
 
@@ -244,7 +279,9 @@ function AddStudentRecord() {
 
               <SplitButton
                 label="Save one"
-                onClick={() => {}}
+                onClick={saveOne}
+                loading={saving}
+                loadingText="Saving..."
                 menuItems={[
                   {
                     value: "Save all",
@@ -271,6 +308,19 @@ function AddStudentRecord() {
       ) : (
         renderStudentRecordForms()
       )}
+      <Snackbar
+        open={open}
+        autoHideDuration={5000}
+        onClose={() => setOpen(false)}
+      >
+        <Alert
+          onClose={() => setOpen(false)}
+          severity={severity}
+          sx={{ width: "100%" }}
+        >
+          {message}
+        </Alert>
+      </Snackbar>
     </Container>
   );
 }
