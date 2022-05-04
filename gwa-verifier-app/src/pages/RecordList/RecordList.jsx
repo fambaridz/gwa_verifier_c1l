@@ -2,16 +2,13 @@ import * as React from "react";
 import {
   Box,
   Button,
-  InputAdornment,
-  TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { Add, Search, Delete } from "@mui/icons-material";
+import { Add, Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material";
-import theme from ".//../../theme";
 
 function RecordList() {
   let navigate = useNavigate();
@@ -20,8 +17,8 @@ function RecordList() {
     navigate("/records/add");
   }
 
-  const redirectToRecordDetails = (clickedRecord) => {
-    navigate("/records/" + clickedRecord.studno);
+  const redirectToRecordDetails = (selectedId) => {
+    navigate("/records/" + rows.find(x => x.id === selectedId).studno);
   };
 
   const columns = [
@@ -31,7 +28,7 @@ function RecordList() {
       width: 290,
       renderCell: (params) => (
         <>
-          <Button variant="text" color="black" onClick={() => redirectToRecordDetails(params)}>
+          <Button variant="text" color="black" onClick={() => redirectToRecordDetails(params.id)}>
             {params.value}
           </Button>
         </>
