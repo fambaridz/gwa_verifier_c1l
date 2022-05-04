@@ -29,6 +29,11 @@ foreach($lst as $i) {
 
   // run SQL statement
   $result = mysqli_query($con,$sql);
+  if (!$result) {
+    echo "error";
+  } else {
+    echo http_response_code();
+  }
 }
  
 $con->close();

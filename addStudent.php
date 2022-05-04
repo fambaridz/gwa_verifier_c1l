@@ -36,7 +36,7 @@ $result = mysqli_query($con,$sql);
 if (!$result) {
   echo "error";
 } else {
-  echo "success";
+  echo http_response_code();
 }
 
 $con->close();
