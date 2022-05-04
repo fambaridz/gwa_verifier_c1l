@@ -58,6 +58,15 @@ function RecordList() {
     setAnchorElUser(null);
   };
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <div>
       <Box sx={{ flexGrow: 1 }}>
@@ -104,20 +113,46 @@ function RecordList() {
       </Box>
       <Box sx={{ m: 3.5, flexGrow: 1 }}>
         <Toolbar>
+          <Typography variant="h5" style={{ fontWeight: 1000}} component="div" sx={{ flex: 1 }}>
+            Jeff Emerson Lar
+          </Typography>
+          <Button
+            variant="contained" 
+            sx={{marginRight:1}} 
+            style={{ backgroundColor:'#C7C7C7'}} 
+            endIcon={<Add />}
+            id="basic-button"
+            aria-controls={open ? 'basic-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick}
+          >
+            Mark As
+          </Button>
+          <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button',
+                }}
+              >
+                <MenuItem onClick={handleClose}>Satisfied</MenuItem>
+                <MenuItem onClick={handleClose}>Unsatisfied</MenuItem>
+                <MenuItem onClick={handleClose}>Unverified</MenuItem>
+                <MenuItem onClick={handleClose}>Deficient</MenuItem>
+          </Menu>
+        <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Satisfied</Button>
+        </Toolbar>
+        <Toolbar>
           <div>
-            <Typography variant="h5" style={{ fontWeight: 1000}} component="div" sx={{ flex: 1 }}>
-              Jeff Emerson Lar
-            </Typography>
             <Typography variant="h6" style={{ fontWeight: 1000 }} component="div" sx={{ flex: 1 }}>
               BS Computer Science
             </Typography>
             <Typography variant="h6" style={{ fontWeight: 1000 }} component="div" sx={{ flex: 1 }}>
               2019-03845
             </Typography>
-          </div>
-          <div style = {{ position: 'absolute', right: 0 }} sx={{marginRight:10}}>
-            <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} endIcon={<Add />}>Mark as Verified</Button>
-            <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Verified</Button>
           </div>
         </Toolbar>
         <Box>
@@ -170,32 +205,30 @@ function RecordList() {
             />
           </div>
         </Box>
-      </Box>
-      <Box sx={{ flexGrow: 1 }}>
-        <Toolbar>
-          <div style={{ width: '100%'}}>
-            <Typography component="div" sx={{ flex: 1 }}>
-              Colsec Committee
-            </Typography>
-            <Typography component="div" sx={{ flex: 1 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ab eveniet iste aliquam voluptate, distinctio doloribus quos exercitationem vitae est quasi dolorem, repellat, corporis molestias vero animi. Voluptatibus, aliquid illo?
-            </Typography>
-          </div>
-          <div style={{ background: '#AFAFAF',  width: '100%'}}>
-            <Typography component="div" sx={{ flex: 1 }}>
-              Next Committee
-            </Typography>
-            <Typography component="div" sx={{ flex: 1 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ab eveniet iste aliquam voluptate, distinctio doloribus quos exercitationem vitae est quasi dolorem, repellat, corporis molestias vero animi. Voluptatibus, aliquid illo?
-            </Typography>
-          </div>
-        </Toolbar>
-      </Box>
-      <Box>
-        <div style = {{ position: 'absolute', right: 0 }} sx={{marginRight:10}}>
-            <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Edit</Button>
-            <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Delete</Button>
-        </div>
+        <Box sx={{ flexGrow: 1 }}>
+          <Toolbar>
+            <div style={{ width: '100%'}}>
+              <Typography component="div" sx={{ flex: 1 }}>
+                Colsec Committee
+              </Typography>
+              <Typography component="div" sx={{ flex: 1 }}>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ab eveniet iste aliquam voluptate, distinctio doloribus quos exercitationem vitae est quasi dolorem, repellat, corporis molestias vero animi. Voluptatibus, aliquid illo?
+              </Typography>
+            </div>
+            <div style={{ background: '#AFAFAF',  width: '100%'}}>
+              <Typography component="div" sx={{ flex: 1 }}>
+                Next Committee
+              </Typography>
+              <Typography component="div" sx={{ flex: 1 }}>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ab eveniet iste aliquam voluptate, distinctio doloribus quos exercitationem vitae est quasi dolorem, repellat, corporis molestias vero animi. Voluptatibus, aliquid illo?
+              </Typography>
+            </div>
+          </Toolbar>
+        </Box>
+        <Box sx={{ m: 3.5, flexGrow: 1, display:"flex", justifyContent:"flex-end"}}>
+          <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} sx={{marginRight:1}} >Edit</Button>
+          <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Delete</Button>
+        </Box>
       </Box>
       
     </div>
