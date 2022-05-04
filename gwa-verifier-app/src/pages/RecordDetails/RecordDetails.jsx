@@ -112,6 +112,7 @@ function RecordList() {
         </AppBar>
       </Box>
       <Box sx={{ m: 3.5, flexGrow: 1 }}>
+        {/* Toolbars for header */}
         <Toolbar>
           <Typography variant="h5" style={{ fontWeight: 1000}} component="div" sx={{ flex: 1 }}>
             Jeff Emerson Lar
@@ -155,6 +156,7 @@ function RecordList() {
             </Typography>
           </div>
         </Toolbar>
+        {/* Dropdown menu for semesters */}
         <Box>
           <IconButton
             size="large"
@@ -187,6 +189,7 @@ function RecordList() {
             <MenuItem onClick={handleCloseOptionsMenu}>Semester 2 2019-2020</MenuItem>
           </Menu>
         </Box>
+        {/* Table 1 */}
         <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
           <div style={{ height: 400, width: '100%' }}>
             <DataGrid
@@ -197,6 +200,7 @@ function RecordList() {
             />
           </div>
         </Box>
+        {/* Table 2 */}
         <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
           <div style={{ height: 400, width: '100%' }}>
             <DataGrid
@@ -205,26 +209,28 @@ function RecordList() {
             />
           </div>
         </Box>
-        <Box sx={{ flexGrow: 1 }}>
-          <Toolbar>
-            <div style={{ width: '100%'}}>
-              <Typography component="div" sx={{ flex: 1 }}>
-                Colsec Committee
-              </Typography>
-              <Typography component="div" sx={{ flex: 1 }}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ab eveniet iste aliquam voluptate, distinctio doloribus quos exercitationem vitae est quasi dolorem, repellat, corporis molestias vero animi. Voluptatibus, aliquid illo?
-              </Typography>
-            </div>
-            <div style={{ background: '#AFAFAF',  width: '100%'}}>
-              <Typography component="div" sx={{ flex: 1 }}>
-                Next Committee
-              </Typography>
-              <Typography component="div" sx={{ flex: 1 }}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ab eveniet iste aliquam voluptate, distinctio doloribus quos exercitationem vitae est quasi dolorem, repellat, corporis molestias vero animi. Voluptatibus, aliquid illo?
-              </Typography>
-            </div>
-          </Toolbar>
+        {/* Comments */}
+        <Box sx={{ m: 3.5, flexGrow: 1 }}>
+          <div>
+            <Typography style={{ fontWeight: 1000}} component="div" sx={{ flex: 1 }}>
+              Colsec Committee
+            </Typography>
+            <Typography component="div" sx={{ flex: 1 }}>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ab eveniet iste aliquam voluptate, distinctio doloribus quos exercitationem vitae est quasi dolorem, repellat, corporis molestias vero animi. Voluptatibus, aliquid illo?
+            </Typography>
+          </div>
         </Box>
+        <Box sx={{ m: 3.5, flexGrow: 1 }}>
+          <div>
+            <Typography style={{ fontWeight: 1000}} component="div" sx={{ flex: 1 }}>
+              Colsec Committee
+            </Typography>
+            <Typography component="div" sx={{ flex: 1 }}>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ab eveniet iste aliquam voluptate, distinctio doloribus quos exercitationem vitae est quasi dolorem, repellat, corporis molestias vero animi. Voluptatibus, aliquid illo?
+            </Typography>
+          </div>
+        </Box>
+        {/* Edit and Delete Buttons */}
         <Box sx={{ m: 3.5, flexGrow: 1, display:"flex", justifyContent:"flex-end"}}>
           <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} sx={{marginRight:1}} >Edit</Button>
           <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Delete</Button>
