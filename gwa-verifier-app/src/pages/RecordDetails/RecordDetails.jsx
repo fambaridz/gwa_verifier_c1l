@@ -3,17 +3,25 @@ import {
   AppBar,
   Box,
   Button,
+  FormControl,
   IconButton,
   InputAdornment,
+  InputLabel,
   Menu,
   MenuItem,
+  Select,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   TextField,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import { ArrowDropDown, Add, Search, Delete } from "@mui/icons-material";
-
+// Sample Data
 const columns = [
   { field: 'id', field: 'course', headerName: 'Course', width: 360 },
   { field: 'numUnits', headerName: 'No of units', width: 320 },
@@ -32,23 +40,23 @@ const rows = [
   { id: 7, course: 'CMSC 12', numUnits: '3', grade: '1.25', grade2: '3.75', grade3: '3.75' },
 ];
 
-const columns2 = [
-  { field: 'title', headerName: '', width: 680 },
-  { field: 'fromEnroll', headerName: 'From Enrollment', width: 220 },
-  { field: 'total', headerName: 'Cumulative Total', width: 110 },
-];
+function createData(zero, one ,two) {
+  return { zero, one, two };
+}
 
 const rows2 = [
-  { id: 1, title: 'Lorem', fromEnroll: '1.25', total: '3.75'},
-  { id: 2, title: 'Lorem', fromEnroll: '1.25', total: '3.75'},
-  { id: 3, title: 'Lorem', fromEnroll: '1.25', total: '3.75'},
-  { id: 4, title: 'Lorem', fromEnroll: '1.25', total: '3.75'},
-  { id: 5, title: 'Lorem', fromEnroll: '1.25', total: '3.75'},
-  { id: 6, title: 'Lorem', fromEnroll: '1.25', total: '3.75'},
+  createData("Units Toward GPA:", " ", " "),
+  createData("Taken", 15.0, 36.0),
+  createData("Passed", 15.0, 36.0),
+  createData("Units Not for GPA", 3.0, 19.0),
+  createData("GPA Calculations", 3.0, 19.0),
+  createData("Total Grade Points", 15.0, 41.250),
+  createData("/ Units Taken Toward GPA", 15.0, 36.0),
+  createData("= GPA", 1.0, 1.146),
 ];
 
 function RecordList() {
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [anchorElUser, setAnchorElUser, semester, setSemester, anchorEl, setAnchorEl] = React.useState(null);
 
   const handleOpenOptionsMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -58,17 +66,10 @@ function RecordList() {
     setAnchorElUser(null);
   };
 
-  const [anchorElSem, setAnchorElSem] = React.useState(null);
-
-  const handleOpenSemMenu = (event) => {
-    setAnchorElSem(event.currentTarget);
+  const handleChange = (event) => {
+    setSemester(event.target.value);
   };
 
-  const handleCloseSemMenu = () => {
-    setAnchorElSem(null);
-  };
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -167,37 +168,22 @@ function RecordList() {
           </div>
         </Toolbar>
         {/* Dropdown menu for semesters */}
-        <Box>
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleOpenSemMenu}
-            color="inherit"
-          >
-            <ArrowDropDown />
-          </IconButton>
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorElSem}
-            anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            keepMounted
-            transformOrigin={{
-              vertical: 'top',
-              horizontal: 'right',
-            }}
-            open={Boolean(anchorElSem)}
-            onClose={handleCloseSemMenu}
-          >
-            <MenuItem onClick={handleCloseSemMenu}>Semester 1 2020-2021</MenuItem>
-            <MenuItem onClick={handleCloseSemMenu}>Semester 2 2020-2021</MenuItem>
-            <MenuItem onClick={handleCloseSemMenu}>Semester 1 2019-2020</MenuItem>
-            <MenuItem onClick={handleCloseSemMenu}>Semester 2 2019-2020</MenuItem>
-          </Menu>
+        <Box sx={{ m: 3.5}}>
+          <FormControl fullWidth>
+            <InputLabel id="select-label">Semester</InputLabel>
+            <Select
+              labelId="select-label"
+              id="select"
+              value={semester}
+              label="Semester"
+              onChange={handleChange}
+            >
+              <MenuItem value={10}>Semester 1 2020-2021</MenuItem>
+              <MenuItem value={20}>Semester 2 2020-2021</MenuItem>
+              <MenuItem value={30}>Semester 1 2019-2020</MenuItem>
+              <MenuItem value={40}>Semester 2 2019-2020</MenuItem>
+            </Select>
+          </FormControl>
         </Box>
         {/* Table 1 */}
         <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
@@ -212,12 +198,29 @@ function RecordList() {
         </Box>
         {/* Table 2 */}
         <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
-          <div style={{ height: 400, width: '100%' }}>
-            <DataGrid
-              rows={rows2}
-              columns={columns2}
-            />
-          </div>
+          <Table size="small" aria-label="a dense table">
+            <TableHead>
+              <TableRow>
+                <TableCell></TableCell>
+                <TableCell>From Enrollment</TableCell>
+                <TableCell>Cumulative Total</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows2.map((row) => (
+                <TableRow
+                  key={row.zero}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.zero}
+                  </TableCell>
+                  <TableCell>{row.one}</TableCell>
+                  <TableCell>{row.two}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </Box>
         {/* Comments */}
         <Box sx={{ m: 3.5, flexGrow: 1 }}>
