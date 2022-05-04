@@ -58,6 +58,16 @@ function RecordList() {
     setAnchorElUser(null);
   };
 
+  const [anchorElSem, setAnchorElSem] = React.useState(null);
+
+  const handleOpenSemMenu = (event) => {
+    setAnchorElSem(event.currentTarget);
+  };
+
+  const handleCloseSemMenu = () => {
+    setAnchorElSem(null);
+  };
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -163,14 +173,14 @@ function RecordList() {
             aria-label="account of current user"
             aria-controls="menu-appbar"
             aria-haspopup="true"
-            onClick={handleOpenOptionsMenu}
+            onClick={handleOpenSemMenu}
             color="inherit"
           >
             <ArrowDropDown />
           </IconButton>
           <Menu
             id="menu-appbar"
-            anchorEl={anchorElUser}
+            anchorEl={anchorElSem}
             anchorOrigin={{
               vertical: 'top',
               horizontal: 'right',
@@ -180,13 +190,13 @@ function RecordList() {
               vertical: 'top',
               horizontal: 'right',
             }}
-            open={Boolean(anchorElUser)}
-            onClose={handleCloseOptionsMenu}
+            open={Boolean(anchorElSem)}
+            onClose={handleCloseSemMenu}
           >
-            <MenuItem onClick={handleCloseOptionsMenu}>Semester 1 2020-2021</MenuItem>
-            <MenuItem onClick={handleCloseOptionsMenu}>Semester 2 2020-2021</MenuItem>
-            <MenuItem onClick={handleCloseOptionsMenu}>Semester 1 2019-2020</MenuItem>
-            <MenuItem onClick={handleCloseOptionsMenu}>Semester 2 2019-2020</MenuItem>
+            <MenuItem onClick={handleCloseSemMenu}>Semester 1 2020-2021</MenuItem>
+            <MenuItem onClick={handleCloseSemMenu}>Semester 2 2020-2021</MenuItem>
+            <MenuItem onClick={handleCloseSemMenu}>Semester 1 2019-2020</MenuItem>
+            <MenuItem onClick={handleCloseSemMenu}>Semester 2 2019-2020</MenuItem>
           </Menu>
         </Box>
         {/* Table 1 */}
