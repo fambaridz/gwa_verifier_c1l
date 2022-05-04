@@ -1,5 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *"); //add this CORS header to enable any domain to send HTTP requests to these endpoints:
+header("Access-Control-Allow-Headers: *");
+header("Access-Control-Allow-Methods: *");
 
 $host = "localhost"; 
 $user = "root"; 
@@ -31,7 +33,7 @@ if($studno == 0) die();
 // run SQL statement
 $result = mysqli_query($con,$sql);
 
-if (mysqli_num_rows($result) == 0) {
+if (!$result) {
   echo "error";
 } else {
   echo "success";
