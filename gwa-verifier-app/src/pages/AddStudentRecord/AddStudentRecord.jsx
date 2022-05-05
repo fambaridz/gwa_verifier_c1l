@@ -1,27 +1,22 @@
 import React, { useState } from "react";
-import {
-  Container,
-  IconButton,
-  Stack,
-  Box,
-  Typography,
-  Button,
-} from "@mui/material";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
+import { Container, Box } from "@mui/material";
 
 import { DropzoneArea } from "mui-file-dropzone";
 import StudentRecordForm from "Components/StudentRecordForm";
 import { useNavigate } from "react-router-dom";
-import SplitButton from "Components/SplitButton";
 import { v4 as uuidv4 } from "uuid";
 import Snackbar from "@mui/material/Snackbar";
+import { useSnackbar } from "notistack";
+
 import Alert from "Components/Alert";
 import { csvExtracter } from "../../utils/extracters.js";
+import { fileReader } from "../../utils/parsers.js";
 import { fromMapToArray } from "../../utils/transformers.js";
 import GradeRecordTable from "Components/GradeRecordTable";
-
+import CarouselButtons from "Components/CarouselButtons";
+import AddStudentFormFooter from "Components/AddStudentFormFooter/AddStudentFormFooter.jsx";
 const BACKEND_URI = "http://localhost/gwa-verifier-backend";
+
 /*
 type annotation for StudentRecord model
 I commented this out since this feature is only available on Tyescript
@@ -52,25 +47,11 @@ interface GradeRecordMap {
 
 const acceptedFiles = ["text/csv"];
 
-function fileReader(file) {
-  const reader = new FileReader();
-
-  return new Promise((resolve, reject) => {
-    reader.onerror = function () {
-      reader.abort();
-      reject(new DOMException("Problem parsing file"));
-    };
-
-    reader.onload = function (e) {
-      resolve(reader.result);
-    };
-
-    reader.readAsText(file);
-  });
-}
-
 function AddStudentRecord() {
   const navigate = useNavigate();
+
+  // for notifications
+  const { enqueueSnackbar } = useSnackbar();
 
   const [studentRecords, setStudentRecords] = useState({});
   const [gradeRecords, setGradeRecords] = useState({});
@@ -78,8 +59,6 @@ function AddStudentRecord() {
 
   const [saving, setSaving] = useState(false);
   const [open, setOpen] = useState(false);
-  const [severity, setSeverity] = useState("success");
-  const [message, setMessage] = useState("Alert");
 
   const [term, setTerm] = useState("");
   const [terms, setTerms] = useState([]);
@@ -99,10 +78,10 @@ function AddStudentRecord() {
     // get the content of all files
 
     for (const file of files) {
-      console.log(file);
       try {
         const text = await fileReader(file);
-        const { grades, terms, ...studentInfo } = csvExtracter(text);
+
+        const { grades, terms, ...studentInfo } = await csvExtracter(text);
         const sruid = uuidv4();
         Object.assign(_studentRecords, {
           [sruid]: {
@@ -192,7 +171,13 @@ function AddStudentRecord() {
     });
     setGradeRecords({ ...gradeRecords, [uid]: record });
   }
-  function presentData() {}
+  function presentData() {
+    // const records = gradeRecords.filter(record => record.term === term);
+    const records = fromMapToArray(gradeRecords, "uid").filter(
+      (record) => record.term === term
+    );
+    return records;
+  }
 
   async function saveAll() {
     setSaving(true);
@@ -251,14 +236,15 @@ function AddStudentRecord() {
         const error = (data && data.message) || response.status;
         throw new Error(error);
       }
-      setSeverity("success");
-      setMessage("Student record created");
+      enqueueSnackbar("Student record saved", {
+        variant: "success",
+      });
     } catch (error) {
       console.warn(error);
-      setSeverity("error");
-      setMessage("Error in saving student record.");
+      enqueueSnackbar("Error in saving record", {
+        variant: "error",
+      });
     }
-    setOpen(true);
     setSaving(false);
   }
 
@@ -272,22 +258,13 @@ function AddStudentRecord() {
             marginBottom: 4,
           }}
         >
-          <Stack direction="row" spacing={1} alignItems="center">
-            <IconButton disabled={page === 0 && !saving} onClick={prevPage}>
-              <KeyboardArrowLeftIcon />
-            </IconButton>
-            <Typography>
-              {page + 1} out of {Object.keys(studentRecords).length}
-            </Typography>
-            <IconButton
-              disabled={
-                page === Object.keys(studentRecords).length - 1 && !saving
-              }
-              onClick={nextPage}
-            >
-              <KeyboardArrowRightIcon />
-            </IconButton>
-          </Stack>
+          <CarouselButtons
+            currPage={page}
+            maxPage={Object.keys(studentRecords).length}
+            saving={saving}
+            prevPage={prevPage}
+            nextPage={nextPage}
+          />
         </Box>
         <StudentRecordForm
           firstName={getField("fname")}
@@ -305,34 +282,16 @@ function AddStudentRecord() {
           terms={terms}
           table={
             <GradeRecordTable
-              data={fromMapToArray(gradeRecords, "uid")}
+              data={presentData()}
               handleUpdate={handleGradeRecordChange}
             />
           }
           footer={
-            <Stack direction="row" spacing={2} sx={{ alignSelf: "end" }}>
-              <Button
-                variant="outlined"
-                color="default"
-                size="large"
-                onClick={popStack}
-              >
-                Cancel
-              </Button>
-
-              <SplitButton
-                label="Save one"
-                onClick={saveOne}
-                loading={saving}
-                loadingText="Saving..."
-                menuItems={[
-                  {
-                    value: "Save all",
-                    cb: () => console.log("Calling  callback"),
-                  },
-                ]}
-              />
-            </Stack>
+            <AddStudentFormFooter
+              popStack={popStack}
+              saveOne={saveOne}
+              saving={saving}
+            />
           }
           loading={saving}
         />
@@ -351,19 +310,6 @@ function AddStudentRecord() {
       ) : (
         renderStudentRecordForms()
       )}
-      <Snackbar
-        open={open}
-        autoHideDuration={5000}
-        onClose={() => setOpen(false)}
-      >
-        <Alert
-          onClose={() => setOpen(false)}
-          severity={severity}
-          sx={{ width: "100%" }}
-        >
-          {message}
-        </Alert>
-      </Snackbar>
     </Container>
   );
 }

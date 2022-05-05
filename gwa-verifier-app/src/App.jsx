@@ -16,7 +16,8 @@ import ManageCommitteeAccountsPage from "Pages/ManageCommitteeAccounts";
 import LoginPage from "Pages/LogIn";
 import EditStudentRecordPage from "Pages/EditStudentRecord";
 import AddStudentRecordPage from "Pages/AddStudentRecord";
-import AccessAlarmIcon from "@mui/icons-material/AccessAlarm";
+import { SnackbarProvider } from "notistack";
+
 import PrivateRoute from "./PrivateRoute.jsx";
 
 // a placeholder component to test if the material ui components are being rendered
@@ -50,48 +51,66 @@ const routes = [
 ];
 
 function App() {
+  React.useEffect(() => {
+    console.log(window);
+  }, []);
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Router>
-        <List>
-          {routes.map((route, idx) => (
-            <ListItem key={idx}>
-              <Link to={route.to}>{route.name}</Link>
-            </ListItem>
-          ))}
-        </List>
-        <Routes>
-          <Route path="/records" element={
-            <PrivateRoute>
-              <RecordListPage />
-            </PrivateRoute>
-          } />
-          <Route path="/records/:id" element={
-            <PrivateRoute>
-              <RecordDetailsPage />
-            </PrivateRoute>
-            } />
-          <Route
-            path="/manage-committee"
-            element={
-              <PrivateRoute>
-                <ManageCommitteeAccountsPage />
-              </PrivateRoute> 
-          }/>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/records/add" element={
-            <PrivateRoute>
-               <AddStudentRecordPage />
-            </PrivateRoute>
-            } />
-          <Route path="/records/:id/edit" element={
-            <PrivateRoute>
-              <EditStudentRecordPage />
-            </PrivateRoute>
-          } />
-        </Routes>
-      </Router>
+      <SnackbarProvider maxSnack={3}>
+        <Router>
+          <List>
+            {routes.map((route, idx) => (
+              <ListItem key={idx}>
+                <Link to={route.to}>{route.name}</Link>
+              </ListItem>
+            ))}
+          </List>
+          <Routes>
+            <Route
+              path="/records"
+              element={
+                <PrivateRoute>
+                  <RecordListPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/records/:id"
+              element={
+                <PrivateRoute>
+                  <RecordDetailsPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/manage-committee"
+              element={
+                <PrivateRoute>
+                  <ManageCommitteeAccountsPage />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/login" element={<LoginPage />} />
+            <Route
+              path="/records/add"
+              element={
+                <PrivateRoute>
+                  <AddStudentRecordPage />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/records/:id/edit"
+              element={
+                <PrivateRoute>
+                  <EditStudentRecordPage />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </Router>
+      </SnackbarProvider>
     </ThemeProvider>
   );
 }
