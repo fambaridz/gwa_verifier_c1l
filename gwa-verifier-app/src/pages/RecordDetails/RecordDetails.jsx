@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   AppBar,
   Box,
@@ -56,7 +57,20 @@ const rows2 = [
 function RecordList() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [semester, setSemester] = React.useState('');
+  let navigate = useNavigate();
   
+  function redirectToRecords() {
+    navigate("/login");
+  }
+
+  function redirectToEditStudentRecords() {
+    navigate("/records/user_id/edit");
+  }
+
+  function redirectToManageAccounts() {
+    navigate("/manage-committee");
+  }
+
   const handleOpenOptionsMenu = (event) => {
     setAnchorElUser(event.currentTarget);
   };
@@ -115,8 +129,8 @@ function RecordList() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseOptionsMenu}
               >
-                <MenuItem onClick={handleCloseOptionsMenu}>Manage Accounts</MenuItem>
-                <MenuItem onClick={handleCloseOptionsMenu}>Sign Out</MenuItem>
+                <MenuItem onClick={handleCloseOptionsMenu, redirectToManageAccounts}>Manage Accounts</MenuItem>
+                <MenuItem onClick={handleCloseOptionsMenu, redirectToRecords}>Sign Out</MenuItem>
               </Menu>
             </div>
           </Toolbar>
@@ -245,7 +259,7 @@ function RecordList() {
         </Box>
         {/* Edit and Delete Buttons */}
         <Box sx={{ m: 3.5, flexGrow: 1, display:"flex", justifyContent:"flex-end"}}>
-          <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} sx={{marginRight:1}} >Edit</Button>
+          <Button onClick={redirectToEditStudentRecords} variant="contained" style={{ backgroundColor:'#C7C7C7'}} sx={{marginRight:1}} >Edit</Button>
           <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Delete</Button>
         </Box>
       </Box>
