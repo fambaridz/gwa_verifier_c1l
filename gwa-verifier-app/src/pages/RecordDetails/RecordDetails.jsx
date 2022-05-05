@@ -155,7 +155,7 @@ function RecordList() {
                 <MenuItem onClick={handleClose}>Unverified</MenuItem>
                 <MenuItem onClick={handleClose}>Deficient</MenuItem>
           </Menu>
-        <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Satisfied</Button>
+        <Typography   display="flex" justifyContent="center" alignItems="center" style={{ backgroundColor:'#C7C7C7', width: 120, height: 38, borderRadius: 8 }} >SATISFIED</Typography>
         </Toolbar>
         <Toolbar>
           <div>
