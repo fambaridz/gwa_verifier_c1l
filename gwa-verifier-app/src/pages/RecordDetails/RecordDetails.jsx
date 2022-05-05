@@ -54,7 +54,8 @@ const rows2 = [
 ];
 
 function RecordList() {
-  const [anchorElUser, setAnchorElUser, semester, setSemester] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [semester, setSemester] = React.useState('');
   
   const handleOpenOptionsMenu = (event) => {
     setAnchorElUser(event.currentTarget);
