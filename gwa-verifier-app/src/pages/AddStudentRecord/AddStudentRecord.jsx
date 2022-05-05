@@ -3,10 +3,9 @@ import { Container, Box } from "@mui/material";
 
 import { DropzoneArea } from "mui-file-dropzone";
 import StudentRecordForm from "Components/StudentRecordForm";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { useSnackbar } from "notistack";
-import { Link, useNavigate } from "react-router-dom";
 import "./AddStudentRecord.css";
 
 import { csvExtracter } from "../../utils/extracters.js";
@@ -14,7 +13,7 @@ import { fileReader } from "../../utils/parsers.js";
 import { fromMapToArray } from "../../utils/transformers.js";
 import GradeRecordTable from "Components/GradeRecordTable";
 import CarouselButtons from "Components/CarouselButtons";
-import AddStudentFormFooter from "Components/AddStudentFormFooter/AddStudentFormFooter.jsx";
+import AddStudentFormFooter from "Components/AddStudentFormFooter";
 const BACKEND_URI = "http://localhost/gwa-verifier-backend";
 
 const acceptedFiles = ["text/csv"];
