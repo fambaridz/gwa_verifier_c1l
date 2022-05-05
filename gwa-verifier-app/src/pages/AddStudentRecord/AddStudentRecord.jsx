@@ -30,7 +30,6 @@ function AddStudentRecord() {
   const [page, setPage] = useState(0);
 
   const [saving, setSaving] = useState(false);
-  const [open, setOpen] = useState(false);
 
   const [term, setTerm] = useState("");
   const [terms, setTerms] = useState([]);
@@ -272,7 +271,6 @@ function AddStudentRecord() {
   }
   return (
     <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
-      {/* {renderStudentRecordForms()} */}
       {Object.keys(studentRecords).length === 0 ? (
         <DropzoneArea
           filesLimit={10}
