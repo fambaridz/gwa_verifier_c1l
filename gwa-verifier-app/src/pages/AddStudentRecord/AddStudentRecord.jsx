@@ -5,10 +5,8 @@ import { DropzoneArea } from "mui-file-dropzone";
 import StudentRecordForm from "Components/StudentRecordForm";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-import Snackbar from "@mui/material/Snackbar";
 import { useSnackbar } from "notistack";
 
-import Alert from "Components/Alert";
 import { csvExtracter } from "../../utils/extracters.js";
 import { fileReader } from "../../utils/parsers.js";
 import { fromMapToArray } from "../../utils/transformers.js";
@@ -30,7 +28,6 @@ function AddStudentRecord() {
   const [page, setPage] = useState(0);
 
   const [saving, setSaving] = useState(false);
-  const [open, setOpen] = useState(false);
 
   const [term, setTerm] = useState("");
   const [terms, setTerms] = useState([]);
@@ -272,7 +269,6 @@ function AddStudentRecord() {
   }
   return (
     <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
-      {/* {renderStudentRecordForms()} */}
       {Object.keys(studentRecords).length === 0 ? (
         <DropzoneArea
           filesLimit={10}
