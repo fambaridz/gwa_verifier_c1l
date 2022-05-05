@@ -49,6 +49,7 @@ function AddStudentRecord() {
     const _gradeRecords = {};
     // get the content of all files
 
+    // TODO: turn this into a separate function and just import it
     for (const file of files) {
       try {
         const text = await fileReader(file);
@@ -120,6 +121,7 @@ function AddStudentRecord() {
   }
 
   function popStack() {
+    // TODO: extract this logic to a separate function and just import it
     const uid = srUidPageMap[page];
     const copyOfStudentRecords = { ...studentRecords };
     const copyOfUidPageMap = [...srUidPageMap];
@@ -208,6 +210,9 @@ function AddStudentRecord() {
         const error = (data && data.message) || response.status;
         throw new Error(error);
       }
+
+      // TODO: save grade records
+
       enqueueSnackbar("Student record saved", {
         variant: "success",
       });
