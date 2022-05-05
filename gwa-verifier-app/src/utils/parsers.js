@@ -63,3 +63,20 @@ export function csvToArray(str, delimiter = ",") {
     }
   });
 }
+
+export function fileReader(file) {
+  const reader = new FileReader();
+
+  return new Promise((resolve, reject) => {
+    reader.onerror = function () {
+      reader.abort();
+      reject(new DOMException("Problem parsing file"));
+    };
+
+    reader.onload = function (e) {
+      resolve(reader.result);
+    };
+
+    reader.readAsText(file);
+  });
+}
