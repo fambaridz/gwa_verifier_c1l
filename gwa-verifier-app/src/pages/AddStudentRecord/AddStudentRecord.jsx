@@ -17,6 +17,10 @@ import SplitButton from "Components/SplitButton";
 import { v4 as uuidv4 } from "uuid";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "Components/Alert";
+import { csvExtracter } from "../../utils/extracters.js";
+import { fromMapToArray } from "../../utils/transformers.js";
+import GradeRecordTable from "Components/GradeRecordTable";
+
 const BACKEND_URI = "http://localhost/gwa-verifier-backend";
 /*
 type annotation for StudentRecord model
@@ -48,6 +52,23 @@ interface GradeRecordMap {
 
 const acceptedFiles = ["text/csv"];
 
+function fileReader(file) {
+  const reader = new FileReader();
+
+  return new Promise((resolve, reject) => {
+    reader.onerror = function () {
+      reader.abort();
+      reject(new DOMException("Problem parsing file"));
+    };
+
+    reader.onload = function (e) {
+      resolve(reader.result);
+    };
+
+    reader.readAsText(file);
+  });
+}
+
 function AddStudentRecord() {
   const navigate = useNavigate();
 
@@ -60,60 +81,62 @@ function AddStudentRecord() {
   const [severity, setSeverity] = useState("success");
   const [message, setMessage] = useState("Alert");
 
+  const [term, setTerm] = useState("");
+  const [terms, setTerms] = useState([]);
+
   /*
   the index represents the page number
   0, 1, 2, ..., pageNum = length - 1 
   [ uid1, uid2, uid3]
    */
-  const [uidPageMap, setUidPageMap] = useState([]);
+  // sruid stands for "Student Record UID"
+  const [srUidPageMap, setSrUidPageMap] = useState([]);
 
-  function handleChange(files) {
-    let studNoPlaceholder = 201904060;
-    studNoPlaceholder += Math.floor(Math.random() * 1000);
-    const studRecords = {};
-    const gradeRecords = {};
-    const uidPageMap = [];
-    let counter = 0;
-    while (counter < files.length) {
-      const key = uuidv4();
-      Object.assign(studRecords, {
-        [key]: {
-          studno: studNoPlaceholder,
-          lname: "Salazar",
-          fname: "Ian",
-          mname: "Ilapan",
-          suffix: "JR",
-          degree: "BSCS",
-        },
-      });
-      uidPageMap.push(key);
-      // placeholder data: create 10 grade records
-      Object.assign(gradeRecords, {
-        [key]: [...Array(10)].map(() => ({
-          studno: studNoPlaceholder,
-          courseno: "CMSC 127",
-          grade: 10,
-          units: 3,
-          enrolled: 30,
-          runningTotal: 30,
-          term: "1S2021-2022",
-        })),
-      });
-      studNoPlaceholder++;
-      counter++;
+  async function handleChange(files) {
+    const _studentRecords = {};
+    const _sruidPageMap = [];
+    const _gradeRecords = {};
+    // get the content of all files
+
+    for (const file of files) {
+      console.log(file);
+      try {
+        const text = await fileReader(file);
+        const { grades, terms, ...studentInfo } = csvExtracter(text);
+        const sruid = uuidv4();
+        Object.assign(_studentRecords, {
+          [sruid]: {
+            ...studentInfo,
+          },
+        });
+        _sruidPageMap.push(sruid);
+
+        grades.forEach((grade) => {
+          let gruid = uuidv4();
+          // continue getting a new gruid until gruid is unique, this is to catch the near 0.1% chance of collision
+          while (_gradeRecords[gruid]) {
+            gruid = uuidv4();
+          }
+
+          Object.assign(_gradeRecords, {
+            [gruid]: grade,
+          });
+        });
+        setTerms(terms);
+        setTerm(terms[0]);
+      } catch (error) {
+        console.warn(error);
+      }
     }
 
-    setStudentRecords(studRecords);
-    setGradeRecords(gradeRecords);
-    setUidPageMap(uidPageMap);
+    setStudentRecords(_studentRecords);
+    setSrUidPageMap(_sruidPageMap);
+    setGradeRecords(_gradeRecords);
   }
 
   function handleStudentRecordsChange(e, studNo) {
     e.preventDefault();
-    // console.log(e.target);
-    // console.log(typeof e.target.name);
-    // console.log(typeof e.target.value);
-    // const { name, value } = e.target;
+
     const copy = {
       ...studentRecords[studNo],
       [e.target.name]: e.target.value,
@@ -122,7 +145,7 @@ function AddStudentRecord() {
     setStudentRecords({ ...studentRecords, [studNo]: { ...copy } });
   }
   function getField(name) {
-    const uid = uidPageMap[page];
+    const uid = srUidPageMap[page];
     if (!uid) return "";
 
     const studentRecord = studentRecords[uid];
@@ -146,9 +169,9 @@ function AddStudentRecord() {
   }
 
   function popStack() {
-    const uid = uidPageMap[page];
+    const uid = srUidPageMap[page];
     const copyOfStudentRecords = { ...studentRecords };
-    const copyOfUidPageMap = [...uidPageMap];
+    const copyOfUidPageMap = [...srUidPageMap];
     delete copyOfStudentRecords[uid];
     copyOfUidPageMap.splice(page, 1);
 
@@ -157,9 +180,19 @@ function AddStudentRecord() {
 
     setStudentRecords(copyOfStudentRecords);
     setPage(newPage);
-    setUidPageMap(copyOfUidPageMap);
+    setSrUidPageMap(copyOfUidPageMap);
     if (newLength === 0) redirectToStudentRecords();
   }
+  function handleGradeRecordChange({ uid, columnId, value }) {
+    const record = gradeRecords[uid];
+
+    if (!record) return;
+    Object.assign(record, {
+      [columnId]: value,
+    });
+    setGradeRecords({ ...gradeRecords, [uid]: record });
+  }
+  function presentData() {}
 
   async function saveAll() {
     setSaving(true);
@@ -202,7 +235,7 @@ function AddStudentRecord() {
 
     // save the data w/ respect to the current page
 
-    const uid = uidPageMap[page];
+    const uid = srUidPageMap[page];
 
     const studentRecord = studentRecords[uid];
 
@@ -262,10 +295,20 @@ function AddStudentRecord() {
           lastName={getField("lname")}
           suffix={getField("suffix")}
           studentNo={getField("studNo")}
+          degree={getField("degree")}
           handleInputChange={(e) => {
-            const uuid = uidPageMap[page];
+            const uuid = srUidPageMap[page];
             handleStudentRecordsChange(e, uuid);
           }}
+          term={term}
+          setTerm={setTerm}
+          terms={terms}
+          table={
+            <GradeRecordTable
+              data={fromMapToArray(gradeRecords, "uid")}
+              handleUpdate={handleGradeRecordChange}
+            />
+          }
           footer={
             <Stack direction="row" spacing={2} sx={{ alignSelf: "end" }}>
               <Button

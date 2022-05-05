@@ -15,8 +15,6 @@ import {
 import LoadingButton from "@mui/lab/LoadingButton";
 import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from "@mui/icons-material/Save";
-import GradeRecordTable from "../GradeRecordTable";
-import SplitButton from "../SplitButton";
 
 function StudentRecordForm({
   firstName,
@@ -25,25 +23,30 @@ function StudentRecordForm({
   suffix,
   degree,
   studentNo,
-  gradeRecords,
+
   loading = false,
   handleInputChange = () => {},
   footer = null,
   handleCancel = () => {},
   handleSave = () => {},
+  setTerm = () => {},
+  term,
+  terms,
+  table = <p>Table goes here</p>,
 }) {
-  const [term, setTerm] = useState("");
+  // const [term, setTerm] = useState("");
   function handleChange(event) {
     setTerm(event.target.value);
   }
-  const terms = useMemo(
-    () => ["2019 2nd sem", "2020 1st sem", "2020 2nd sem", "2021 1st sem"],
-    []
-  );
+  // const terms = useMemo(
+  //   () => ["2019 2nd sem", "2020 1st sem", "2020 2nd sem", "2021 1st sem"],
+  //   []
+  // );
   // set default value for term as the last entry
-  useEffect(() => {
-    setTerm(terms[terms.length - 1]);
-  }, []);
+  // useEffect(() => {
+  //   setTerm(terms[terms.length - 1]);
+  // }, []);
+
   return (
     <>
       <Stack spacing={3}>
@@ -186,7 +189,7 @@ function StudentRecordForm({
         </FormControl>
 
         <Box>
-          <GradeRecordTable />
+          {table}
           <Button
             variant="outlined"
             startIcon={<AddIcon />}
