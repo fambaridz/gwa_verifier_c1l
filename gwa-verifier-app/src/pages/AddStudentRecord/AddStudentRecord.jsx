@@ -17,6 +17,8 @@ const BACKEND_URI = "http://localhost/gwa-verifier-backend";
 
 const acceptedFiles = ["text/csv"];
 
+// TODO: User must see terms and grade records for that specific student record only (tip: use a hashmap to map sruid and terms, and then filter out rendered terms with current sruid and grade records with the selected term)
+
 function AddStudentRecord() {
   const navigate = useNavigate();
 
