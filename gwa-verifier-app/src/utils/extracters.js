@@ -9,7 +9,7 @@ export function csvExtracter(text) {
   const [lname, fname, mname = "", suffix = ""] = name.split(",");
   [degree] = degree.split(",");
   rest = rest.join("\n");
-  const [grades, terms] = csvToArray(rest);
+  const [grades, terms, gwa, recommended] = csvToArray(rest);
 
   return {
     lname,
@@ -17,6 +17,8 @@ export function csvExtracter(text) {
     mname,
     suffix,
     degree,
+    gwa,
+    recommended,
     grades,
     terms,
   };

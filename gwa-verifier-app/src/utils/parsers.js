@@ -6,13 +6,16 @@ export function csvToArray(str, delimiter = ",") {
 
   // slice from \n index + 1 to the end of the text
   // use split to create an array of each csv value row
-  const rows = str.slice(str.indexOf("\n") + 1).split("\n");
+  let rows = str
+    .trim()
+    .slice(str.indexOf("\n") + 1)
+    .split("\n");
   const regex = /(l|Il|M)\/[0-9]{2}\/[0-9]{2}/m;
-  // Map the rows
-  // split values from each row into an array
-  // use headers.reduce to create an object
-  // object properties derived from headers:values
-  // the object passed as an element of the array
+  const footer = rows.splice(rows.length - 5, 5);
+  console.log(footer);
+
+  const [, [, gwa], recommended] = footer.split("\n");
+
   let arr = rows.map(function (row) {
     const values = row.split(delimiter);
     let [courseno, grade, units, enrolled, running_total, , term = ""] = values;
@@ -30,11 +33,6 @@ export function csvToArray(str, delimiter = ",") {
 
       term,
     };
-    // const el = headers.reduce(function (object, header, index) {
-    //   object[header] = values[index];
-    //   return object;
-    // }, {});
-    // return el;
   });
 
   // loop through the array once again, but this time we will fill the "term"
@@ -57,5 +55,5 @@ export function csvToArray(str, delimiter = ",") {
     }
   });
   // return the array
-  return [newArr, terms];
+  return [newArr, terms, gwa, recommended];
 }
