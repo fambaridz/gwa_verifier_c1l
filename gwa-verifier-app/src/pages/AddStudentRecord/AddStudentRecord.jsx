@@ -6,6 +6,8 @@ import StudentRecordForm from "Components/StudentRecordForm";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { useSnackbar } from "notistack";
+import { Link, useNavigate } from "react-router-dom";
+import "./AddStudentRecord.css";
 
 import { csvExtracter } from "../../utils/extracters.js";
 import { fileReader } from "../../utils/parsers.js";
@@ -270,17 +272,24 @@ function AddStudentRecord() {
     );
   }
   return (
-    <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
-      {Object.keys(studentRecords).length === 0 ? (
-        <DropzoneArea
-          filesLimit={10}
-          acceptedFiles={acceptedFiles}
-          onChange={handleChange}
-        />
-      ) : (
-        renderStudentRecordForms()
-      )}
-    </Container>
+    <>
+      <Box sx={{ mt: 2.5, ml: 3, fontSize: 14 }}>
+        <Link to="/records" className="back-link">
+          &lt; Back to Student Records
+        </Link>
+      </Box>
+      <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
+        {Object.keys(studentRecords).length === 0 ? (
+          <DropzoneArea
+            filesLimit={10}
+            acceptedFiles={acceptedFiles}
+            onChange={handleChange}
+          />
+        ) : (
+          renderStudentRecordForms()
+        )}
+      </Container>
+    </>
   );
 }
 

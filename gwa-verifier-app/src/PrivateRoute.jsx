@@ -25,13 +25,13 @@ function PrivateRoute({ children }){
   return(
     <div>
       <Box sx={{flexGrow: 1}}>
-        <AppBar position="static" style={{ background: '#AFAFAF' }}>
+        <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Verifier
             </Typography>
             <Typography variant="h6" style={{ fontWeight: 800 }} component="div" >
-                KYNO CASTILLO
+                NAME
             </Typography>
             <div>
               <IconButton
@@ -59,7 +59,7 @@ function PrivateRoute({ children }){
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseOptionsMenu}
               >
-                <MenuItem component={Link} to={'/manage-committee'}>Manage Accounts</MenuItem>  
+                <MenuItem onClick={handleCloseOptionsMenu} component={Link} to={'/manage-committee'}>Manage Accounts</MenuItem>  
                 <MenuItem component={Link} to={'/login'}>Sign Out</MenuItem>
               </Menu>
             </div>
