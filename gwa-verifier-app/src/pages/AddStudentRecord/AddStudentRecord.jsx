@@ -17,34 +17,6 @@ import CarouselButtons from "Components/CarouselButtons";
 import AddStudentFormFooter from "Components/AddStudentFormFooter/AddStudentFormFooter.jsx";
 const BACKEND_URI = "http://localhost/gwa-verifier-backend";
 
-/*
-type annotation for StudentRecord model
-I commented this out since this feature is only available on Tyescript
-interface StudentRecord {
-  studno: string; <-- primary key
-  fname: string;
-  mname: string;
-  lname: string;
-  suffix: string;
-  degree: string;
-}
-
-interface GradeRecord {
-  id: number; <-- primary key
-  courseNo: string;
-  grade: number;
-  units: number;
-  weight: number;
-  cumulative: number;
-  term: string;
-}
-
-interface GradeRecordMap {
-  [studentNo: number]: GradeRecord[];
-} 
-
- */
-
 const acceptedFiles = ["text/csv"];
 
 function AddStudentRecord() {
