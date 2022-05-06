@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 05, 2022 at 08:13 AM
+-- Generation Time: May 06, 2022 at 11:35 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -73,12 +73,12 @@ CREATE TABLE `degree_curriculums` (
 --
 
 INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`, `old_new`, `major`, `major_units`, `options`, `ge_electives_units`, `electives_units`, `recommended_units`) VALUES
-(1, 'BA Communication Arts', 'BACA', 'New', '', 0, '', 0, 0, 145),
-(2, 'BA Communication Arts', 'BACA', 'New', 'Speech Communication', 0, '', 0, 0, 145),
-(3, 'BA Communication Arts', 'BACA', 'New', 'Writing', 0, '', 0, 0, 145),
-(4, 'BA Communication Arts', 'BACA', 'New', 'Theater Arts', 0, '', 0, 0, 145),
+(1, 'BA Communication Arts', 'BACA', 'New', '', 21, '', 9, 18, 145),
+(2, 'BA Communication Arts', 'BACA', 'New', 'Speech Communication', 21, '', 9, 18, 145),
+(3, 'BA Communication Arts', 'BACA', 'New', 'Writing', 21, '', 9, 18, 145),
+(4, 'BA Communication Arts', 'BACA', 'New', 'Theater Arts', 21, '', 9, 18, 145),
 (5, 'BA Philosophy', 'BAPHLO', 'New', '', 0, '', 0, 0, 132),
-(6, 'BA Sociology', 'BASOCIO', 'New', '', 0, '', 0, 0, 136),
+(6, 'BA Sociology', 'BASOCIO', 'New', '', 0, '', 9, 21, 136),
 (7, 'BS Applied Mathematics', 'BSAMAT', 'New', '', 0, '', 0, 0, 131),
 (8, 'BS Applied Physics', 'BSAPHY', 'New', '', 0, '', 9, 21, 143),
 (9, 'BS Biology', 'BSBIO', 'New', '', 24, '', 9, 9, 143),
@@ -149,10 +149,32 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 
 CREATE TABLE `electives` (
   `course_number` varchar(50) NOT NULL,
-  `course_name` varchar(50) NOT NULL,
+  `course_name` varchar(80) NOT NULL,
   `general_or_free` varchar(50) NOT NULL,
   `number_units` int(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `electives`
+--
+
+INSERT INTO `electives` (`course_number`, `course_name`, `general_or_free`, `number_units`) VALUES
+('FRCH 10', 'Elementary French I', 'Free', 3),
+('FRCH 11', 'Elementary French II', 'Free', 3),
+('HIST 110', 'The Philippine Presidency', 'Free', 3),
+('HIST 140', 'Philippine Revolutionary Tradition', 'Free', 3),
+('HIST 150', 'Modern Nationalism and Imperialism', 'Free', 3),
+('HIST 151', 'American Colonialism and Imperialism in the Philippines', 'Free', 3),
+('JAP 10', 'Elementary Japanese I', 'Free', 3),
+('JAP 11', 'Elementary Japanese II', 'Free', 3),
+('POSC 112', 'Politics of Development', 'Free', 3),
+('POSC 14', 'Philippine Politics and Governance', 'Free', 3),
+('POSC 141', 'Political Ideologies', 'Free', 3),
+('POSC 161', 'Political Parties and Interest Groups', 'Free', 3),
+('POSC 165', 'Contemporary Philippine Politics', 'Free', 3),
+('POSC 180', 'Global Politics', 'Free', 3),
+('SPAN 10', 'Elementary Spanish I', 'Free', 3),
+('SPAN 11', 'Elementary Spanish II', 'Free', 3);
 
 -- --------------------------------------------------------
 
@@ -1225,7 +1247,8 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('College Algebra and Trigonometry', 44, 'MATH 17', '', 3),
 ('Analytic Geometry and Calculus I', 44, 'MATH 26', '', 3),
 ('Analytic Geometry and Calculus II', 44, 'MATH 27', '', 3),
-('Analytic Geometry and Calculus III', 44, 'MATH 28', '', 3),
+('Analytic Geometry and Calculus III', 44, 'MATH 28', '', 3);
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
 ('General Microbiology', 44, 'MCB 1', '', 3),
 ('National Service Training Program I', 44, 'NSTP 1', '', 0),
 ('National Service Training Program II', 44, 'NSTP 2', '', 0),
@@ -1271,8 +1294,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Analytic Geometry and Calculus I', 45, 'MATH 26', '', 3),
 ('Analytic Geometry and Calculus II', 45, 'MATH 27', '', 3),
 ('Analytic Geometry and Calculus III', 45, 'MATH 28', '', 3),
-('National Service Training Program I', 45, 'NSTP 1', '', 0);
-INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('National Service Training Program I', 45, 'NSTP 1', '', 0),
 ('National Service Training Program II', 45, 'NSTP 2', '', 0),
 ('Foundations of Physical Fitness', 45, 'PE 1', '', 0),
 ('Basic Course', 45, 'PE 2', '', 0),
