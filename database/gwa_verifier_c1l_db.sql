@@ -1845,6 +1845,60 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Statistics for the Biological Sciences', 41, 'STAT 164', 'Other', 3),
 ('Fundamentals of Agroforestry', 41, 'SFI 123', 'Other', 3);
 
+-- Inserting major subjects for old BS Biology Major in Ecology
+-- Degree ID: 38
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Environmental Management', 38, 'BIO 151', 'Required', 3),
+('Biology of Pollution', 38, 'BIO 155', 'Required', 3),
+('Plant Ecology', 38, 'BIO 150', 'Required', 3),
+('Microbial Ecology', 38, 'MCB 150', 'Required', 3),
+('Animal Ecology', 38, 'ZOO 150', 'Required', 3),
+('Principles of Tropical Water Quality Management', 38, 'AENG 147', 'Other', 3),
+('Introduction to Ecological Agriculture', 38, 'AGRI 121', 'Other', 3),
+('Advanced Genetics II', 38, 'BIO 130b', 'Other', 3),
+('Cave Ecology', 38, 'BIO 154', 'Other', 3),
+('Conservation Biology in the Tropics', 38, 'BIO 159', 'Other', 3),
+('Special Topics', 38, 'BIO 191', 'Other', 3),
+('Elementary Plant Physiology', 38, 'BOT 20', 'Other', 3),
+('Phycology', 38, 'BOT 101', 'Other', 3),
+('Advanced Plant Physiology', 38, 'BOT 120', 'Other', 3),
+('Systematics of Spermatophytes', 38, 'BOT 140', 'Other', 3),
+('Phytogeography', 38, 'BOT 152', 'Other', 3),
+('Conservation of Natural Resources', 38, 'CERP 122', 'Other', 3),
+('Agro-Industrial Waste Management', 38, 'CHE 180', 'Other', 3),
+('General Environment Chemistry', 38, 'CHEM 180', 'Other', 3),
+('Pollution Chemistry', 38, 'CHEM 181', 'Other', 3),
+('General Entemology', 38, 'ENT 101', 'Other', 3),
+('Insect Taxonomy', 38, 'ENT 140', 'Other', 3),
+('Insect Ecology', 38, 'ENT 151', 'Other', 3),
+('Fundamentals of Environmental Forest Management', 38, 'FRM 110', 'Other', 3),
+('Man and His Environment', 38, 'HUME 2', 'Other', 3),
+('Ecology and Value Systems', 38, 'HUME 102', 'Other', 3),
+('Microbial Identification Techniques', 38, 'MCB 101', 'Other', 3),
+('Microbial Physiolgoy', 38, 'MCB 120', 'Other', 3),
+('Microbial Genetics', 38, 'MCB 130', 'Other', 3),
+('General Mycology', 38, 'PPTH 104', 'Other', 3),
+('Fundamentals of Agroforestry', 38, 'SFI 123', 'Other', 3),
+('Principles of Soil Science', 38, 'SOIL 1', 'Other', 3),
+('Soil Fertility', 38, 'SOIL 150', 'Other', 3),
+('Experimental Designs I', 38, 'STAT 162', 'Other', 3),
+('Statistics of Life Sciences', 38, 'STAT 164', 'Other', 3),
+('Introduction to Philippine Wildlife', 38, 'WLDL 101', 'Other', 3),
+('Principles of Wildlife Management', 38, 'WLDL 105', 'Other', 3),
+('Wildlife Ecology', 38, 'WLDL 155', 'Other', 3),
+('Field Practicum', 38, 'WLDL 198', 'Other', 3),
+('Comparative Vertebrate Anatomy', 38, 'ZOO 113', 'Other', 3),
+('Animal Physiology', 38, 'ZOO 120', 'Other', 5),
+('Animal Behavior', 38, 'ZOO 122', 'Other', 3),
+('Animal Taxonomy', 38, 'ZOO 140', 'Other', 3),
+('Invertebrate Zoology', 38, 'ZOO 142', 'Other', 3),
+('Biology of Marine Mammals', 38, 'ZOO 149', 'Other', 3),
+('Marine Zoology', 38, 'ZOO 151', 'Other', 3),
+('Freshwater Zoology', 38, 'ZOO 152', 'Other', 3),
+('General Limnology', 38, 'ZOO 155', 'Other', 3);
+
+
 --
 -- Indexes for dumped tables
 --
