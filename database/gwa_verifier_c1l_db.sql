@@ -1905,6 +1905,16 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Freshwater Zoology', 38, 'ZOO 152', 'Other', 3),
 ('General Limnology', 38, 'ZOO 155', 'Other', 3);
 
+-- Inserting major subjects for new BS AgChem Major in Animal Science
+-- Degree ID: 61
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Swine Production', 61, 'ANSC 111', 'Other', 3),
+('Poultry Production', 61, 'ANSC 116', 'Other', 3),
+('Beef Production', 61, 'ANSC 121', 'Other', 3),
+('Dairy Production', 61, 'ANSC 122', 'Other', 3),
+('Livestock and Poultry Feeding', 61, 'ANSC 143', 'Other', 3),
+('Principles of Animal Nutrition', 61, 'ANSC 102', 'Other', 3);
 
 --
 -- Indexes for dumped tables
