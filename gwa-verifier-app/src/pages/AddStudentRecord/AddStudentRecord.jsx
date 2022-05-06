@@ -4,12 +4,11 @@ import { Container, Box } from "@mui/material";
 import { DropzoneArea } from "mui-file-dropzone";
 import StudentRecordForm from "Components/StudentRecordForm";
 import { Link, useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
+
 import { useSnackbar } from "notistack";
 import "./AddStudentRecord.css";
 
-import { csvExtracter } from "../../utils/extracters.js";
-import { fileReader } from "../../utils/parsers.js";
+import { extractFromFile } from "../../utils/extracters.js";
 import { fromMapToArray } from "../../utils/transformers.js";
 import GradeRecordTable from "Components/GradeRecordTable";
 import CarouselButtons from "Components/CarouselButtons";
@@ -17,8 +16,6 @@ import AddStudentFormFooter from "Components/AddStudentFormFooter";
 const BACKEND_URI = "http://localhost/gwa-verifier-backend";
 
 const acceptedFiles = ["text/csv"];
-
-// TODO: User must see terms and grade records for that specific student record only (tip: use a hashmap to map sruid and terms, and then filter out rendered terms with current sruid and grade records with the selected term)
 
 function AddStudentRecord() {
   const navigate = useNavigate();
@@ -34,6 +31,7 @@ function AddStudentRecord() {
 
   const [term, setTerm] = useState("");
   const [terms, setTerms] = useState([]);
+  const [srUidTermMap, setSrUidTermMap] = useState({});
 
   /*
   the index represents the page number
@@ -44,46 +42,24 @@ function AddStudentRecord() {
   const [srUidPageMap, setSrUidPageMap] = useState([]);
 
   async function handleChange(files) {
-    const _studentRecords = {};
-    const _sruidPageMap = [];
-    const _gradeRecords = {};
     // get the content of all files
+    try {
+      const [_studentRecords, _srUidPageMap, _gradeRecords, _srUidTermMap] =
+        await extractFromFile(files);
 
-    // TODO: turn this into a separate function and just import it
-    for (const file of files) {
-      try {
-        const text = await fileReader(file);
+      const firstRecord = _srUidPageMap[0];
+      const terms = _srUidTermMap[firstRecord];
+      const firstTerm = terms[0];
 
-        const { grades, terms, ...studentInfo } = await csvExtracter(text);
-        const sruid = uuidv4();
-        Object.assign(_studentRecords, {
-          [sruid]: {
-            ...studentInfo,
-          },
-        });
-        _sruidPageMap.push(sruid);
-
-        grades.forEach((grade) => {
-          let gruid = uuidv4();
-          // continue getting a new gruid until gruid is unique, this is to catch the near 0.1% chance of collision
-          while (_gradeRecords[gruid]) {
-            gruid = uuidv4();
-          }
-
-          Object.assign(_gradeRecords, {
-            [gruid]: grade,
-          });
-        });
-        setTerms(terms);
-        setTerm(terms[0]);
-      } catch (error) {
-        console.warn(error);
-      }
+      setStudentRecords(_studentRecords);
+      setSrUidPageMap(_srUidPageMap);
+      setGradeRecords(_gradeRecords);
+      setTerms(terms);
+      setTerm(firstTerm);
+      setSrUidTermMap(_srUidTermMap);
+    } catch (error) {
+      console.log(error);
     }
-
-    setStudentRecords(_studentRecords);
-    setSrUidPageMap(_sruidPageMap);
-    setGradeRecords(_gradeRecords);
   }
 
   function handleStudentRecordsChange(e, studNo) {
@@ -109,11 +85,26 @@ function AddStudentRecord() {
   }
   function nextPage() {
     if (page === studentRecords.length - 1) return;
-    setPage(page + 1);
+    const newPage = page + 1;
+    updateTerms(newPage);
+    setPage(newPage);
   }
   function prevPage() {
     if (page === 0) return;
-    setPage(page - 1);
+    const newPage = page - 1;
+    updateTerms(newPage);
+    setPage(newPage);
+  }
+  /**
+   *
+   * @param {number} nextPage
+   */
+  function updateTerms(nextPage) {
+    const srUid = srUidPageMap[nextPage];
+    const terms = srUidTermMap[srUid];
+    const [firstTerm] = terms;
+    setTerms(terms);
+    setTerm(firstTerm);
   }
 
   function redirectToStudentRecords() {
@@ -134,7 +125,11 @@ function AddStudentRecord() {
     setStudentRecords(copyOfStudentRecords);
     setPage(newPage);
     setSrUidPageMap(copyOfUidPageMap);
-    if (newLength === 0) redirectToStudentRecords();
+    if (newLength === 0) {
+      redirectToStudentRecords();
+      return;
+    }
+    updateTerms(newPage);
   }
   function handleGradeRecordChange({ uid, columnId, value }) {
     const record = gradeRecords[uid];
