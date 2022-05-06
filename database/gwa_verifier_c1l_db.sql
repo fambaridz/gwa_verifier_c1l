@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 05, 2022 at 08:13 AM
+-- Generation Time: May 06, 2022 at 11:35 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -73,12 +73,12 @@ CREATE TABLE `degree_curriculums` (
 --
 
 INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`, `old_new`, `major`, `major_units`, `options`, `ge_electives_units`, `electives_units`, `recommended_units`) VALUES
-(1, 'BA Communication Arts', 'BACA', 'New', '', 0, '', 0, 0, 145),
-(2, 'BA Communication Arts', 'BACA', 'New', 'Speech Communication', 0, '', 0, 0, 145),
-(3, 'BA Communication Arts', 'BACA', 'New', 'Writing', 0, '', 0, 0, 145),
-(4, 'BA Communication Arts', 'BACA', 'New', 'Theater Arts', 0, '', 0, 0, 145),
+(1, 'BA Communication Arts', 'BACA', 'New', '', 21, '', 9, 18, 145),
+(2, 'BA Communication Arts', 'BACA', 'New', 'Speech Communication', 21, '', 9, 18, 145),
+(3, 'BA Communication Arts', 'BACA', 'New', 'Writing', 21, '', 9, 18, 145),
+(4, 'BA Communication Arts', 'BACA', 'New', 'Theater Arts', 21, '', 9, 18, 145),
 (5, 'BA Philosophy', 'BAPHLO', 'New', '', 0, '', 0, 0, 132),
-(6, 'BA Sociology', 'BASOCIO', 'New', '', 0, '', 0, 0, 136),
+(6, 'BA Sociology', 'BASOCIO', 'New', '', 0, '', 9, 21, 136),
 (7, 'BS Applied Mathematics', 'BSAMAT', 'New', '', 0, '', 0, 0, 131),
 (8, 'BS Applied Physics', 'BSAPHY', 'New', '', 0, '', 9, 21, 143),
 (9, 'BS Biology', 'BSBIO', 'New', '', 24, '', 9, 9, 143),
@@ -153,10 +153,32 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 
 CREATE TABLE `electives` (
   `course_number` varchar(50) NOT NULL,
-  `course_name` varchar(50) NOT NULL,
+  `course_name` varchar(80) NOT NULL,
   `general_or_free` varchar(50) NOT NULL,
   `number_units` int(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `electives`
+--
+
+INSERT INTO `electives` (`course_number`, `course_name`, `general_or_free`, `number_units`) VALUES
+('FRCH 10', 'Elementary French I', 'Free', 3),
+('FRCH 11', 'Elementary French II', 'Free', 3),
+('HIST 110', 'The Philippine Presidency', 'Free', 3),
+('HIST 140', 'Philippine Revolutionary Tradition', 'Free', 3),
+('HIST 150', 'Modern Nationalism and Imperialism', 'Free', 3),
+('HIST 151', 'American Colonialism and Imperialism in the Philippines', 'Free', 3),
+('JAP 10', 'Elementary Japanese I', 'Free', 3),
+('JAP 11', 'Elementary Japanese II', 'Free', 3),
+('POSC 112', 'Politics of Development', 'Free', 3),
+('POSC 14', 'Philippine Politics and Governance', 'Free', 3),
+('POSC 141', 'Political Ideologies', 'Free', 3),
+('POSC 161', 'Political Parties and Interest Groups', 'Free', 3),
+('POSC 165', 'Contemporary Philippine Politics', 'Free', 3),
+('POSC 180', 'Global Politics', 'Free', 3),
+('SPAN 10', 'Elementary Spanish I', 'Free', 3),
+('SPAN 11', 'Elementary Spanish II', 'Free', 3);
 
 -- --------------------------------------------------------
 
@@ -1229,7 +1251,8 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('College Algebra and Trigonometry', 44, 'MATH 17', '', 3),
 ('Analytic Geometry and Calculus I', 44, 'MATH 26', '', 3),
 ('Analytic Geometry and Calculus II', 44, 'MATH 27', '', 3),
-('Analytic Geometry and Calculus III', 44, 'MATH 28', '', 3),
+('Analytic Geometry and Calculus III', 44, 'MATH 28', '', 3);
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
 ('General Microbiology', 44, 'MCB 1', '', 3),
 ('National Service Training Program I', 44, 'NSTP 1', '', 0),
 ('National Service Training Program II', 44, 'NSTP 2', '', 0),
@@ -1275,8 +1298,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Analytic Geometry and Calculus I', 45, 'MATH 26', '', 3),
 ('Analytic Geometry and Calculus II', 45, 'MATH 27', '', 3),
 ('Analytic Geometry and Calculus III', 45, 'MATH 28', '', 3),
-('National Service Training Program I', 45, 'NSTP 1', '', 0);
-INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('National Service Training Program I', 45, 'NSTP 1', '', 0),
 ('National Service Training Program II', 45, 'NSTP 2', '', 0),
 ('Foundations of Physical Fitness', 45, 'PE 1', '', 0),
 ('Basic Course', 45, 'PE 2', '', 0),
@@ -1855,9 +1877,9 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Developmental Cell Biology', 37, 'BIO 121', 'Required', 3),
 ('Molecular Genetics', 37, 'BIO 138', 'Required', 3),
 ('General Biochemistry Lab', 37, 'CHEM 160.1', 'Required', 2),
-('Fundamentals of Plant Physiology', 37, 'BOT 20', 'Required', 3),
--- returns error on primary key, please fix ('Microbial Physiology', 37, 'MCB 120', 'Required', 3),
--- returns error on primary key, please fix ('Animal Physiology', 37, 'ZOO 120', 'Other', 5),
+('Elementary Plant Physiology', 37, 'BOT 20', 'Required', 3),
+('Microbial Physiology', 37, 'MCB 120', 'Required', 3),
+('Animal Physiology', 37, 'ZOO 120', 'Required', 5),
 ('Advanced Genetics I', 37, 'BIO 130a', 'Other', 3),
 ('Advanced Geneticsi II', 37, 'BIO 130b', 'Other', 3),
 ('Cytogenetics', 37, 'BIO 131', 'Other', 3),
@@ -1866,7 +1888,6 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Biological Microtechnique', 37, 'BIO 180', 'Other', 3),
 ('Special Problem', 37, 'BIO 190', 'Other', 3),
 ('Special Topic', 37, 'BIO 191', 'Other', 3),
--- returns error on primary key, please fix ('Elementary Plant Physiology', 37, 'BOT 20', 'Other', 3),
 ('Phycology', 37, 'BOT 101', 'Other', 3),
 ('Morphology & Anatomy of Plants', 37, 'BOT 110', 'Other', 3),
 ('Advanced Plant Physiology', 37, 'BOT 120', 'Other', 3),
@@ -1878,13 +1899,11 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Microbial Identification Techniques', 37, 'MCB 101', 'Other', 3),
 ('General Virology', 37, 'MCB 102', 'Other', 3),
 ('Introductory Medical Microbiology', 37, 'MCB 103', 'Other', 3),
--- returns error on primary key, please fix ('Microbial Physiology', 37, 'MCB 120', 'Other', 3),
 ('Microbial Genetics', 37, 'MCB 130', 'Other', 3),
 ('General Mycology', 37, 'PPTH 104', 'Other', 3),
 ('Comparative Vertebrate Anatomy', 37, 'ZOO 113', 'Other', 5),
 ('Animal Histology', 37, 'ZOO 115', 'Other', 3),
 ('Developmental Zoology', 37, 'ZOO 117', 'Other', 3);
--- returns error on primary key, please fix ('Animal Physiology', 37, 'ZOO 120', 'Other', 5);
 
 -- Inserting major subjects for old BS Biology Major in Microbiology
 -- Degree ID: 40
@@ -1927,8 +1946,8 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Phycology', 41, 'BOT 101', 'Other', 3),
 ('Bryophytes and Vascular Cryptograms', 41, 'BOT 111', 'Other', 3),
 ('Advance Plant Physiology', 41, 'BOT 120', 'Other', 3),
--- returns error on primary key; please fix ('Inorganic Plant Nutrition', 41, 'BOT/HORT 131', 'Other', 3),
--- returns error on primary key; please fix ('Plant Growth', 41, 'BOT/HORT 131', 'Other', 3),
+('Inorganic Plant Nutrition', 41, 'BOT/HORT 131', 'Other', 3),
+('Plant Growth', 41, 'BOT/HORT 132', 'Other', 3),
 ('Economic Botany', 41, 'BOT 142', 'Other', 3),
 ('Plant Ecology', 41, 'BOT 150', 'Other', 3),
 ('Special Topics', 41, 'BOT 191', 'Other', 3),
