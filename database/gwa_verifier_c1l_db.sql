@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 06, 2022 at 04:40 PM
+-- Generation Time: May 06, 2022 at 04:37 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -144,6 +144,10 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 (69, 'BS Computer Science', 'BSCS', 'Old', '', 0, 'Thesis', 18, 9, 141),
 (70, 'BS Mathematics', 'BSMATH', 'Old', '', 0, 'Thesis', 18, 12, 139),
 (71, 'BS Computer Science', 'BSCS', 'Old', '', 0, 'SP', 18, 12, 141);
+(114, 'BA Philosophy', 'BAPHLO', 'New', '', 0, 'SP', 9, 33, 132),
+(115, 'BA Philosophy', 'BAPHLO', 'New', '', 0, 'Thesis', 9, 33, 132),
+(116, 'BS Applied Mathematics', 'BSAMAT', 'New', '', 0, 'SP', 9, 27, 131),
+(117, 'BS Applied Mathematics', 'BSAMAT', 'New', '', 0, 'Thesis', 9, 24, 131);
 
 -- --------------------------------------------------------
 
@@ -2052,7 +2056,11 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Advanced Course', 70, 'PE 3', '', 0),
 ('The Life and Works of Jose Rizal', 70, 'PI 10', '', 3),
 ('Speech Communication', 70, 'SPCM 1', '', 3),
-('Elementary Statistics', 70, 'STAT 1', '', 3);
+('Elementary Statistics', 70, 'STAT 1', '', 3),
+('Special Problem', 114, 'PHLO 190', '', 3),
+('Undergraduate Thesis', 115, 'PHLO 200', '', 3),
+('Special Problems', 116, 'AMAT 190', '', 3),
+('Undergraduate Thesis', 117, 'AMAT 200', '', 3);
 
 --
 -- Indexes for dumped tables
@@ -2109,7 +2117,7 @@ ALTER TABLE `subjects`
 -- AUTO_INCREMENT for table `degree_curriculums`
 --
 ALTER TABLE `degree_curriculums`
-  MODIFY `degree_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
+  MODIFY `degree_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
 
 --
 -- AUTO_INCREMENT for table `student_record`
