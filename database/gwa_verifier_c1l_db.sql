@@ -1966,6 +1966,16 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Soil Fertility', 66, 'SOIL 150', 'Other', 3),
 ('Soil Microbiology', 66, 'SOIL 120', 'Other', 3);
 
+-- Inserting major subjects for new BS AgChem Major in Food Science
+-- Degree ID: 67
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Food Engineering I', 67, 'FST 130', 'Other', 3),
+('Food Processing I', 67, 'FST 140', 'Other', 3),
+('Food Processing II', 67, 'FST 141', 'Other', 3),
+('Sensory Evaluation of Food Products', 67, 'FST 161', 'Other', 3),
+('Principles of Food Safety', 67, 'FST 167', 'Other', 3);
+
 -- Indexes for dumped tables
 --
 
