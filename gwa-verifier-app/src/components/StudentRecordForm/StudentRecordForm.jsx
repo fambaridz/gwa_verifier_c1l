@@ -12,13 +12,17 @@ import {
   Select,
   InputLabel,
   TextareaAutosize,
+  ButtonGroup,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from "@mui/icons-material/Save";
 import {
   studentNoRegex,
   recommendedUnitsRegex,
+  termRegex,
 } from "../../utils/validators.js";
+import { ErrorTooltip } from "../Tooltips";
+
 function StudentRecordForm({
   firstName,
   middleName,
@@ -33,6 +37,8 @@ function StudentRecordForm({
   handleCancel = () => {},
   handleSave = () => {},
   handleAddRow = () => {},
+  handleEditTerm = () => {},
+  handleDeleteTerm = () => {},
   setTerm = () => {},
   term,
   terms,
@@ -180,24 +186,46 @@ function StudentRecordForm({
       </Stack>
       <Stack spacing={3} sx={{ marginTop: 5 }}>
         <Typography variant="h4">Grade Records</Typography>
-
-        <FormControl sx={{ alignSelf: "start" }}>
-          <InputLabel id="term-label">Term</InputLabel>
-          <Select
-            labelId="term-label"
-            id="term"
-            value={term}
-            label="Term"
-            onChange={handleChange}
+        <Stack direction={"row"} spacing={4} alignItems="center">
+          <ErrorTooltip
+            title={
+              !termRegex.test(term)
+                ? "The selected term has an invalid format. Kindly edit it."
+                : ""
+            }
+            placement="top"
+            arrow
           >
-            {terms.map((term, idx) => (
-              <MenuItem value={term} key={idx}>
-                {term}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
+            <FormControl
+              sx={{ alignSelf: "start" }}
+              error={!termRegex.test(term)}
+            >
+              <InputLabel id="term-label">Term</InputLabel>
+              <Select
+                labelId="term-label"
+                id="term"
+                value={term}
+                label="Term"
+                onChange={handleChange}
+              >
+                {terms.map((term, idx) => (
+                  <MenuItem value={term} key={idx}>
+                    {term}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </ErrorTooltip>
+          <ButtonGroup
+            variant="outlined"
+            color="default"
+            size="large"
+            aria-label="outlined button group"
+          >
+            <Button onClick={handleEditTerm}>Edit Term</Button>
+            <Button onClick={handleDeleteTerm}>Delete Term</Button>
+          </ButtonGroup>
+        </Stack>
         <Box>
           {table}
           <Button
@@ -266,5 +294,7 @@ StudentRecordForm.propTypes = {
   term: PropTypes.string,
   terms: PropTypes.arrayOf(PropTypes.string),
   table: PropTypes.element,
+  handleEditTerm: PropTypes.func.isRequired,
+  handleDeleteTerm: PropTypes.func.isRequired,
 };
 export default StudentRecordForm;

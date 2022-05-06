@@ -14,6 +14,9 @@ import { fromMapToArray } from "../../utils/transformers.js";
 import GradeRecordTable from "Components/GradeRecordTable";
 import CarouselButtons from "Components/CarouselButtons";
 import AddStudentFormFooter from "Components/AddStudentFormFooter";
+import EditTermDialog from "Components/EditTermDialog";
+import { useDialog } from "../../hooks";
+
 const BACKEND_URI = "http://localhost/gwa-verifier-backend";
 
 const acceptedFiles = ["text/csv"];
@@ -23,7 +26,7 @@ function AddStudentRecord() {
 
   // for notifications
   const { enqueueSnackbar } = useSnackbar();
-
+  const { open: dialogOpen, toggle: toggleDialog } = useDialog();
   const [studentRecords, setStudentRecords] = useState({});
   const [gradeRecords, setGradeRecords] = useState({});
   const [page, setPage] = useState(0);
@@ -101,10 +104,12 @@ function AddStudentRecord() {
    * @param {number} nextPage
    */
   function updateTerms(nextPage) {
+    console.log(`Update terms is called`);
     const srUid = srUidPageMap[nextPage];
-    const terms = srUidTermMap[srUid];
-    const [firstTerm] = terms;
-    setTerms(terms);
+    const _terms = srUidTermMap[srUid];
+    const [firstTerm] = _terms;
+
+    setTerms(_terms);
     setTerm(firstTerm);
   }
 
@@ -250,6 +255,38 @@ function AddStudentRecord() {
     setGradeRecords(gradeRecordCopy);
   }
 
+  function updateTerm(prevValue, currValue) {
+    const newTerms = terms.map((term) =>
+      term === prevValue ? currValue : term
+    );
+    console.log(newTerms);
+    const srUid = srUidPageMap[page];
+    const srUidTermMapCopy = { ...srUidTermMap };
+    Object.assign(srUidTermMapCopy, {
+      [srUid]: newTerms,
+    });
+
+    console.table(srUidTermMapCopy);
+
+    const gradeRecordsCopy = {};
+    Object.keys(gradeRecords).forEach((grUid) => {
+      const record = { ...gradeRecords[grUid] };
+      let { term, srUid: recordSrUid } = record;
+      if (recordSrUid === srUid && term === prevValue) term = currValue;
+      Object.assign(record, { term });
+      Object.assign(gradeRecordsCopy, {
+        [grUid]: record,
+      });
+    });
+
+    // since the only editable term is the selected term, we will update the current term accordingly
+    setTerm(currValue);
+    setTerms(newTerms);
+    setSrUidTermMap(srUidTermMapCopy);
+    setGradeRecords(gradeRecordsCopy);
+    toggleDialog();
+  }
+
   function renderStudentRecordForms() {
     return (
       <>
@@ -276,15 +313,17 @@ function AddStudentRecord() {
           studentNo={getField("studNo")}
           degree={getField("degree")}
           recommended={getField("recommended")}
-          handleInputChange={(e) => {
-            const uuid = srUidPageMap[page];
-            handleStudentRecordsChange(e, uuid);
-          }}
           term={term}
           setTerm={setTerm}
           terms={terms}
           loading={saving}
           handleAddRow={addRow}
+          handleInputChange={(e) => {
+            const uuid = srUidPageMap[page];
+            handleStudentRecordsChange(e, uuid);
+          }}
+          handleEditTerm={toggleDialog}
+          handleDeleteTerm={toggleDialog}
           table={
             <GradeRecordTable
               data={presentData()}
@@ -321,6 +360,12 @@ function AddStudentRecord() {
           renderStudentRecordForms()
         )}
       </Container>
+      <EditTermDialog
+        initialValue={term}
+        open={dialogOpen}
+        handleCancel={toggleDialog}
+        handleSave={updateTerm}
+      />
     </>
   );
 }
