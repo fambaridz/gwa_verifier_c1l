@@ -98,9 +98,9 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 (23, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Chemistry', 0, '', 9, 0, 140),
 (24, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Mathematics', 0, '', 9, 0, 142),
 (25, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Physics', 0, '', 9, 0, 140),
-(26, 'BS Statistics', 'BSSTAT', 'New', '', 0, '', 0, 0, 143),
-(27, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', '', 0, '', 0, 0, 190),
-(28, 'BA Communication Arts', 'BACA', 'Old', '', 0, '', 0, 0, 141),
+(26, 'BS Statistics', 'BSSTAT', 'New', '', 0, '', 9, 9, 143),
+(27, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', '', 0, '', 12, 0, 190),
+(28, 'BA Communication Arts', 'BACA', 'Old', '', 0, '', 0, 24, 141),
 (29, 'BA Communication Arts', 'BACA', 'Old', 'Speech Communication', 0, '', 0, 0, 141),
 (30, 'BA Communication Arts', 'BACA', 'Old', 'Writing', 0, '', 0, 0, 141),
 (31, 'BA Communication Arts', 'BACA', 'Old', 'Theater Arts', 0, '', 0, 0, 141),
@@ -132,8 +132,15 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 (57, 'BS Computer Science', 'BSCS', 'New', '', 0, 'SP', 9, 18, 130),
 (58, 'BS Computer Science', 'BSCS', 'New', '', 0, 'Thesis', 9, 15, 130),
 (59, 'BS Mathematics', 'BSMATH', 'New', '', 0, 'SP', 9, 18, 131),
-(60, 'BS Mathematics', 'BSMATH', 'New', '', 0, 'Thesis', 9, 15, 131);
-
+(60, 'BS Mathematics', 'BSMATH', 'New', '', 0, 'Thesis', 9, 15, 131),
+(61, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Animal Science', 15, '', 12, 0, 190),
+(62, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Entomology', 15, '', 12, 0, 190),
+(63, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Plant Pathology', 15, '', 12, 0, 190),
+(64, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Weed Science', 15, '', 12, 0, 190),
+(65, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Plant Physiology', 15, '', 12, 0, 190),
+(66, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Soil Science', 15, '', 12, 0, 190),
+(67, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Food Science', 15, '', 12, 0, 190),
+(68, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Agricultural Biotechnology', 15, '', 12, 0, 190);
 -- --------------------------------------------------------
 
 --
@@ -1099,6 +1106,9 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Occasional Speeches', 28, 'SPCM 104', '', 3),
 ('History of the Theater', 28, 'THEA 101', '', 3),
 ('Theater Communication', 28, 'THEA 107', '', 3),
+('Foundations of Physical Fitness', 28, 'PE 1', '', 0),
+('Basic Course', 28, 'PE 2', '', 0),
+('Advanced Course', 28, 'PE 3', '', 0),
 ('Rhetoric', 29, 'SPCM 101', '', 3),
 ('Oral Interpretation', 29, 'SPCM 103', '', 3),
 ('Philippine Public Address', 29, 'SPCM 105', '', 3),
@@ -1767,7 +1777,244 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Microcomputer-based Instrumentation', 56, 'APHY 105', '', 3),
 ('Embedded Systems Programming for instrumentation', 56, 'APHY 132', '', 3);
 
---
+-- Inserting major subjects for BS Biology Major in Cell and Molecular Biology
+-- Degree ID: 37
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Cytology', 37, 'BIO 102', 'Required', 3),
+('Developmental Cell Biology', 37, 'BIO 121', 'Required', 3),
+('Molecular Genetics', 37, 'BIO 138', 'Required', 3),
+('General Biochemistry Lab', 37, 'CHEM 160.1', 'Required', 2),
+('Fundamentals of Plant Physiology', 37, 'BOT 20', 'Required', 3),
+('Microbial Physiology', 37, 'MCB 120', 'Required', 3),
+('Animal Physiology', 37, 'ZOO 120', 'Other', 5),
+('Advanced Genetics I', 37, 'BIO 130a', 'Other', 3),
+('Advanced Geneticsi II', 37, 'BIO 130b', 'Other', 3),
+('Cytogenetics', 37, 'BIO 131', 'Other', 3),
+('Insect Genetics', 37, 'BIO 137', 'Other', 3),
+('Human Genetics', 37, 'BIO 139', 'Other', 3),
+('Biological Microtechnique', 37, 'BIO 180', 'Other', 3),
+('Special Problem', 37, 'BIO 190', 'Other', 3),
+('Special Topic', 37, 'BIO 191', 'Other', 3),
+('Elementary Plant Physiology', 37, 'BOT 20', 'Other', 3),
+('Phycology', 37, 'BOT 101', 'Other', 3),
+('Morphology & Anatomy of Plants', 37, 'BOT 110', 'Other', 3),
+('Advanced Plant Physiology', 37, 'BOT 120', 'Other', 3),
+('Plant Growth', 37, 'BOT/HORT 132', 'Other', 3),
+('Plant Biochemistry', 37, 'CHEM 162', 'Other', 3),
+('General Entomology', 37, 'ENT 101', 'Other', 3),
+('Insect Physiology', 37, 'ENT 120', 'Other', 3),
+('Plant Tissue Culture', 37, 'HORT 113', 'Other', 3),
+('Microbial Identification Techniques', 37, 'MCB 101', 'Other', 3),
+('General Virology', 37, 'MCB 102', 'Other', 3),
+('Introductory Medical Microbiology', 37, 'MCB 103', 'Other', 3),
+('Microbial Physiology', 37, 'MCB 120', 'Other', 3),
+('Microbial Genetics', 37, 'MCB 130', 'Other', 3),
+('General Mycology', 37, 'PPTH 104', 'Other', 3),
+('Comparative Vertebrate Anatomy', 37, 'ZOO 113', 'Other', 5),
+('Animal Histology', 37, 'ZOO 115', 'Other', 3),
+('Developmental Zoology', 37, 'ZOO 117', 'Other', 3),
+('Animal Physiology', 37, 'ZOO 120', 'Other', 5);
+
+-- Inserting major subjects for old BS Biology Major in Microbiology
+-- Degree ID: 40
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Microbial Identification Techniques', 40, 'MCB 101', 'Required', 3),
+('General Virology', 40, 'MCB 102', 'Required', 3),
+('Microbial Physiology', 40, 'MCB 120', 'Required', 3),
+('Microbial Genetics', 40, 'MCB 130', 'Required', 4),
+('Microbial Ecology', 40, 'MCB 150', 'Required', 3),
+('General Mycology', 40, 'PPATH 104', 'Required', 3),
+('Introductory Medical Microbiology', 40, 'MCB 103', 'Other', 3),
+('Industrial Microbiology', 40, 'MCB 160', 'Other', 3),
+('Industrial Microbiology Laboratory', 40, 'MCB 160.1', 'Other', 2),
+('Introductory Food Microbiology', 40, 'MCB 180', 'Other', 3),
+('Dairy Microbiology', 40, 'MCB 181', 'Other', 3),
+('Advanced Genetics I', 40, 'BIO 130a', 'Other', 3),
+('Molecular Genetics', 40, 'BIO 138', 'Other', 3),
+('Phycology', 40, 'BOT 101', 'Other', 3),
+('Introductory Biochemistry Laboratory', 40, 'CHEM 160.1', 'Other', 3),
+('Food Hygiene and Sanitation', 40, 'FST 166', 'Other', 3),
+('Introductory Phytobacteriology', 40, 'PPATH 103', 'Other', 3),
+('Introductory Plant Virology', 40, 'PPATH 115', 'Other', 3),
+('Veterinary Bacteriology and Mycology', 40, 'VMCB 122', 'Other', 3),
+('Veterinary Virology', 40, 'VMCB 123', 'Other', 2),
+('Fundamentals of Immunology', 40, 'VMCB 124', 'Other', 2),
+('Epidemiology', 40, 'VPH 121', 'Other', 3);
+
+-- Inserting major subjects for old BS Biology Major in Plant Biology
+-- Degree ID: 41
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Elementary Plant Physiology', 41, 'BOT 20', 'Required', 3),
+('Morphology and Anatomy of Plants', 41, 'BOT 110', 'Required', 3),
+('Systematics of the Spermatophytes', 41, 'BOT 140', 'Required', 3),
+('Phytogeography', 41, 'BOT 152', 'Required', 3),
+('Phycology', 41, 'BOT 101', 'Other', 3),
+('Bryophytes and Vascular Cryptograms', 41, 'BOT 111', 'Other', 3),
+('Advance Plant Physiology', 41, 'BOT 120', 'Other', 3),
+('Inorganic Plant Nutrition', 41, 'BOT/HORT 131', 'Other', 3),
+('Plant Growth', 41, 'BOT/HORT 131', 'Other', 3),
+('Economic Botany', 41, 'BOT 142', 'Other', 3),
+('Plant Ecology', 41, 'BOT 150', 'Other', 3),
+('Special Topics', 41, 'BOT 191', 'Other', 3),
+('Plant Histochemistry', 41, 'BOT 192', 'Other', 3),
+('Environmental Management', 41, 'BIO 151', 'Other', 3),
+('Conservation Biology in the Tropics', 41, 'BIO 159', 'Other', 3),
+('Biological Microtechniques', 41, 'BIO 180', 'Other', 3),
+('Museum Herbarium Curatorship', 41, 'BIO 192', 'Other', 3),
+('Introductory Biochemistry Laboratory', 41, 'CHEM 160.1', 'Other', 2),
+('Plant Biochemistry', 41, 'CHEM 162', 'Other', 3),
+('General Mycology', 41, 'PPTH 104', 'Other', 3),
+('Principles of Plant Breeding', 41, 'AGR 50', 'Other', 3),
+('Field Crop Physiology', 41, 'AGR 141', 'Other', 3),
+('Plant Tissue Culture', 41, 'HORT 113', 'Other', 3),
+('Fundamentals of Crop Science I', 41, 'CRSC 1', 'Other', 3),
+('Principles of Soil Science', 41, 'SOIL 1', 'Other', 3),
+('Soil Fertility', 41, 'SOIL 150', 'Other', 3),
+('Experimental Designs I', 41, 'STAT 162', 'Other', 3),
+('Statistics for the Biological Sciences', 41, 'STAT 164', 'Other', 3),
+('Fundamentals of Agroforestry', 41, 'SFI 123', 'Other', 3);
+
+-- Inserting major subjects for old BS Biology Major in Ecology
+-- Degree ID: 38
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Environmental Management', 38, 'BIO 151', 'Required', 3),
+('Biology of Pollution', 38, 'BIO 155', 'Required', 3),
+('Plant Ecology', 38, 'BIO 150', 'Required', 3),
+('Microbial Ecology', 38, 'MCB 150', 'Required', 3),
+('Animal Ecology', 38, 'ZOO 150', 'Required', 3),
+('Principles of Tropical Water Quality Management', 38, 'AENG 147', 'Other', 3),
+('Introduction to Ecological Agriculture', 38, 'AGRI 121', 'Other', 3),
+('Advanced Genetics II', 38, 'BIO 130b', 'Other', 3),
+('Cave Ecology', 38, 'BIO 154', 'Other', 3),
+('Conservation Biology in the Tropics', 38, 'BIO 159', 'Other', 3),
+('Special Topics', 38, 'BIO 191', 'Other', 3),
+('Elementary Plant Physiology', 38, 'BOT 20', 'Other', 3),
+('Phycology', 38, 'BOT 101', 'Other', 3),
+('Advanced Plant Physiology', 38, 'BOT 120', 'Other', 3),
+('Systematics of Spermatophytes', 38, 'BOT 140', 'Other', 3),
+('Phytogeography', 38, 'BOT 152', 'Other', 3),
+('Conservation of Natural Resources', 38, 'CERP 122', 'Other', 3),
+('Agro-Industrial Waste Management', 38, 'CHE 180', 'Other', 3),
+('General Environment Chemistry', 38, 'CHEM 180', 'Other', 3),
+('Pollution Chemistry', 38, 'CHEM 181', 'Other', 3),
+('General Entemology', 38, 'ENT 101', 'Other', 3),
+('Insect Taxonomy', 38, 'ENT 140', 'Other', 3),
+('Insect Ecology', 38, 'ENT 151', 'Other', 3),
+('Fundamentals of Environmental Forest Management', 38, 'FRM 110', 'Other', 3),
+('Man and His Environment', 38, 'HUME 2', 'Other', 3),
+('Ecology and Value Systems', 38, 'HUME 102', 'Other', 3),
+('Microbial Identification Techniques', 38, 'MCB 101', 'Other', 3),
+('Microbial Physiolgoy', 38, 'MCB 120', 'Other', 3),
+('Microbial Genetics', 38, 'MCB 130', 'Other', 3),
+('General Mycology', 38, 'PPTH 104', 'Other', 3),
+('Fundamentals of Agroforestry', 38, 'SFI 123', 'Other', 3),
+('Principles of Soil Science', 38, 'SOIL 1', 'Other', 3),
+('Soil Fertility', 38, 'SOIL 150', 'Other', 3),
+('Experimental Designs I', 38, 'STAT 162', 'Other', 3),
+('Statistics of Life Sciences', 38, 'STAT 164', 'Other', 3),
+('Introduction to Philippine Wildlife', 38, 'WLDL 101', 'Other', 3),
+('Principles of Wildlife Management', 38, 'WLDL 105', 'Other', 3),
+('Wildlife Ecology', 38, 'WLDL 155', 'Other', 3),
+('Field Practicum', 38, 'WLDL 198', 'Other', 3),
+('Comparative Vertebrate Anatomy', 38, 'ZOO 113', 'Other', 3),
+('Animal Physiology', 38, 'ZOO 120', 'Other', 5),
+('Animal Behavior', 38, 'ZOO 122', 'Other', 3),
+('Animal Taxonomy', 38, 'ZOO 140', 'Other', 3),
+('Invertebrate Zoology', 38, 'ZOO 142', 'Other', 3),
+('Biology of Marine Mammals', 38, 'ZOO 149', 'Other', 3),
+('Marine Zoology', 38, 'ZOO 151', 'Other', 3),
+('Freshwater Zoology', 38, 'ZOO 152', 'Other', 3),
+('General Limnology', 38, 'ZOO 155', 'Other', 3);
+
+-- Inserting major subjects for new BS AgChem Major in Animal Science
+-- Degree ID: 61
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Swine Production', 61, 'ANSC 111', 'Other', 3),
+('Poultry Production', 61, 'ANSC 116', 'Other', 3),
+('Beef Production', 61, 'ANSC 121', 'Other', 3),
+('Dairy Production', 61, 'ANSC 122', 'Other', 3),
+('Livestock and Poultry Feeding', 61, 'ANSC 143', 'Other', 3),
+('Principles of Animal Nutrition', 61, 'ANSC 102', 'Other', 3);
+
+-- Inserting major subjects for new BS AgChem Major in Entomology
+-- Degree ID: 62
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('General Entomology', 62, 'ENT 101', 'Other', 3),
+('Insect Physiology', 62, 'ENT 120', 'Other', 3),
+('Insect Toxicology', 62, 'ENT 125', 'Other', 3),
+('Crop Protection Entomology', 62, 'ENT 170', 'Other', 5),
+('Biological Control of Insect Pests', 62, 'ENT 172', 'Other', 3),
+('Medical and Veterinary Entomology', 62, 'ENT 176', 'Other', 3);
+
+-- Inserting major subjects for new BS AgChem Major in Plant Pathology
+-- Degree ID: 63 
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Principles of Plant Pathology', 63, 'PPTH 101', 'Other', 3),
+('Control of Plant Diseases', 63, 'PPTH 102', 'Other', 3),
+('Research in Plant Pathology', 63, 'PPTH 131', 'Other', 3),
+('Biological Control of Plant Pathogens', 63, 'PPTH 112', 'Other', 3);
+
+-- Inserting major subjects for new BS AgChem Major in Weed Science
+-- Degree ID: 64
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Biology of Weeds', 64, 'AGR 132', 'Required', 3),
+('Weeds and their Control', 64, 'AGR 133', 'Required', 3),
+('Systematics of Spermatophytes', 64, 'BOT 140', 'Other', 3),
+('Plant Ecology', 64, 'BOT 150', 'Other', 3),
+('Fundamentals of Turfgrass Management', 64, 'HORT 146', 'Other', 3);
+
+-- Inserting major subjects for new BS AgChem Major in Plant Physiology
+-- Degree ID: 65
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Field Crop Physiology', 65, 'AGR 141', 'Required', 3),
+('Plant Growth', 65, 'BOT/HORT 132', 'Required', 3),
+('Grain Crops Production', 65, 'AGR 110', 'Other', 3),
+('Principles of Annual Crops Production', 65, 'CRSC 101', 'Other', 3),
+('Principles of Perennial Crops Production', 65, 'CRSC 102', 'Other', 3);
+
+-- Inserting major subjects for new BS AgChem Major in Soil Science
+-- Degree ID: 66
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Soil Chemistry', 66, 'SOIL 140', 'Required', 3),
+('Fertilizers and their Reaction with Soil', 66, 'SOIL 142', 'Required', 3),
+('Soil Physics', 66, 'SOIL 130', 'Other', 3),
+('Soil Fertility', 66, 'SOIL 150', 'Other', 3),
+('Soil Microbiology', 66, 'SOIL 120', 'Other', 3);
+
+-- Inserting major subjects for new BS AgChem Major in Food Science
+-- Degree ID: 67
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Food Engineering I', 67, 'FST 130', 'Other', 3),
+('Food Processing I', 67, 'FST 140', 'Other', 3),
+('Food Processing II', 67, 'FST 141', 'Other', 3),
+('Sensory Evaluation of Food Products', 67, 'FST 161', 'Other', 3),
+('Principles of Food Safety', 67, 'FST 167', 'Other', 3);
+
+-- Inserting major subjects for new BS AgChem Major in Agricultural Biotechnology
+-- Degree ID: 68
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Fundamentals of Agricultural Biotechnology', 68, 'ABT 101', 'Required', 3),
+('Experimental Techniques in Agricultural Biotechnology I', 68, 'ABT 103', 'Other', 3),
+('Experimental Techniques in Agricultural Biotechnology II', 68, 'ABT 104', 'Other', 3),
+('Molecular Markers', 68, 'ABT 106', 'Other', 3),
+('Recombinant DNA Technology', 68, 'ABT 107', 'Other', 3),
+('Issues and Regulation in Agricultural Biotechnology', 68, 'ABT 108', 'Other', 3),
+('Fundamentals of Food Biotechnology', 68, 'ABT/FST 115', 'Other', 3),
+('Animal Biotechnology', 68, 'ABT 120', 'Other', 3),
+('Biotechnology in Crop Production', 68, 'ABT 140', 'Other', 3);
+
 -- Indexes for dumped tables
 --
 
