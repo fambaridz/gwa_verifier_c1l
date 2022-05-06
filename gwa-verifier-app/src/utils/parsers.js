@@ -15,8 +15,8 @@ export function csvToArray(str, delimiter = ",") {
       const regex = /(l|Il|ll|M)\/[0-9]{2}\/[0-9]{2}/m;
       const footer = rows.splice(rows.length - 5, 5);
 
-      const [, [, gwa], recommended] = footer;
-
+      let [, [, gwa], recommended] = footer;
+      [recommended] = recommended.split(",");
       let arr = rows.map(function (row) {
         const values = row.split(delimiter);
         let [courseno, grade, units, enrolled, running_total, , term = ""] =

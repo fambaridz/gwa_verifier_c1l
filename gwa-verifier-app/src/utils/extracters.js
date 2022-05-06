@@ -6,11 +6,11 @@ import { csvToArray, fileReader } from "./parsers.js";
  * @param {string} text content of csv file the user uploaded
  */
 export async function csvExtracter(text) {
-  let [name, degree, ...rest] = text.split("\n");
+  let [name, degree, studNo, ...rest] = text.split("\n");
   const [lname, fname, mname = "", suffix = ""] = name.split(",");
   [degree] = degree.split(",");
   rest = rest.join("\n");
-
+  [studNo] = studNo.split(",");
   const [grades, terms, gwa, recommended] = await csvToArray(rest);
 
   return {
@@ -19,6 +19,7 @@ export async function csvExtracter(text) {
     mname,
     suffix,
     degree,
+    studNo,
     gwa,
     recommended,
     grades,
