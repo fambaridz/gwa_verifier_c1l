@@ -1745,6 +1745,45 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Microcomputer-based Instrumentation', 56, 'APHY 105', '', 3),
 ('Embedded Systems Programming for instrumentation', 56, 'APHY 132', '', 3);
 
+-- Inserting major subjects for BS Biology Major in Cell and Molecular Biology
+-- Degree ID: 37
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Cytology', 37, 'BIO 102', 'Required', 3),
+('Developmental Cell Biology', 37, 'BIO 121', 'Required', 3),
+('Molecular Genetics', 37, 'BIO 138', 'Required', 3),
+('General Biochemistry Lab', 37, 'CHEM 160.1', 'Required', 2),
+('Fundamentals of Plant Physiology', 37, 'BOT 20', 'Required', 3),
+('Microbial Physiology', 37, 'MCB 120', 'Required', 3),
+('Animal Physiology', 37, 'ZOO 120', 'Other', 5),
+('Advanced Genetics I', 37, 'BIO 130a', 'Other', 3),
+('Advanced Geneticsi II', 37, 'BIO 130b', 'Other', 3),
+('Cytogenetics', 37, 'BIO 131', 'Other', 3),
+('Insect Genetics', 37, 'BIO 137', 'Other', 3),
+('Human Genetics', 37, 'BIO 139', 'Other', 3),
+('Biological Microtechnique', 37, 'BIO 180', 'Other', 3),
+('Special Problem', 37, 'BIO 190', 'Other', 3),
+('Special Topic', 37, 'BIO 191', 'Other', 3),
+('Elementary Plant Physiology', 37, 'BOT 20', 'Other', 3),
+('Phycology', 37, 'BOT 101', 'Other', 3),
+('Morphology & Anatomy of Plants', 37, 'BOT 110', 'Other', 3),
+('Advanced Plant Physiology', 37, 'BOT 120', 'Other', 3),
+('Plant Growth', 37, 'BOT/HORT 132', 'Other', 3),
+('Plant Biochemistry', 37, 'CHEM 162', 'Other', 3),
+('General Entomology', 37, 'ENT 101', 'Other', 3),
+('Insect Physiology', 37, 'ENT 120', 'Other', 3),
+('Plant Tissue Culture', 37, 'HORT 113', 'Other', 3),
+('Microbial Identification Techniques', 37, 'MCB 101', 'Other', 3),
+('General Virology', 37, 'MCB 102', 'Other', 3),
+('Introductory Medical Microbiology', 37, 'MCB 103', 'Other', 3),
+('Microbial Physiology', 37, 'MCB 120', 'Other', 3),
+('Microbial Genetics', 37, 'MCB 130', 'Other', 3),
+('General Mycology', 37, 'PPTH 104', 'Other', 3),
+('Comparative Vertebrate Anatomy', 37, 'ZOO 113', 'Other', 5),
+('Animal Histology', 37, 'ZOO 115', 'Other', 3),
+('Developmental Zoology', 37, 'ZOO 117', 'Other', 3),
+('Animal Physiology', 37, 'ZOO 120', 'Other', 5);
+
 --
 -- Indexes for dumped tables
 --
