@@ -142,8 +142,12 @@ function AddStudentRecord() {
   }
   function presentData() {
     // const records = gradeRecords.filter(record => record.term === term);
+
+    // get studentUid
+    const srUid = srUidPageMap[page];
+
     const records = fromMapToArray(gradeRecords, "uid").filter(
-      (record) => record.term === term
+      (record) => record.term === term && record.srUid === srUid
     );
     return records;
   }
