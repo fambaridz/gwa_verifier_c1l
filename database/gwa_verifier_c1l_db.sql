@@ -132,8 +132,15 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 (57, 'BS Computer Science', 'BSCS', 'New', '', 0, 'SP', 9, 18, 130),
 (58, 'BS Computer Science', 'BSCS', 'New', '', 0, 'Thesis', 9, 15, 130),
 (59, 'BS Mathematics', 'BSMATH', 'New', '', 0, 'SP', 9, 18, 131),
-(60, 'BS Mathematics', 'BSMATH', 'New', '', 0, 'Thesis', 9, 15, 131);
-
+(60, 'BS Mathematics', 'BSMATH', 'New', '', 0, 'Thesis', 9, 15, 131),
+(61, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Animal Science', 15, '', 12, 0, 190),
+(62, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Entomology', 15, '', 12, 0, 190),
+(63, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Plant Pathology', 15, '', 12, 0, 190),
+(64, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Weed Science', 15, '', 12, 0, 190),
+(65, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Plant Physiology', 15, '', 12, 0, 190),
+(66, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Soil Science', 15, '', 12, 0, 190),
+(67, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Food Science', 15, '', 12, 0, 190),
+(68, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Agricultural Biotechnology', 15, '', 12, 0, 190);
 -- --------------------------------------------------------
 
 --
