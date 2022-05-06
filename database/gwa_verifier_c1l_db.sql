@@ -1956,6 +1956,15 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Principles of Annual Crops Production', 65, 'CRSC 101', 'Other', 3),
 ('Principles of Perennial Crops Production', 65, 'CRSC 102', 'Other', 3);
 
+-- Inserting major subjects for new BS AgChem Major in Soil Science
+-- Degree ID: 66
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Soil Chemistry', 66, 'SOIL 140', 'Required', 3),
+('Fertilizers and their Reaction with Soil', 66, 'SOIL 142', 'Required', 3),
+('Soil Physics', 66, 'SOIL 130', 'Other', 3),
+('Soil Fertility', 66, 'SOIL 150', 'Other', 3),
+('Soil Microbiology', 66, 'SOIL 120', 'Other', 3);
 
 -- Indexes for dumped tables
 --
