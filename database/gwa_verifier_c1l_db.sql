@@ -1927,6 +1927,15 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Biological Control of Insect Pests', 62, 'ENT 172', 'Other', 3),
 ('Medical and Veterinary Entomology', 62, 'ENT 176', 'Other', 3);
 
+-- Inserting major subjects for new BS AgChem Major in Plant Pathology
+-- Degree ID: 63 
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Principles of Plant Pathology', 62, 'PPTH 101', 'Other', 3),
+('Control of Plant Diseases', 62, 'PPTH 102', 'Other', 3),
+('Research in Plant Pathology', 62, 'PPTH 131', 'Other', 3),
+('Biological Control of Plant Pathogens', 62, 'PPTH 112', 'Other', 3);
+
 --
 -- Indexes for dumped tables
 --
