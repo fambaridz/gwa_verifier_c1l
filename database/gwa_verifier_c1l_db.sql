@@ -1946,7 +1946,17 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Plant Ecology', 64, 'BOT 150', 'Other', 3),
 ('Fundamentals of Turfgrass Management', 64, 'HORT 146', 'Other', 3);
 
---
+-- Inserting major subjects for new BS AgChem Major in Plant Physiology
+-- Degree ID: 65
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Field Crop Physiology', 65, 'AGR 141', 'Required', 3),
+('Plant Growth', 65, 'BOT/HORT 132', 'Required', 3),
+('Grain Crops Production', 65, 'AGR 110', 'Other', 3),
+('Principles of Annual Crops Production', 65, 'CRSC 101', 'Other', 3),
+('Principles of Perennial Crops Production', 65, 'CRSC 102', 'Other', 3);
+
+
 -- Indexes for dumped tables
 --
 
