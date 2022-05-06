@@ -1976,6 +1976,20 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Sensory Evaluation of Food Products', 67, 'FST 161', 'Other', 3),
 ('Principles of Food Safety', 67, 'FST 167', 'Other', 3);
 
+-- Inserting major subjects for new BS AgChem Major in Agricultural Biotechnology
+-- Degree ID: 68
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Fundamentals of Agricultural Biotechnology', 68, 'ABT 101', 'Required', 3),
+('Experimental Techniques in Agricultural Biotechnology I', 68, 'ABT 103', 'Other', 3),
+('Experimental Techniques in Agricultural Biotechnology II', 68, 'ABT 104', 'Other', 3),
+('Molecular Markers', 68, 'ABT 106', 'Other', 3),
+('Recombinant DNA Technology', 68, 'ABT 107', 'Other', 3),
+('Issues and Regulation in Agricultural Biotechnology', 68, 'ABT 108', 'Other', 3),
+('Fundamentals of Food Biotechnology', 68, 'ABT/FST 115', 'Other', 3),
+('Animal Biotechnology', 68, 'ABT 120', 'Other', 3),
+('Biotechnology in Crop Production', 68, 'ABT 140', 'Other', 3);
+
 -- Indexes for dumped tables
 --
 
