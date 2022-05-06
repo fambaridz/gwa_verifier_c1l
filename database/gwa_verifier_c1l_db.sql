@@ -1777,6 +1777,34 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Microcomputer-based Instrumentation', 56, 'APHY 105', '', 3),
 ('Embedded Systems Programming for instrumentation', 56, 'APHY 132', '', 3);
 
+-- Inserting major subjects for BS Biology Major in Genetics
+-- Degree ID: 39
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Advanced Genetics I', 39, 'BIO 130a', 'Required', 3),
+('Advanced Genetics II', 39, 'BIO 130b', 'Required', 3),
+('Cytology', 39, 'BIO 102', 'Required', 3),
+('Cytogenetics', 39, 'BIO 131', 'Required', 3),
+('Molecular Genetics', 39, 'BIO 138', 'Required', 3),
+('Principles of Plant Breeding', 39, 'AGR 50', 'Other', 3),
+('Methods in Plant Breeding', 39, 'AGR 150', 'Other', 3),
+('Plant Genetic Resources Conservation and Management', 39, 'AGR 152', 'Other', 3),
+('Principles of Animal Breeding', 39, 'ANSC 65', 'Other', 3),
+('Methods in Animal Breeding', 39, 'ANSC 65', 'Other', 3),
+('Developmental Cell Biology', 39, 'BIO 121', 'Other', 3),
+('Insect Genetics', 39, 'BIO 138', 'Other', 3),
+('Human Genetics', 39, 'BIO 139', 'Other', 3),
+('Special Topics', 39, 'BIO 191', 'Other', 3),
+('Elementary Plant Physiology', 39, 'BOT 20', 'Other', 3),
+('Plant Growth', 39, 'BOT/HORT 132', 'Other', 3),
+('Plant Tissue Culture', 39, 'HORT 113', 'Other', 3),
+('General Biochemistry Lab', 39, 'CHEM 160.1', 'Other', 2),
+('Plant Biochemistry', 39, 'CHEM 162', 'Other', 3),
+('General Virology', 39, 'MCB 102', 'Other', 3),
+('Introductory Medical Microbiology', 39, 'MCB 103', 'Other', 3),
+('Microbial Physiology', 39, 'MCB 120', 'Other', 3),
+('Microbial Genetics', 39, 'MCB 130', 'Other', 4);
+
 -- Inserting major subjects for BS Biology Major in Cell and Molecular Biology
 -- Degree ID: 37
 
