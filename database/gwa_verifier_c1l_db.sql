@@ -1811,6 +1811,40 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Fundamentals of Immunology', 40, 'VMCB 124', 'Other', 2),
 ('Epidemiology', 40, 'VPH 121', 'Other', 3);
 
+-- Inserting major subjects for old BS Biology Major in Plant Biology
+-- Degree ID: 41
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Elementary Plant Physiology', 41, 'BOT 20', 'Required', 3),
+('Morphology and Anatomy of Plants', 41, 'BOT 110', 'Required', 3),
+('Systematics of the Spermatophytes', 41, 'BOT 140', 'Required', 3),
+('Phytogeography', 41, 'BOT 152', 'Required', 3),
+('Phycology', 41, 'BOT 101', 'Other', 3),
+('Bryophytes and Vascular Cryptograms', 41, 'BOT 111', 'Other', 3),
+('Advance Plant Physiology', 41, 'BOT 120', 'Other', 3),
+('Inorganic Plant Nutrition', 41, 'BOT/HORT 131', 'Other', 3),
+('Plant Growth', 41, 'BOT/HORT 131', 'Other', 3),
+('Economic Botany', 41, 'BOT 142', 'Other', 3),
+('Plant Ecology', 41, 'BOT 150', 'Other', 3),
+('Special Topics', 41, 'BOT 191', 'Other', 3),
+('Plant Histochemistry', 41, 'BOT 192', 'Other', 3),
+('Environmental Management', 41, 'BIO 151', 'Other', 3),
+('Conservation Biology in the Tropics', 41, 'BIO 159', 'Other', 3),
+('Biological Microtechniques', 41, 'BIO 180', 'Other', 3),
+('Museum Herbarium Curatorship', 41, 'BIO 192', 'Other', 3),
+('Introductory Biochemistry Laboratory', 41, 'CHEM 160.1', 'Other', 2),
+('Plant Biochemistry', 41, 'CHEM 162', 'Other', 3),
+('General Mycology', 41, 'PPTH 104', 'Other', 3),
+('Principles of Plant Breeding', 41, 'AGR 50', 'Other', 3),
+('Field Crop Physiology', 41, 'AGR 141', 'Other', 3),
+('Plant Tissue Culture', 41, 'HORT 113', 'Other', 3),
+('Fundamentals of Crop Science I', 41, 'CRSC 1', 'Other', 3),
+('Principles of Soil Science', 41, 'SOIL 1', 'Other', 3),
+('Soil Fertility', 41, 'SOIL 150', 'Other', 3),
+('Experimental Designs I', 41, 'STAT 162', 'Other', 3),
+('Statistics for the Biological Sciences', 41, 'STAT 164', 'Other', 3),
+('Fundamentals of Agroforestry', 41, 'SFI 123', 'Other', 3);
+
 --
 -- Indexes for dumped tables
 --
