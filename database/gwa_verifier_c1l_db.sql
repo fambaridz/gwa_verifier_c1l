@@ -143,7 +143,7 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 (68, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Agricultural Biotechnology', 15, '', 12, 0, 190),
 (69, 'BS Computer Science', 'BSCS', 'Old', '', 0, 'Thesis', 18, 9, 141),
 (70, 'BS Mathematics', 'BSMATH', 'Old', '', 0, 'Thesis', 18, 12, 139),
-(71, 'BS Computer Science', 'BSCS', 'Old', '', 0, 'SP', 18, 12, 141);
+(71, 'BS Computer Science', 'BSCS', 'Old', '', 0, 'SP', 18, 12, 141),
 (114, 'BA Philosophy', 'BAPHLO', 'New', '', 0, 'SP', 9, 33, 132),
 (115, 'BA Philosophy', 'BAPHLO', 'New', '', 0, 'Thesis', 9, 33, 132),
 (116, 'BS Applied Mathematics', 'BSAMAT', 'New', '', 0, 'SP', 9, 27, 131),
