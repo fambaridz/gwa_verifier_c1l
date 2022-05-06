@@ -1931,10 +1931,20 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 -- Degree ID: 63 
 
 INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
-('Principles of Plant Pathology', 62, 'PPTH 101', 'Other', 3),
-('Control of Plant Diseases', 62, 'PPTH 102', 'Other', 3),
-('Research in Plant Pathology', 62, 'PPTH 131', 'Other', 3),
-('Biological Control of Plant Pathogens', 62, 'PPTH 112', 'Other', 3);
+('Principles of Plant Pathology', 63, 'PPTH 101', 'Other', 3),
+('Control of Plant Diseases', 63, 'PPTH 102', 'Other', 3),
+('Research in Plant Pathology', 63, 'PPTH 131', 'Other', 3),
+('Biological Control of Plant Pathogens', 63, 'PPTH 112', 'Other', 3);
+
+-- Inserting major subjects for new BS AgChem Major in Weed Science
+-- Degree ID: 64
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Biology of Weeds', 64, 'AGR 132', 'Required', 3),
+('Weeds and their Control', 64, 'AGR 133', 'Required', 3),
+('Systematics of Spermatophytes', 64, 'BOT 140', 'Other', 3),
+('Plant Ecology', 64, 'BOT 150', 'Other', 3),
+('Fundamentals of Turfgrass Management', 64, 'HORT 146', 'Other', 3);
 
 --
 -- Indexes for dumped tables
