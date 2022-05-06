@@ -245,6 +245,7 @@ function AddStudentRecord() {
           suffix={getField("suffix")}
           studentNo={getField("studNo")}
           degree={getField("degree")}
+          recommended={getField("recommended")}
           handleInputChange={(e) => {
             const uuid = srUidPageMap[page];
             handleStudentRecordsChange(e, uuid);

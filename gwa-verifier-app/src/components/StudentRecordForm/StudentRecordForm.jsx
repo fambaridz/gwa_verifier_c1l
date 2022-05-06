@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import {
   Typography,
   TextField,
@@ -12,7 +13,6 @@ import {
   InputLabel,
   TextareaAutosize,
 } from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
 import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from "@mui/icons-material/Save";
 
@@ -23,7 +23,7 @@ function StudentRecordForm({
   suffix,
   degree,
   studentNo,
-
+  recommended,
   loading = false,
   handleInputChange = () => {},
   footer = null,
@@ -34,18 +34,22 @@ function StudentRecordForm({
   terms,
   table = <p>Table goes here</p>,
 }) {
-  // const [term, setTerm] = useState("");
   function handleChange(event) {
     setTerm(event.target.value);
   }
-  // const terms = useMemo(
-  //   () => ["2019 2nd sem", "2020 1st sem", "2020 2nd sem", "2021 1st sem"],
-  //   []
-  // );
-  // set default value for term as the last entry
-  // useEffect(() => {
-  //   setTerm(terms[terms.length - 1]);
-  // }, []);
+
+  function renderTextField(props) {
+    return (
+      <TextField
+        sx={{
+          width: "100%",
+          maxWidth: 600,
+        }}
+        onChange={handleInputChange}
+        {...props}
+      />
+    );
+  }
 
   return (
     <>
@@ -56,115 +60,101 @@ function StudentRecordForm({
             <Typography variant="body1">First Name</Typography>
           </Grid>
           <Grid item xs={10}>
-            <TextField
-              name="fname"
-              placeholder="Jane"
-              inputProps={{
+            {renderTextField({
+              name: "fname",
+              placeholder: "Jane",
+              inputProps: {
                 "aria-label": "first-name",
-              }}
-              sx={{
-                width: "100%",
-                maxWidth: 600,
-              }}
-              value={firstName}
-              onChange={handleInputChange}
-            />
+              },
+
+              value: firstName,
+            })}
           </Grid>
 
           <Grid item xs={2}>
             <Typography variant="body1">Middle Name</Typography>
           </Grid>
           <Grid item xs={10}>
-            <TextField
-              name="mname"
-              variant="outlined"
-              placeholder="Jane Doe"
-              inputProps={{
+            {renderTextField({
+              name: "mname",
+              variant: "outlined",
+              placeholder: "Donald",
+              inputProps: {
                 "aria-label": "middle-name",
-              }}
-              sx={{
-                width: "100%",
-                maxWidth: 600,
-              }}
-              value={middleName}
-              onChange={handleInputChange}
-            />
+              },
+
+              value: middleName,
+            })}
           </Grid>
 
           <Grid item xs={2}>
             <Typography variant="body1">Last Name</Typography>
           </Grid>
           <Grid item xs={10}>
-            <TextField
-              name="lname"
-              placeholder="Doe"
-              inputProps={{
+            {renderTextField({
+              name: "lname",
+              placeholder: "Doe",
+              inputProps: {
                 "aria-label": "last-name",
-              }}
-              sx={{
-                width: "100%",
-                maxWidth: 600,
-              }}
-              value={lastName}
-              onChange={handleInputChange}
-            />
+              },
+
+              value: lastName,
+            })}
           </Grid>
 
           <Grid item xs={2}>
             <Typography variant="body1">Suffix</Typography>
           </Grid>
           <Grid item xs={10}>
-            <TextField
-              name="suffix"
-              placeholder="Sr."
-              inputProps={{
+            {renderTextField({
+              name: "suffix",
+              placeholder: "Sr.",
+              inputProps: {
                 "aria-label": "suffix",
-              }}
-              sx={{
-                width: "100%",
-                maxWidth: 600,
-              }}
-              value={suffix}
-              onChange={handleInputChange}
-            />
+              },
+              value: suffix,
+            })}
           </Grid>
 
           <Grid item xs={2}>
             <Typography variant="body1">Degree</Typography>
           </Grid>
           <Grid item xs={10}>
-            <TextField
-              name="degree"
-              placeholder="BACA"
-              inputProps={{
+            {renderTextField({
+              name: "degree",
+              placeholder: "BACA",
+              inputProps: {
                 "aria-label": "degree",
-              }}
-              sx={{
-                width: "100%",
-                maxWidth: 600,
-              }}
-              value={degree}
-              onChange={handleInputChange}
-            />
+              },
+              value: degree,
+            })}
           </Grid>
 
           <Grid item xs={2}>
             <Typography variant="body1">Student Number</Typography>
           </Grid>
           <Grid item xs={10}>
-            <TextField
-              name="studNo"
-              placeholder="2019-12345"
-              inputProps={{
+            {renderTextField({
+              name: "studNo",
+              placeholder: "2019-12345",
+              inputProps: {
                 "aria-label": "student-no",
-              }}
-              sx={{
-                width: "100%",
-                maxWidth: 600,
-              }}
-              value={studentNo}
-              onChange={handleInputChange}
-            />
+              },
+              value: studentNo,
+            })}
+          </Grid>
+          <Grid item xs={2}>
+            <Typography variant="body1">Recommended No. of Units</Typography>
+          </Grid>
+          <Grid item xs={10}>
+            {renderTextField({
+              name: "recommended",
+              placeholder: "144",
+              inputProps: {
+                "aria-label": "recommended-units",
+              },
+              value: recommended,
+            })}
           </Grid>
         </Grid>
       </Stack>
@@ -237,5 +227,22 @@ function StudentRecordForm({
     </>
   );
 }
-
+StudentRecordForm.propTypes = {
+  recommended: PropTypes.string.isRequired,
+  firstName: PropTypes.string.isRequired,
+  middleName: PropTypes.string.isRequired,
+  lastName: PropTypes.string.isRequired,
+  suffix: PropTypes.string.isRequired,
+  degree: PropTypes.string.isRequired,
+  studentNo: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired,
+  handleInputChange: PropTypes.func.isRequired,
+  footer: PropTypes.element,
+  handleCancel: PropTypes.func,
+  handleSave: PropTypes.func,
+  setTerm: PropTypes.func,
+  term: PropTypes.string,
+  terms: PropTypes.arrayOf(PropTypes.string),
+  table: PropTypes.element,
+};
 export default StudentRecordForm;
