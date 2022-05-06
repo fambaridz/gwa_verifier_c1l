@@ -1784,6 +1784,33 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Developmental Zoology', 37, 'ZOO 117', 'Other', 3),
 ('Animal Physiology', 37, 'ZOO 120', 'Other', 5);
 
+-- Inserting major subjects for old BS Biology Major in Microbiology
+-- Degree ID: 40
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Microbial Identification Techniques', 40, 'MCB 101', 'Required', 3),
+('General Virology', 40, 'MCB 102', 'Required', 3),
+('Microbial Physiology', 40, 'MCB 120', 'Required', 3),
+('Microbial Genetics', 40, 'MCB 130', 'Required', 4),
+('Microbial Ecology', 40, 'MCB 150', 'Required', 3),
+('General Mycology', 40, 'PPATH 104', 'Required', 3),
+('Introductory Medical Microbiology', 40, 'MCB 103', 'Other', 3),
+('Industrial Microbiology', 40, 'MCB 160', 'Other', 3),
+('Industrial Microbiology Laboratory', 40, 'MCB 160.1', 'Other', 2),
+('Introductory Food Microbiology', 40, 'MCB 180', 'Other', 3),
+('Dairy Microbiology', 40, 'MCB 181', 'Other', 3),
+('Advanced Genetics I', 40, 'BIO 130a', 'Other', 3),
+('Molecular Genetics', 40, 'BIO 138', 'Other', 3),
+('Phycology', 40, 'BOT 101', 'Other', 3),
+('Introductory Biochemistry Laboratory', 40, 'CHEM 160.1', 'Other', 3),
+('Food Hygiene and Sanitation', 40, 'FST 166', 'Other', 3),
+('Introductory Phytobacteriology', 40, 'PPATH 103', 'Other', 3),
+('Introductory Plant Virology', 40, 'PPATH 115', 'Other', 3),
+('Veterinary Bacteriology and Mycology', 40, 'VMCB 122', 'Other', 3),
+('Veterinary Virology', 40, 'VMCB 123', 'Other', 2),
+('Fundamentals of Immunology', 40, 'VMCB 124', 'Other', 2),
+('Epidemiology', 40, 'VPH 121', 'Other', 3);
+
 --
 -- Indexes for dumped tables
 --
