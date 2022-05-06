@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import TextField from "@mui/material/TextField";
 import { ErrorTooltip } from "../Tooltips";
 import { defaultRegex, gradeRegex } from "../../utils/validators.js";
@@ -24,10 +24,7 @@ function EditableCell({
 
   const [helperText, setHelperText] = useState("");
 
-  const onChange = (e) => {
-    const { value } = e.target;
-    setValue(e.target.value);
-
+  const validate = useCallback((columnId, value) => {
     if (value === "") {
       setHelperText(ERROR_MESSAGES.REQUIRED);
       return;
@@ -44,6 +41,13 @@ function EditableCell({
       setHelperText(ERROR_MESSAGES.GRADE);
       return;
     }
+  }, []);
+
+  const onChange = (e) => {
+    const { value } = e.target;
+    setValue(e.target.value);
+
+    validate(columnId, value);
 
     setHelperText("");
   };
@@ -51,6 +55,7 @@ function EditableCell({
   const onBlur = () => handleUpdate({ uid, columnId, value });
   useEffect(() => {
     setValue(initialValue);
+    validate(columnId, value);
   }, [initialValue]);
 
   //   return <input value={value} onChange={onChange} onBlur={onBlur} />;

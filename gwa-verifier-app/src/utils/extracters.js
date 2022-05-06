@@ -44,13 +44,13 @@ export function extractFromFile(files) {
         const text = await fileReader(file);
 
         const { grades, terms, ...studentInfo } = await csvExtracter(text);
-        const sruid = uuidv4();
+        const srUid = uuidv4();
         Object.assign(studentRecords, {
-          [sruid]: {
+          [srUid]: {
             ...studentInfo,
           },
         });
-        srUidPageMap.push(sruid);
+        srUidPageMap.push(srUid);
 
         grades.forEach((grade) => {
           let gruid = uuidv4();
@@ -60,11 +60,14 @@ export function extractFromFile(files) {
           }
 
           Object.assign(gradeRecords, {
-            [gruid]: grade,
+            [gruid]: {
+              ...grade,
+              srUid,
+            },
           });
         });
         Object.assign(srUidTermMap, {
-          [sruid]: terms,
+          [srUid]: terms,
         });
       } catch (error) {
         console.warn(error);
