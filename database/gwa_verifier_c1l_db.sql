@@ -1916,6 +1916,17 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Livestock and Poultry Feeding', 61, 'ANSC 143', 'Other', 3),
 ('Principles of Animal Nutrition', 61, 'ANSC 102', 'Other', 3);
 
+-- Inserting major subjects for new BS AgChem Major in Entomology
+-- Degree ID: 62
+
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('General Entomology', 62, 'ENT 101', 'Other', 3),
+('Insect Physiology', 62, 'ENT 120', 'Other', 3),
+('Insect Toxicology', 62, 'ENT 125', 'Other', 3),
+('Crop Protection Entomology', 62, 'ENT 170', 'Other', 5),
+('Biological Control of Insect Pests', 62, 'ENT 172', 'Other', 3),
+('Medical and Veterinary Entomology', 62, 'ENT 176', 'Other', 3);
+
 --
 -- Indexes for dumped tables
 --
