@@ -15,7 +15,10 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import SaveIcon from "@mui/icons-material/Save";
-
+import {
+  studentNoRegex,
+  recommendedUnitsRegex,
+} from "../../utils/validators.js";
 function StudentRecordForm({
   firstName,
   middleName,
@@ -39,6 +42,20 @@ function StudentRecordForm({
   }
 
   function renderTextField(props) {
+    const { name, value } = props;
+    let error = false,
+      helperText = "";
+    switch (name) {
+      case "studNo":
+        helperText = "Must follow the ff. format: YEAR-NUMBER e.g. 2019-12345";
+        if (!studentNoRegex.test(value)) error = true;
+        break;
+      case "recommended":
+        helperText = "Numbers only";
+        if (!recommendedUnitsRegex.test(value)) error = true;
+        break;
+    }
+
     return (
       <TextField
         sx={{
@@ -46,6 +63,8 @@ function StudentRecordForm({
           maxWidth: 600,
         }}
         onChange={handleInputChange}
+        error={error}
+        helperText={helperText}
         {...props}
       />
     );
