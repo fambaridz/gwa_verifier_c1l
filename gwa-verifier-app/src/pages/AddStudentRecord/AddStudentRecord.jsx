@@ -6,6 +6,7 @@ import StudentRecordForm from "Components/StudentRecordForm";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useSnackbar } from "notistack";
+import { v4 as uuidv4 } from "uuid";
 import "./AddStudentRecord.css";
 
 import { extractFromFile } from "../../utils/extracters.js";
@@ -224,6 +225,31 @@ function AddStudentRecord() {
     setSaving(false);
   }
 
+  function addRow() {
+    const currSrUid = srUidPageMap[page];
+    const newRecord = {
+      term,
+      courseno: "",
+      grade: "",
+      units: "",
+      enrolled: "",
+      running_total: "",
+      srUid: currSrUid,
+    };
+    const grUid = uuidv4();
+    setGradeRecords({
+      ...gradeRecords,
+      [grUid]: newRecord,
+    });
+  }
+
+  function deleteRow(uid) {
+    const gradeRecordCopy = { ...gradeRecords };
+    if (!gradeRecordCopy[uid]) return;
+    delete gradeRecordCopy[uid];
+    setGradeRecords(gradeRecordCopy);
+  }
+
   function renderStudentRecordForms() {
     return (
       <>
@@ -257,10 +283,13 @@ function AddStudentRecord() {
           term={term}
           setTerm={setTerm}
           terms={terms}
+          loading={saving}
+          handleAddRow={addRow}
           table={
             <GradeRecordTable
               data={presentData()}
               handleUpdate={handleGradeRecordChange}
+              handleDelete={deleteRow}
             />
           }
           footer={
@@ -270,7 +299,6 @@ function AddStudentRecord() {
               saving={saving}
             />
           }
-          loading={saving}
         />
       </>
     );

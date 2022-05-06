@@ -32,6 +32,7 @@ function StudentRecordForm({
   footer = null,
   handleCancel = () => {},
   handleSave = () => {},
+  handleAddRow = () => {},
   setTerm = () => {},
   term,
   terms,
@@ -203,6 +204,7 @@ function StudentRecordForm({
             variant="outlined"
             startIcon={<AddIcon />}
             color="default"
+            onClick={handleAddRow}
             fullWidth
           >
             Add new row
@@ -259,6 +261,7 @@ StudentRecordForm.propTypes = {
   footer: PropTypes.element,
   handleCancel: PropTypes.func,
   handleSave: PropTypes.func,
+  handleAddRow: PropTypes.func,
   setTerm: PropTypes.func,
   term: PropTypes.string,
   terms: PropTypes.arrayOf(PropTypes.string),

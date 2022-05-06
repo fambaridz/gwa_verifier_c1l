@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
+import PropTypes from "prop-types";
 import {
   IconButton,
   Table,
@@ -42,14 +43,21 @@ function GradeRecordTable({ data, handleDelete = () => {}, handleUpdate }) {
       {
         Header: "Action",
         accessor: "action",
-        Cell: () => (
-          <IconButton aria-label="delete" onClick={handleDelete}>
-            <DeleteIcon />
-          </IconButton>
-        ),
+        Cell: (props) => {
+          const {
+            row: {
+              original: { uid },
+            },
+          } = props;
+          return (
+            <IconButton aria-label="delete" onClick={() => handleDelete(uid)}>
+              <DeleteIcon />
+            </IconButton>
+          );
+        },
       },
     ],
-    []
+    [data]
   );
 
   const tableInstance = useTable({
@@ -96,5 +104,11 @@ function GradeRecordTable({ data, handleDelete = () => {}, handleUpdate }) {
     </TableContainer>
   );
 }
+
+GradeRecordTable.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object),
+  handleDelete: PropTypes.func,
+  handleUpdate: PropTypes.func,
+};
 
 export default GradeRecordTable;
