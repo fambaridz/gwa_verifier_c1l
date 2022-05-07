@@ -16,6 +16,7 @@ import CarouselButtons from "Components/CarouselButtons";
 import AddStudentFormFooter from "Components/AddStudentFormFooter";
 import EditTermDialog from "Components/EditTermDialog";
 import DeleteTermDialog from "Components/DeleteTermDialog";
+import ParsingModal from "Components/ParsingModal";
 import { useDialog } from "../../hooks";
 
 const BACKEND_URI = "http://localhost/gwa-verifier-backend";
@@ -38,7 +39,7 @@ function AddStudentRecord() {
   const [term, setTerm] = useState("");
   const [terms, setTerms] = useState([]);
   const [srUidTermMap, setSrUidTermMap] = useState({});
-
+  const [parsing, setParsing] = useState(false);
   /*
   the index represents the page number
   0, 1, 2, ..., pageNum = length - 1 
@@ -48,7 +49,9 @@ function AddStudentRecord() {
   const [srUidPageMap, setSrUidPageMap] = useState([]);
 
   async function handleChange(files) {
+    if (!files.length) return;
     // get the content of all files
+    setParsing(true);
     try {
       const [_studentRecords, _srUidPageMap, _gradeRecords, _srUidTermMap] =
         await extractFromFile(files);
@@ -66,6 +69,7 @@ function AddStudentRecord() {
     } catch (error) {
       console.log(error);
     }
+    setParsing(false);
   }
 
   function handleStudentRecordsChange(e, studNo) {
@@ -374,6 +378,7 @@ function AddStudentRecord() {
   }
   return (
     <>
+      <ParsingModal open={parsing} />
       <Box sx={{ mt: 2.5, ml: 3, fontSize: 14 }}>
         <Link to="/records" className="back-link">
           &lt; Back to Student Records
@@ -385,6 +390,7 @@ function AddStudentRecord() {
             filesLimit={10}
             acceptedFiles={acceptedFiles}
             onChange={handleChange}
+            showAlerts={false}
           />
         ) : (
           renderStudentRecordForms()
