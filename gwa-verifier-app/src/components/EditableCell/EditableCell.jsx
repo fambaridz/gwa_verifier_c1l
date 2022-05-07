@@ -5,7 +5,8 @@ import { defaultRegex, gradeRegex } from "../../utils/validators.js";
 
 const ERROR_MESSAGES = {
   REQUIRED: "This field is required",
-  GRADE: "P, S, INC, DRP, or a numeric grade is only allowed",
+  GRADE:
+    "P, S, INC, DRP, or a numeric grade with 4 significant digits is only allowed",
   DEFAULT: "Numbers up to 4 significant digits only",
 };
 
@@ -50,8 +51,6 @@ function EditableCell({
     setValue(e.target.value);
 
     validate(columnId, value);
-
-    setHelperText("");
   };
   // columnId is  the name of the column
   const onBlur = () => handleUpdate({ uid, columnId, value });
