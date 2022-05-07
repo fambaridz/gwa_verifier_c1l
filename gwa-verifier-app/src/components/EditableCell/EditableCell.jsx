@@ -10,21 +10,23 @@ const ERROR_MESSAGES = {
 };
 
 function checkIfError({ name, value }) {
-  if (name === "grade") return !gradeRegex.test(value);
-  return !defaultRegex.test(value);
+  if (name !== "grade") return !defaultRegex.test(value);
+  return !gradeRegex.test(value);
 }
 
+let counter = 0;
 function EditableCell({
   value: initialValue,
   handleUpdate,
   column: { id: columnId },
   uid,
 }) {
+  // console.log(`Render count: ${++counter}`);
   const [value, setValue] = useState(initialValue);
 
   const [helperText, setHelperText] = useState("");
 
-  const validate = useCallback((columnId, value) => {
+  const validate = (columnId, value) => {
     if (value === "") {
       setHelperText(ERROR_MESSAGES.REQUIRED);
       return;
@@ -41,8 +43,8 @@ function EditableCell({
       setHelperText(ERROR_MESSAGES.GRADE);
       return;
     }
-  }, []);
-
+    setHelperText("");
+  };
   const onChange = (e) => {
     const { value } = e.target;
     setValue(e.target.value);
@@ -55,7 +57,7 @@ function EditableCell({
   const onBlur = () => handleUpdate({ uid, columnId, value });
   useEffect(() => {
     setValue(initialValue);
-    validate(columnId, value);
+    validate(columnId, initialValue);
   }, [initialValue]);
 
   //   return <input value={value} onChange={onChange} onBlur={onBlur} />;
