@@ -8,6 +8,7 @@ import {
   OutlinedInput,
   InputAdornment,
   IconButton,
+  Alert,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import logo from "Assets/logo.png";
@@ -19,6 +20,9 @@ function LogIn() {
   const [values, setValues] = React.useState({
     email: '',
     password: '',
+    alertMessage: '',
+    alertSeverity: '',
+    isAlert: false,
     showPassword: false,
   });
 
@@ -59,8 +63,21 @@ function LogIn() {
       .then(response => response.json())
       .then(body => {
         console.log(body.success)
-        if (body.success=="true") { 
-          setIsLoggedIn(true)
+        if (body.success=="false") { 
+          //show failed login alert
+          setValues({...values, 
+            isAlert:true, 
+            alertSeverity:"error", 
+            alertMessage:"Failed to log in. Please check your email/password"})
+        }
+        else {
+          //show successful login alert
+          setValues({...values, 
+            isAlert:true, 
+            alertSeverity:"success", 
+            alertMessage:"You are now logged in!"})
+          setTimeout(()=>{
+          setIsLoggedIn(true)}, 1000)
         }
       })
   }
@@ -127,6 +144,7 @@ function LogIn() {
           <Typography variant="" className="login-form-label">Password</Typography>
           {Password()}
         </form>
+          {values.isAlert? <Alert severity={values.alertSeverity}>{values.alertMessage}</Alert>: <></>}
           <Button type="submit" form="login-form" variant="contained" size="large" sx={{marginBottom:5, width: 300}}> Log In</Button>
       </div>
     </div>
