@@ -1,5 +1,5 @@
 import React, { useEffect} from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import {
   Box,
   Button,
@@ -18,7 +18,10 @@ import {
 } from "@mui/material";
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import { Add, Search, Delete } from "@mui/icons-material";
-import CommitteeComments from "../../components/CommitteeComments";
+import CommitteeComments from "Components/CommitteeComments";
+import DeleteRecordDialog from "Components/DeleteRecordDialog";
+import { useDialog } from "../../hooks";
+
 
 // Sample Data
 const columns = [
@@ -59,6 +62,7 @@ function RecordList() {
   const [anchorElUser, setAnchorElUser, semester, setSemester] = React.useState(null);
   const [comments, setComments] = React.useState(null);
   const [isDeleted, setIsDeleted] = React.useState(false);
+  const { open: deleteDialogStatus, toggle: toggleDeleteDialog } = useDialog();
   
   const handleOpenOptionsMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -79,6 +83,34 @@ function RecordList() {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleDeleteRecord = () => {
+    const record = {
+      action: "delete-record",
+      student_number: studno
+    };
+
+    const deleteRecord= async () => {
+      const res = await fetch(
+        "http://localhost/backend/details.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(record)
+        });
+
+      const body = await res.text()
+      if(res.ok){
+        setIsDeleted(true);
+        toggleDeleteDialog();
+      }
+    }
+
+    deleteRecord().catch(console.error)
+
   };
 
   useEffect(() => {
@@ -105,6 +137,12 @@ function RecordList() {
 
     fetchComments().catch(console.error)
   }, [])
+
+  if(isDeleted){
+    return(
+        <Navigate to="/records"/>
+    )
+  }
 
   return (
     <div>
@@ -213,10 +251,17 @@ function RecordList() {
         {/* Edit and Delete Buttons */}
         <Box sx={{ m: 3.5, flexGrow: 1, display:"flex", justifyContent:"flex-end"}}>
           <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} sx={{marginRight:1}} >Edit</Button>
-          <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Delete</Button>
+          <Button onClick={toggleDeleteDialog} variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Delete</Button>
         </Box>
+        <DeleteRecordDialog
+        open={deleteDialogStatus}
+        name={"<Name>"}
+        studno={studno}
+        handleCancel={toggleDeleteDialog}
+        handleDelete={handleDeleteRecord}
+        />
       </Box>
-      
+    
     </div>
     
   );
