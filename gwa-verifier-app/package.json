@@ -47,7 +47,7 @@
         [
           "@electron-forge/plugin-webpack",
           {
-            "devContentSecurityPolicy":"connect-src self * http://localhost/backend/login.php",
+            "devContentSecurityPolicy":"connect-src 'self' * http://localhost",
             "mainConfig": "./webpack.main.config.js",
             "renderer": {
               "config": "./webpack.renderer.config.js",
