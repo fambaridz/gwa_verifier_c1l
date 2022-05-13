@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { 
   Box,
   Typography, 
@@ -18,33 +18,39 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import { Add, Edit, Delete } from "@mui/icons-material";
+import { Add, Edit, Delete, WindowSharp } from "@mui/icons-material";
 import "./ManageCommitteeAccounts.css";
 import { Link, useNavigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/private-theming";
-
 //TODO Clean up code ~Zenn
 
 
 function ManageCommitteeAccounts() {
   const navigate = useNavigate();
   
-  function createData(email, name, password) {
-  return {email, name, password};
+  function createData(email, name) {
+  return {email, name};
 }
-  
+	const [rows, setRow] = React.useState([])	
+	const dataRows = []
 
-  
-	const rows = [
-	  createData('crcastro2@up.edu.ph', 'Christine Marie Castro', 'Castro' ),
-	  createData('krcastillo@up.edu.ph', 'Kyno Castillo', "Castillo"),
-	  createData('jflar@up.edu.ph', 'Jeff Lar', 'Lar'),
-	  createData('kcmartin@up.edu.ph', 'Keith Florence Martin', "Martin"),
-	  createData('iisalazar@up.edu.ph', 'Ian Salazar', 'Salazar'),
-	  createData('zcreyes@up.edu.ph', 'Zenn Louie Reyes', 'Reyes')
-	];
+	useEffect(() => {
+		fetch(
+			"http://localhost/backend/committee-api.php",
+			{
+				method: "GET",
+			})
+			.then(response => response.json())
+			.then(data => {
+				data.map(item => {
+					dataRows.push(createData(item.email, item.firstname.concat(" " + item.lastname)))
+				});
+				setRow(dataRows)
+			})
+	}, [])
+
+
 function addUserForm() {
-
 			  async function handleSubmit(event) {
 				event.preventDefault();
 				setOpenAdd(false);
@@ -62,7 +68,6 @@ function addUserForm() {
 }
 
 function editUserForm() {
-
 			  async function handleSubmit(event) {
 				event.preventDefault();
 				setOpenEdit(false);
@@ -78,6 +83,8 @@ function editUserForm() {
 			<Button type="submit" className="modalButton" color="success" variant="contained">Submit</Button>
 			</form>;
 }
+
+
 	const style = {
 	  position: 'absolute',
 	  top: '50%',
@@ -137,8 +144,12 @@ function editUserForm() {
 	}
 
 	
+
+	
   const [openAdd, setOpenAdd] = React.useState(false);
   const [openEdit, setOpenEdit] = React.useState(false);
+ 
+
   return (
     <div>
 		<Box sx={{ mt: 2.5, ml: 3, fontSize: 14 }}>
@@ -162,7 +173,6 @@ function editUserForm() {
 							<TableRow>
 								<TableCell>Email</TableCell>
 								<TableCell>Name</TableCell>
-								<TableCell>Password</TableCell>
 								<TableCell></TableCell>
 								<TableCell></TableCell>
 							</TableRow>
@@ -177,9 +187,8 @@ function editUserForm() {
 										{row.email}
 									</TableCell>
 									<TableCell>{row.name}</TableCell>
-									<TableCell>{row.password}</TableCell>
 									<TableCell><EditButton onClickEdit={() => setOpenEdit(true)}/></TableCell>
-									<TableCell><Delete /></TableCell>
+									<TableCell><Delete/></TableCell>
 								</TableRow>
 							))}
 						</TableBody>
