@@ -2,11 +2,6 @@ import * as React from "react";
 import {
   Box,
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   Toolbar,
   Typography,
 } from "@mui/material";
@@ -14,13 +9,18 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Add, Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material";
+import DeleteRecordDialog from "Components/DeleteRecordDialog";
+import { useDialog } from "../../hooks";
 
 function RecordList() {
   let navigate = useNavigate();
-  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
-  const handleOpenDeleteDialog = () => setOpenDeleteDialog(true);
-  const handleCloseDeleteDialog = () => setOpenDeleteDialog(false);
+  const refreshPage = () => {
+    navigate(0);
+  }
 
+  const { open: deleteDialogStatus, toggle: toggleDeleteDialog } = useDialog();
+  const [studno, setStudNo] = React.useState(null);
+  const [name, setName] = React.useState(null);
   const [students, setStudents] = React.useState([]);
   var studentList = [];
 
@@ -28,8 +28,29 @@ function RecordList() {
     navigate("/records/add");
   }
 
+  function getStudentNumber(selectedId) {
+    return studentList.find(x => x.id === selectedId).studno;
+  }
+
+  function getStudentName(selectedId) {
+    return studentList.find(x => x.id === selectedId).name;
+  }
+
+  function createName(item) {
+    let middlename = (item.middlename == null) ? "" : " " + item.middlename;
+    let suffix = (item.suffix == null) ? "" : " " + item.suffix + ".";
+    
+    return item.lastname + ", " + item.firstname + middlename + suffix;
+  }
+
   const redirectToRecordDetails = (selectedId) => {
-    navigate("/records/" + rows.find(x => x.id === selectedId).studno);
+    navigate("/records/" + getStudentNumber(selectedId));
+  };
+
+  const openDeleteDialog = (selectedId) => {
+    setStudNo(getStudentNumber(selectedId));
+    setName(getStudentName(selectedId));
+    toggleDeleteDialog();
   };
 
   const columns = [
@@ -54,20 +75,15 @@ function RecordList() {
       type: "actions",
       headerName: "Action",
       width: 70,
-      renderCell: () => (
-        <Button onClick={handleOpenDeleteDialog}>
-          <Delete />
-        </Button>
+      renderCell: (params) => (
+        <>
+          <Button onClick={() => openDeleteDialog(params.id)}>
+            <Delete />
+          </Button>
+        </>
       ),
     },
   ];
-
-  function createName(item) {
-    let middlename = (item.middlename == null) ? "" : " " + item.middlename;
-    let suffix = (item.suffix == null) ? "" : " " + item.suffix + ".";
-    
-    return item.lastname + ", " + item.firstname + middlename + suffix;
-  }
 
   React.useEffect(() => {
     const fetchStudents = async () => {
@@ -96,27 +112,39 @@ function RecordList() {
     })
   })
 
+  const handleDeleteRecord = () => {
+    const record = {target: studno};
+
+    const deleteRecord = async () => {
+      const res = await fetch(
+        "http://localhost/backend/studentList.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(record)
+        });
+
+        const body = await res.text();
+        if(res.ok) {
+          toggleDeleteDialog();
+          refreshPage();
+        }
+    }
+
+    deleteRecord().catch(console.error);
+  };
+
   return (
     <div>
-      <Dialog
-        open={openDeleteDialog}
-        onClose={handleCloseDeleteDialog}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title" style={{ backgroundColor: "#ECD718" }}>
-          {"Delete student record?"}
-        </DialogTitle>
-        <DialogContent sx={{ mt: 2, mb: -1 }}>
-          <DialogContentText id="alert-dialog-description">
-            This action cannot be undone.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseDeleteDialog}>Cancel</Button>
-          <Button onClick={handleCloseDeleteDialog}>Delete</Button>
-        </DialogActions>
-      </Dialog>
+      <DeleteRecordDialog
+        open={deleteDialogStatus}
+        name={name}
+        studno={studno}
+        handleCancel={toggleDeleteDialog}
+        handleDelete={handleDeleteRecord}
+      />
       <Box sx={{ m: 3.5, flexGrow: 1 }}>
         <Toolbar>
           <Typography
