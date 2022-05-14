@@ -48,6 +48,7 @@
           "@electron-forge/plugin-webpack",
           {
             "mainConfig": "./webpack.main.config.js",
+            "devContentSecurityPolicy": "connect-src 'self' * http://localhost",
             "renderer": {
               "config": "./webpack.renderer.config.js",
               "entryPoints": [

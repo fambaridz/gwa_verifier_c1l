@@ -21,6 +21,9 @@ function RecordList() {
   const handleOpenDeleteDialog = () => setOpenDeleteDialog(true);
   const handleCloseDeleteDialog = () => setOpenDeleteDialog(false);
 
+  const [students, setStudents] = React.useState([]);
+  var studentList = [];
+
   function redirectToAddStudentRecords() {
     navigate("/records/add");
   }
@@ -33,7 +36,7 @@ function RecordList() {
     {
       field: "name",
       headerName: "Name",
-      width: 290,
+      width: 310,
       renderCell: (params) => (
         <>
           <Button variant="text" color="black" onClick={() => redirectToRecordDetails(params.id)}>
@@ -43,10 +46,9 @@ function RecordList() {
       ),
     },
     { field: "studno", headerName: "Student Number", width: 120 },
-    { field: "degreeProgram", headerName: "Degree Program", width: 290 },
+    { field: "degreeProgram", headerName: "Degree Program", width: 310 },
     { field: "gwa", headerName: "GWA", width: 80 },
-    { field: "verified", headerName: "Verified", width: 90 },
-    { field: "qualified", headerName: "Qualified", width: 90 },
+    { field: "status", headerName: "Status", width: 120 },
     {
       field: "action",
       type: "actions",
@@ -60,71 +62,39 @@ function RecordList() {
     },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      name: "Castro, Christine Marie",
-      studno: 201900000,
-      degreeProgram: "BS Computer Science",
-      gwa: 1,
-      verified: "Yes",
-      qualified: "Yes",
-    },
-    {
-      id: 2,
-      name: "Castillo, Kyno",
-      studno: 201900001,
-      degreeProgram: "BS Computer Science",
-      gwa: 1,
-      verified: "No",
-      qualified: "Yes",
-    },
-    {
-      id: 3,
-      name: "Lar, Jeff",
-      studno: 201900002,
-      degreeProgram: "BS Computer Science",
-      gwa: 1,
-      verified: "Yes",
-      qualified: "Yes",
-    },
-    {
-      id: 4,
-      name: "Martin, Keith Florence",
-      studno: 201900003,
-      degreeProgram: "BS Computer Science",
-      gwa: 1,
-      verified: "No",
-      qualified: "Yes",
-    },
-    {
-      id: 5,
-      name: "Salazar, Ian",
-      studno: 201900004,
-      degreeProgram: "BS Computer Science",
-      gwa: 1,
-      verified: "Yes",
-      qualified: "Yes",
-    },
-    {
-      id: 6,
-      name: "Reyes, Zenn Louie",
-      studno: 201900005,
-      degreeProgram: "BS Computer Science",
-      gwa: 1,
-      verified: "No",
-      qualified: "Yes",
-    },
-    {
-      id: 7,
-      name: "Makiling, Maria",
-      studno: 201900006,
-      degreeProgram: "BS Mathematics & Science Teaching",
-      gwa: 1,
-      verified: "No",
-      qualified: "Yes",
-    },
-  ];
+  function createName(item) {
+    let middlename = (item.middlename == null) ? "" : " " + item.middlename;
+    let suffix = (item.suffix == null) ? "" : " " + item.suffix + ".";
+    
+    return item.lastname + ", " + item.firstname + middlename + suffix;
+  }
+
+  React.useEffect(() => {
+    const fetchStudents = async () => {
+      const res = await fetch(
+        "http://localhost/backend/studentList.php",
+        {
+          method: "GET",
+        }
+      )
+
+      const body = await res.json()
+      setStudents(body)
+    }
+
+    fetchStudents().catch(console.error)
+  }, [])
+
+  students.map(function(item, index) {
+    studentList.push({
+      "id": index,
+      "name": createName(item),
+      "studno": parseInt(item.student_number),
+      "degreeProgram": item.degree_program,
+      "gwa": parseFloat(item.gwa),
+      "status": item.status
+    })
+  })
 
   return (
     <div>
@@ -170,25 +140,10 @@ function RecordList() {
             </Button>
           </ThemeProvider>
         </Toolbar>
-        {/* <Box sx={{ ml: 3, mr: 3, flexGrow: 1 }}>
-          <TextField
-            fullWidth
-            id="search-bar"
-            label="Search by name..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-            variant="standard"
-          />
-        </Box> */}
         <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
           <div style={{ height: 400, width: "100%" }}>
             <DataGrid
-              rows={rows}
+              rows={studentList}
               columns={columns}
               pageSize={20}
               rowsPerPageOptions={[20]}
