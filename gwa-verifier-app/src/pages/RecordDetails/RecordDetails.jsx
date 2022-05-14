@@ -19,31 +19,13 @@ import {
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import { Add, Search, Delete } from "@mui/icons-material";
 import CommitteeComments from "Components/CommitteeComments";
+import RecordDetailTable from "Components/RecordDetailTable";
 import DeleteRecordDialog from "Components/DeleteRecordDialog";
 import { useDialog } from "../../hooks";
 
-
 // Sample Data
-const columns = [
-  { field: 'id', field: 'course', headerName: 'Course', width: 360 },
-  { field: 'numUnits', headerName: 'No of units', width: 320 },
-  { field: 'grade', headerName: 'Grade', width: 110 },
-  { field: 'grade2', headerName: '', width: 110 },
-  { field: 'grade3', headerName: '', width: 110},
-];
-
-const rows = [
-  { id: 1, course: 'CMSC 12', numUnits: '3', grade: '1.25', grade2: '3.75', grade3: '3.75' },
-  { id: 2, course: 'CMSC 12', numUnits: '3', grade: '1.25', grade2: '3.75', grade3: '3.75' },
-  { id: 3, course: 'CMSC 12', numUnits: '3', grade: '1.25', grade2: '3.75', grade3: '3.75' },
-  { id: 4, course: 'CMSC 12', numUnits: '3', grade: '1.25', grade2: '3.75', grade3: '3.75' },
-  { id: 5, course: 'CMSC 12', numUnits: '3', grade: '1.25', grade2: '3.75', grade3: '3.75' },
-  { id: 6, course: 'CMSC 12', numUnits: '3', grade: '1.25', grade2: '3.75', grade3: '3.75' },
-  { id: 7, course: 'CMSC 12', numUnits: '3', grade: '1.25', grade2: '3.75', grade3: '3.75' },
-];
-
 function createData(zero, one ,two) {
-  return { zero, one, two };
+  return { zero, one, two};
 }
 
 const rows2 = [
@@ -58,9 +40,10 @@ const rows2 = [
 ];
 
 function RecordList() {
-  const studno = useParams().id
+  const studno = useParams().id;
   const [anchorElUser, setAnchorElUser, semester, setSemester] = React.useState(null);
   const [comments, setComments] = React.useState(null);
+  const [courses, setCourses] = React.useState(null);
   const [isDeleted, setIsDeleted] = React.useState(false);
   const { open: deleteDialogStatus, toggle: toggleDeleteDialog } = useDialog();
   
@@ -132,17 +115,33 @@ function RecordList() {
 
       const body = await res.text()
       setComments(JSON.parse(body))
+    }
+
+    const course = {
+      action: "get-courses",
+      //manual stud no for testing
+      student_number: 201501234
+    }
+    
+    const fetchCourses= async () => {
+      const res = await fetch(
+        "http://localhost/backend/details.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(course)
+        });
+
+      const body = await res.text()
+      setCourses(JSON.parse(body))
 
     }
 
     fetchComments().catch(console.error)
+    fetchCourses().catch(console.error)
   }, [])
-
-  if(isDeleted){
-    return(
-        <Navigate to="/records"/>
-    )
-  }
 
   return (
     <div>
@@ -210,16 +209,7 @@ function RecordList() {
           </FormControl>
         </Box>
         {/* Table 1 */}
-        <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
-          <div style={{ height: 400, width: '100%' }}>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              pageSize={20}
-              rowsPerPageOptions={[20]}
-            />
-          </div>
-        </Box>
+        <RecordDetailTable courses={courses}/>
         {/* Table 2 */}
         <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
           <Table size="small" aria-label="a dense table">
@@ -261,7 +251,6 @@ function RecordList() {
         handleDelete={handleDeleteRecord}
         />
       </Box>
-    
     </div>
     
   );
