@@ -62,7 +62,7 @@ switch ($body->action) {
     
     //added by: Francis Bejosano
     case 'record-per-semester':
-      $sql = "SELECT FROM student_record WHERE term = '$body->term";
+      $sql = "SELECT * FROM student_record WHERE term = '$body->term'";
       $result = mysqli_multi_query($con,$sql);
       break;
 }
