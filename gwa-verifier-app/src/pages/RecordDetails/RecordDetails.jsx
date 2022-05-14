@@ -1,6 +1,7 @@
 import React, { useEffect} from "react";
 import { Navigate, useParams } from "react-router-dom";
 import {
+  Alert,
   Box,
   Button,
   FormControl,
@@ -41,11 +42,20 @@ const rows2 = [
 
 function RecordList() {
   const studno = useParams().id;
+  let textStatus = "SATISFIED"
+  const prevStatus = "UNSATISFIED";
+  // const prevStatus = useParams().status;
   const [anchorElUser, setAnchorElUser, semester, setSemester] = React.useState(null);
   const [comments, setComments] = React.useState(null);
   const [courses, setCourses] = React.useState(null);
   const [isDeleted, setIsDeleted] = React.useState(false);
   const { open: deleteDialogStatus, toggle: toggleDeleteDialog } = useDialog();
+
+  const [values, setValues] = React.useState({
+    alertMessage: '',
+    alertSeverity: '',
+    isAlert: false,
+  });
   
   const handleOpenOptionsMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -64,7 +74,68 @@ function RecordList() {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+  const handleClose = (e) => {
+    let newStatus = "SATISFIED"
+    if (e.target.id == 1) {
+      newStatus = "SATISFIED";
+    } else if (e.target.id == 2) {
+      newStatus = "UNSATISFIED";
+    } else if (e.target.id == 3) {
+      newStatus = "UNVERIFIED";
+    } else {
+      newStatus = "DEFICIENT";
+    }
+    const status = {
+      action: "status-change",
+      student_number: studno,
+      prevStatus: prevStatus,
+      newStatus: newStatus
+    }
+    fetch(
+      "http://localhost/backend/details.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(status)
+      })
+      .then(response => response.json())
+      .then(body => {
+        console.log(body)
+        if (body == "Invalid status"){
+          setValues({...values, 
+            isAlert:true, 
+            alertSeverity:"error", 
+            alertMessage:"Failed to change status"})
+            setTimeout(()=>{}, 1000)
+        }
+        else if (e.target.id == 1) {
+          setValues({...values, 
+            isAlert:true, 
+            alertSeverity:"success", 
+            alertMessage:"Status Changed to SATISFIED"})
+          setTimeout(()=>{}, 1000)
+        } else if (e.target.id == 2) {
+          setValues({...values, 
+            isAlert:true, 
+            alertSeverity:"success", 
+            alertMessage:"Status Changed to UNSATISFIED"})
+          setTimeout(()=>{}, 1000)
+        } else if (e.target.id == 3) {
+          setValues({...values, 
+            isAlert:true, 
+            alertSeverity:"success", 
+            alertMessage:"Status Changed to UNVERIFIED"})
+          setTimeout(()=>{}, 1000)
+        } else if (e.target.id == 4) {
+          setValues({...values, 
+            isAlert:true, 
+            alertSeverity:"success", 
+            alertMessage:"Status Changed to DEFICIENT"})
+          setTimeout(()=>{}, 1000)
+        }
+      })
     setAnchorEl(null);
   };
 
@@ -173,12 +244,12 @@ function RecordList() {
                   'aria-labelledby': 'basic-button',
                 }}
               >
-                <MenuItem onClick={handleClose}>Satisfied</MenuItem>
-                <MenuItem onClick={handleClose}>Unsatisfied</MenuItem>
-                <MenuItem onClick={handleClose}>Unverified</MenuItem>
-                <MenuItem onClick={handleClose}>Deficient</MenuItem>
+                <MenuItem onClick={handleClose} id={1}>Satisfied</MenuItem>
+                <MenuItem onClick={handleClose} id={2}>Unsatisfied</MenuItem>
+                <MenuItem onClick={handleClose} id={3}>Unverified</MenuItem>
+                <MenuItem onClick={handleClose} id={4}>Deficient</MenuItem>
           </Menu>
-        <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Satisfied</Button>
+          <Typography variant="contained" display="flex" justifyContent="center" alignItems="center" style={{ backgroundColor:'#C7C7C7', width: 120, height: 38, borderRadius: 8 }} >{textStatus}</Typography>
         </Toolbar>
         <Toolbar>
           <div>
@@ -190,6 +261,7 @@ function RecordList() {
             </Typography>
           </div>
         </Toolbar>
+        {values.isAlert? <Alert severity={values.alertSeverity}>{values.alertMessage}</Alert>: <></>}
         {/* Dropdown menu for semesters */}
         <Box sx={{ m: 3.5}}>
           <FormControl fullWidth>
