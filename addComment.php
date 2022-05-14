@@ -31,7 +31,7 @@ $result = mysqli_query($con,$sql);
 
 // die if SQL statement failed
 if (!$result) {
-  echo "duplicate key";
+  echo "error";
 } else {
   echo http_response_code();
 }
