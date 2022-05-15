@@ -6,7 +6,7 @@ header("Access-Control-Allow-Methods: *");
 $host = "localhost"; 
 $user = "root"; 
 $password = ""; 
-$dbname = "gwa_verifier_cmsc_128"; 
+$dbname = "gwa_verifier_c1l_db"; 
 
 //connect to database
 $con = mysqli_connect($host, $user, $password,$dbname);
