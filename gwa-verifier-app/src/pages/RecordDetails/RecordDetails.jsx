@@ -1,11 +1,9 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect} from "react";
+import { Navigate, useParams } from "react-router-dom";
 import {
-  AppBar,
   Box,
   Button,
   FormControl,
-  IconButton,
   InputLabel,
   Menu,
   MenuItem,
@@ -19,9 +17,10 @@ import {
   Typography,
 } from "@mui/material";
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
-import { ArrowDropDown, Add, Search, Delete } from "@mui/icons-material";
-import { Link } from "react-router-dom";
-import "./RecordDetails.css";
+import { Add, Search, Delete } from "@mui/icons-material";
+import CommitteeComments from "Components/CommitteeComments";
+import DeleteRecordDialog from "Components/DeleteRecordDialog";
+import { useDialog } from "../../hooks";
 
 // Sample Data
 const columns = [
@@ -58,12 +57,19 @@ const rows2 = [
 ];
 
 function RecordList() {
-  const [semester, setSemester] = React.useState('');
-  let navigate = useNavigate();
-
-  function redirectToEditStudentRecords() {
-    navigate("/records/user_id/edit");
-  }
+  const studno = useParams().id
+  const [anchorElUser, setAnchorElUser, semester, setSemester] = React.useState(null);
+  const [comments, setComments] = React.useState(null);
+  const [isDeleted, setIsDeleted] = React.useState(false);
+  const { open: deleteDialogStatus, toggle: toggleDeleteDialog } = useDialog();
+  
+  const handleOpenOptionsMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  
+  const handleCloseOptionsMenu = () => {
+    setAnchorElUser(null);
+  };
 
   const handleChange = (event) => {
     setSemester(event.target.value);
@@ -78,13 +84,67 @@ function RecordList() {
     setAnchorEl(null);
   };
 
+  const handleDeleteRecord = () => {
+    const record = {
+      action: "delete-record",
+      student_number: studno
+    };
+
+    const deleteRecord= async () => {
+      const res = await fetch(
+        "http://localhost/backend/details.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(record)
+        });
+
+      const body = await res.text()
+      if(res.ok){
+        setIsDeleted(true);
+        toggleDeleteDialog();
+      }
+    }
+
+    deleteRecord().catch(console.error)
+
+  };
+
+  useEffect(() => {
+    const student = {
+      action: "get-comments",
+      student_number: studno
+    }
+    
+    const fetchComments= async () => {
+      const res = await fetch(
+        "http://localhost/backend/details.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(student)
+        });
+
+      const body = await res.text()
+      setComments(JSON.parse(body))
+
+    }
+
+    fetchComments().catch(console.error)
+  }, [])
+
+  if(isDeleted){
+    return(
+        <Navigate to="/records"/>
+    )
+  }
+
   return (
     <div>
-      <Box sx={{ mt: 2.5, ml: 3, fontSize: 14 }}>
-        <Link to="/records" className="back-link">
-          &lt; Back to Student Records
-        </Link>
-      </Box>
       <Box sx={{ m: 3.5, flexGrow: 1 }}>
         {/* Toolbars for header */}
         <Toolbar>
@@ -118,7 +178,7 @@ function RecordList() {
                 <MenuItem onClick={handleClose}>Unverified</MenuItem>
                 <MenuItem onClick={handleClose}>Deficient</MenuItem>
           </Menu>
-        <Typography   display="flex" justifyContent="center" alignItems="center" style={{ backgroundColor:'#C7C7C7', width: 120, height: 38, borderRadius: 8 }} >SATISFIED</Typography>
+        <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Satisfied</Button>
         </Toolbar>
         <Toolbar>
           <div>
@@ -186,33 +246,21 @@ function RecordList() {
           </Table>
         </Box>
         {/* Comments */}
-        <Box sx={{ m: 3.5, flexGrow: 1 }}>
-          <div>
-            <Typography style={{ fontWeight: 1000}} component="div" sx={{ flex: 1 }}>
-              Colsec Committee
-            </Typography>
-            <Typography component="div" sx={{ flex: 1 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ab eveniet iste aliquam voluptate, distinctio doloribus quos exercitationem vitae est quasi dolorem, repellat, corporis molestias vero animi. Voluptatibus, aliquid illo?
-            </Typography>
-          </div>
-        </Box>
-        <Box sx={{ m: 3.5, flexGrow: 1 }}>
-          <div>
-            <Typography style={{ fontWeight: 1000}} component="div" sx={{ flex: 1 }}>
-              Colsec Committee
-            </Typography>
-            <Typography component="div" sx={{ flex: 1 }}>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident ab eveniet iste aliquam voluptate, distinctio doloribus quos exercitationem vitae est quasi dolorem, repellat, corporis molestias vero animi. Voluptatibus, aliquid illo?
-            </Typography>
-          </div>
-        </Box>
+        <CommitteeComments comments={comments}/>
         {/* Edit and Delete Buttons */}
         <Box sx={{ m: 3.5, flexGrow: 1, display:"flex", justifyContent:"flex-end"}}>
-          <Button onClick={redirectToEditStudentRecords} variant="contained" style={{ backgroundColor:'#C7C7C7'}} sx={{marginRight:1}} >Edit</Button>
-          <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Delete</Button>
+          <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} sx={{marginRight:1}} >Edit</Button>
+          <Button onClick={toggleDeleteDialog} variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Delete</Button>
         </Box>
+        <DeleteRecordDialog
+        open={deleteDialogStatus}
+        name={"<Name>"}
+        studno={studno}
+        handleCancel={toggleDeleteDialog}
+        handleDelete={handleDeleteRecord}
+        />
       </Box>
-      
+    
     </div>
     
   );
