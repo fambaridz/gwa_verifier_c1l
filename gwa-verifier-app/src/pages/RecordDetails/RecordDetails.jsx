@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { Navigate, useNavigate, useParams, Link } from "react-router-dom";
 import {
   Alert,
   Box,
@@ -22,6 +22,7 @@ import { Add, Search, Delete } from "@mui/icons-material";
 import CommitteeComments from "Components/CommitteeComments";
 import RecordDetailTable from "Components/RecordDetailTable";
 import DeleteRecordDialog from "Components/DeleteRecordDialog";
+import StudentStatus from "Components/StudentStatus";
 import { useDialog } from "../../hooks";
 import { BACKEND_URI } from "../../constants.js";
 
@@ -50,6 +51,8 @@ function RecordList() {
   const [anchorElUser, setAnchorElUser, semester, setSemester] = useState(null);
   const [comments, setComments] = useState(null);
   const [courses, setCourses] = useState(null);
+  const [details, setDetails] = React.useState(null);
+  const [name, setName] = React.useState(null);
   const [isDeleted, setIsDeleted] = useState(false);
   const { open: deleteDialogStatus, toggle: toggleDeleteDialog } = useDialog();
 
@@ -61,6 +64,10 @@ function RecordList() {
     alertSeverity: "",
     isAlert: false,
   });
+
+  function redirectToEditStudentRecords() {
+		navigate("/records/" + studno + "/edit");
+	}
 
   const handleOpenOptionsMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -80,28 +87,33 @@ function RecordList() {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = (e) => {
-    let newStatus = "SATISFIED";
+    let newStatus = details.status;
+    let prevStatus = details.status;
+
     if (e.target.id == 1) {
       newStatus = "SATISFIED";
     } else if (e.target.id == 2) {
       newStatus = "UNSATISFIED";
     } else if (e.target.id == 3) {
       newStatus = "UNVERIFIED";
-    } else {
+    } else if (e.target.id == 4) {
       newStatus = "DEFICIENT";
     }
-    const status = {
+    const statusChange = {
       action: "status-change",
-      student_number: studno,
-      prevStatus: prevStatus,
+      student_number: details.student_number,
+      prevStatus: details.status,
       newStatus: newStatus,
     };
+
+    console.log(statusChange);
+
     fetch(`${BACKEND_URI}/details.php`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(status),
+      body: JSON.stringify(statusChange),
     })
       .then((response) => response.json())
       .then((body) => {
@@ -122,6 +134,7 @@ function RecordList() {
             alertMessage: "Status Changed to SATISFIED",
           });
           setTimeout(() => {}, 1000);
+          setTimeout(window.location.reload(), 5000)
         } else if (e.target.id == 2) {
           setValues({
             ...values,
@@ -130,6 +143,7 @@ function RecordList() {
             alertMessage: "Status Changed to UNSATISFIED",
           });
           setTimeout(() => {}, 1000);
+          setTimeout(window.location.reload(), 5000)
         } else if (e.target.id == 3) {
           setValues({
             ...values,
@@ -138,6 +152,7 @@ function RecordList() {
             alertMessage: "Status Changed to UNVERIFIED",
           });
           setTimeout(() => {}, 1000);
+          setTimeout(window.location.reload(), 5000)
         } else if (e.target.id == 4) {
           setValues({
             ...values,
@@ -146,6 +161,7 @@ function RecordList() {
             alertMessage: "Status Changed to DEFICIENT",
           });
           setTimeout(() => {}, 1000);
+          setTimeout(window.location.reload(), 5000)
         }
       });
     setAnchorEl(null);
@@ -170,7 +186,6 @@ function RecordList() {
       if (res.ok) {
         setIsDeleted(true);
         toggleDeleteDialog();
-        navigate("/records");
       }
     };
 
@@ -228,13 +243,43 @@ function RecordList() {
       setCourses(parsed);
     };
 
+    const stud_details = {
+      action: "get-student",
+      student_number: studno
+    }
+
+    const fetchDetails = async () => {
+      const res = await fetch(`${BACKEND_URI}/details.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(stud_details),
+      });
+
+      const body = await res.text();
+      const stud = JSON.parse(body)[0];
+      setDetails(stud);
+      setName([stud.firstname, stud.middlename, stud.lastname, stud.suffix].join(' '));
+    }
+
     fetchComments().catch(console.error);
     fetchCourses().catch(console.error);
+    fetchDetails().catch(console.error);
+    console.log(details);
   }, []);
 
-  function redirectToEditStudentRecords() {
-		navigate("/records/" + studno + "/edit");
-	}
+  // if student record was deleted
+  if(isDeleted){
+    return(
+      <Navigate to="/records/"/>
+    )
+  }
+
+  // if details not yet fetched
+  if(details==null){
+    return(<></>)
+  }
 
   return (
     <div>
@@ -252,7 +297,7 @@ function RecordList() {
             component="div"
             sx={{ flex: 1 }}
           >
-            Jeff Emerson Lar
+            {name}
           </Typography>
           <Button
             variant="contained"
@@ -289,20 +334,7 @@ function RecordList() {
               Deficient
             </MenuItem>
           </Menu>
-          <Typography
-            variant="contained"
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            style={{
-              backgroundColor: "#C7C7C7",
-              width: 120,
-              height: 38,
-              borderRadius: 8,
-            }}
-          >
-            {textStatus}
-          </Typography>
+        <StudentStatus student={details}/>
         </Toolbar>
         <Toolbar>
           <div>
@@ -312,7 +344,7 @@ function RecordList() {
               component="div"
               sx={{ flex: 1 }}
             >
-              BS Computer Science
+              {details.degree_program}
             </Typography>
             <Typography
               variant="h6"
@@ -415,7 +447,7 @@ function RecordList() {
         </Box>
         <DeleteRecordDialog
           open={deleteDialogStatus}
-          name={"<Name>"}
+          name={name}
           studno={studno}
           handleCancel={toggleDeleteDialog}
           handleDelete={handleDeleteRecord}
