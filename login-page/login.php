@@ -32,15 +32,24 @@ if (!isset($data->Email) || !isset($data->Password)){
 
         //check if email is registered
         if(mysqli_num_rows($result) == 0){
-            echo "Email is not registered";
+            $jObj->status = False;
+            $myJSON = json_encode($jObj);
+            echo $myJSON;
         } else {
             $row = mysqli_fetch_assoc($result);
 
             //check if passwords match 
             if(!($hashed_password == $row['Pass'])){
-                echo "Email and password do not match";
+                $jObj->status = False;
+                $myJSON = json_encode($jObj);
+                echo $myJSON;
             } else {
-                echo "You are logged in";
+                $jObj->status = True;
+                $myJSON = json_encode($jObj);
+                echo $myJSON;
+                setcookie('email', $email, time()+60*60*7);
+                session_start();
+                $_SESSION['email'] = $email;
             }
         }
     }
@@ -48,10 +57,8 @@ if (!isset($data->Email) || !isset($data->Password)){
 
 $conn->close();
 /* 
-
 References:
 Prepare statements: https://www.youtube.com/watch?v=I4JYwRIjX6c
 Handle json objects: https://www.w3schools.com/js/js_json_php.asp
 Decrypt password: https://www.php.net/manual/en/function.password-verify.php
-
 */
