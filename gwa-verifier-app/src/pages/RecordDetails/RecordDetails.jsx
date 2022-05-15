@@ -1,6 +1,7 @@
 import React, { useEffect} from "react";
 import { Navigate, useParams } from "react-router-dom";
 import {
+  Alert,
   Box,
   Button,
   FormControl,
@@ -19,30 +20,13 @@ import {
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import { Add, Search, Delete } from "@mui/icons-material";
 import CommitteeComments from "Components/CommitteeComments";
+import RecordDetailTable from "Components/RecordDetailTable";
 import DeleteRecordDialog from "Components/DeleteRecordDialog";
 import { useDialog } from "../../hooks";
 
 // Sample Data
-const columns = [
-  { field: 'id', field: 'course', headerName: 'Course', width: 360 },
-  { field: 'numUnits', headerName: 'No of units', width: 320 },
-  { field: 'grade', headerName: 'Grade', width: 110 },
-  { field: 'grade2', headerName: '', width: 110 },
-  { field: 'grade3', headerName: '', width: 110},
-];
-
-const rows = [
-  { id: 1, course: 'CMSC 12', numUnits: '3', grade: '1.25', grade2: '3.75', grade3: '3.75' },
-  { id: 2, course: 'CMSC 12', numUnits: '3', grade: '1.25', grade2: '3.75', grade3: '3.75' },
-  { id: 3, course: 'CMSC 12', numUnits: '3', grade: '1.25', grade2: '3.75', grade3: '3.75' },
-  { id: 4, course: 'CMSC 12', numUnits: '3', grade: '1.25', grade2: '3.75', grade3: '3.75' },
-  { id: 5, course: 'CMSC 12', numUnits: '3', grade: '1.25', grade2: '3.75', grade3: '3.75' },
-  { id: 6, course: 'CMSC 12', numUnits: '3', grade: '1.25', grade2: '3.75', grade3: '3.75' },
-  { id: 7, course: 'CMSC 12', numUnits: '3', grade: '1.25', grade2: '3.75', grade3: '3.75' },
-];
-
 function createData(zero, one ,two) {
-  return { zero, one, two };
+  return { zero, one, two};
 }
 
 const rows2 = [
@@ -57,11 +41,21 @@ const rows2 = [
 ];
 
 function RecordList() {
-  const studno = useParams().id
+  const studno = useParams().id;
+  let textStatus = "SATISFIED"
+  const prevStatus = "UNSATISFIED";
+  // const prevStatus = useParams().status;
   const [anchorElUser, setAnchorElUser, semester, setSemester] = React.useState(null);
   const [comments, setComments] = React.useState(null);
+  const [courses, setCourses] = React.useState(null);
   const [isDeleted, setIsDeleted] = React.useState(false);
   const { open: deleteDialogStatus, toggle: toggleDeleteDialog } = useDialog();
+
+  const [values, setValues] = React.useState({
+    alertMessage: '',
+    alertSeverity: '',
+    isAlert: false,
+  });
   
   const handleOpenOptionsMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -80,7 +74,68 @@ function RecordList() {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+  const handleClose = (e) => {
+    let newStatus = "SATISFIED"
+    if (e.target.id == 1) {
+      newStatus = "SATISFIED";
+    } else if (e.target.id == 2) {
+      newStatus = "UNSATISFIED";
+    } else if (e.target.id == 3) {
+      newStatus = "UNVERIFIED";
+    } else {
+      newStatus = "DEFICIENT";
+    }
+    const status = {
+      action: "status-change",
+      student_number: studno,
+      prevStatus: prevStatus,
+      newStatus: newStatus
+    }
+    fetch(
+      "http://localhost/backend/details.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(status)
+      })
+      .then(response => response.json())
+      .then(body => {
+        console.log(body)
+        if (body == "Invalid status"){
+          setValues({...values, 
+            isAlert:true, 
+            alertSeverity:"error", 
+            alertMessage:"Failed to change status"})
+            setTimeout(()=>{}, 1000)
+        }
+        else if (e.target.id == 1) {
+          setValues({...values, 
+            isAlert:true, 
+            alertSeverity:"success", 
+            alertMessage:"Status Changed to SATISFIED"})
+          setTimeout(()=>{}, 1000)
+        } else if (e.target.id == 2) {
+          setValues({...values, 
+            isAlert:true, 
+            alertSeverity:"success", 
+            alertMessage:"Status Changed to UNSATISFIED"})
+          setTimeout(()=>{}, 1000)
+        } else if (e.target.id == 3) {
+          setValues({...values, 
+            isAlert:true, 
+            alertSeverity:"success", 
+            alertMessage:"Status Changed to UNVERIFIED"})
+          setTimeout(()=>{}, 1000)
+        } else if (e.target.id == 4) {
+          setValues({...values, 
+            isAlert:true, 
+            alertSeverity:"success", 
+            alertMessage:"Status Changed to DEFICIENT"})
+          setTimeout(()=>{}, 1000)
+        }
+      })
     setAnchorEl(null);
   };
 
@@ -131,17 +186,33 @@ function RecordList() {
 
       const body = await res.text()
       setComments(JSON.parse(body))
+    }
+
+    const course = {
+      action: "get-courses",
+      //manual stud no for testing
+      student_number: 201501234
+    }
+    
+    const fetchCourses= async () => {
+      const res = await fetch(
+        "http://localhost/backend/details.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(course)
+        });
+
+      const body = await res.text()
+      setCourses(JSON.parse(body))
 
     }
 
     fetchComments().catch(console.error)
+    fetchCourses().catch(console.error)
   }, [])
-
-  if(isDeleted){
-    return(
-        <Navigate to="/records"/>
-    )
-  }
 
   return (
     <div>
@@ -173,12 +244,12 @@ function RecordList() {
                   'aria-labelledby': 'basic-button',
                 }}
               >
-                <MenuItem onClick={handleClose}>Satisfied</MenuItem>
-                <MenuItem onClick={handleClose}>Unsatisfied</MenuItem>
-                <MenuItem onClick={handleClose}>Unverified</MenuItem>
-                <MenuItem onClick={handleClose}>Deficient</MenuItem>
+                <MenuItem onClick={handleClose} id={1}>Satisfied</MenuItem>
+                <MenuItem onClick={handleClose} id={2}>Unsatisfied</MenuItem>
+                <MenuItem onClick={handleClose} id={3}>Unverified</MenuItem>
+                <MenuItem onClick={handleClose} id={4}>Deficient</MenuItem>
           </Menu>
-        <Button variant="contained" style={{ backgroundColor:'#C7C7C7'}} >Satisfied</Button>
+          <Typography variant="contained" display="flex" justifyContent="center" alignItems="center" style={{ backgroundColor:'#C7C7C7', width: 120, height: 38, borderRadius: 8 }} >{textStatus}</Typography>
         </Toolbar>
         <Toolbar>
           <div>
@@ -190,6 +261,7 @@ function RecordList() {
             </Typography>
           </div>
         </Toolbar>
+        {values.isAlert? <Alert severity={values.alertSeverity}>{values.alertMessage}</Alert>: <></>}
         {/* Dropdown menu for semesters */}
         <Box sx={{ m: 3.5}}>
           <FormControl fullWidth>
@@ -209,16 +281,7 @@ function RecordList() {
           </FormControl>
         </Box>
         {/* Table 1 */}
-        <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
-          <div style={{ height: 400, width: '100%' }}>
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              pageSize={20}
-              rowsPerPageOptions={[20]}
-            />
-          </div>
-        </Box>
+        <RecordDetailTable courses={courses}/>
         {/* Table 2 */}
         <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
           <Table size="small" aria-label="a dense table">
@@ -260,7 +323,6 @@ function RecordList() {
         handleDelete={handleDeleteRecord}
         />
       </Box>
-    
     </div>
     
   );
