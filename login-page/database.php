@@ -3,7 +3,7 @@
 $host="localhost";
 $user="root";
 $password="";
-$db="gwa_verifier_cmsc_128";
+$db="gwa_verifier_c1l_db";
 
 //try to connect to database
 $conn = mysqli_connect($host, $user, $password, $db);
