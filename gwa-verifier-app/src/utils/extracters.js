@@ -6,6 +6,7 @@ import { csvToArray, fileReader } from "./parsers.js";
  * @param {string} text content of csv file the user uploaded
  */
 export async function csvExtracter(text) {
+  text = text.replaceAll("\r", "");
   let [name, degree, studNo, ...rest] = text.split("\n");
   const [lname, fname, mname = "", suffix = ""] = name.split(",");
   [degree] = degree.split(",");

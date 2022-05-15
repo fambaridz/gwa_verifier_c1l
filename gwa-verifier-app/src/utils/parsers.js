@@ -44,7 +44,7 @@ export function csvToArray(str, delimiter = ",") {
         let { term } = row;
 
         if (regex.test(term)) {
-          terms.push(term);
+          if (!terms.includes(term)) terms.push(term);
           let index = idx - 1;
           while (index >= 0 && !regex.test(arr[index].term)) {
             newArr[index] = {
