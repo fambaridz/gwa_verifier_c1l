@@ -17,7 +17,7 @@ if (!isset($data->Email) || !isset($data->Password)){
     $hashed_password = hash('sha256', trim($data->Password));
         
     //SQL Query
-    $sql = "SELECT * FROM logincreds WHERE User=?";
+    $sql = "SELECT * FROM committee WHERE email='$email'";
     //Prepare statement
     $stmt = mysqli_stmt_init($conn);
 
