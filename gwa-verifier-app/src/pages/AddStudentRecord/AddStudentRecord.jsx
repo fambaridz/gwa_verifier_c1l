@@ -207,21 +207,53 @@ function AddStudentRecord() {
     const uid = srUidPageMap[page];
 
     const studentRecord = studentRecords[uid];
+    let { studNo: studno } = studentRecord;
 
+    if (!studno) return;
+    studno = studno.split("-").join("");
     try {
-      const res = await fetch(`${BACKEND_URI}/addStudent.php`, {
+      // creating student record info is working
+      let res = await fetch(`${BACKEND_URI}/addStudent.php`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(studentRecord),
+        body: JSON.stringify({ ...studentRecord, studno }),
       });
       if (!res.ok) {
-        const error = (data && data.message) || response.status;
+        const error = (data && data.message) || res.status;
         throw new Error(error);
       }
 
-      // TODO: save grade records
+      // ready the data
+      const gradeRecordsReady = Object.keys(gradeRecords).map((grUid) => {
+        let record = { ...gradeRecords[grUid] };
+
+        Object.assign(record, {
+          total: record.running_total,
+        });
+        delete record["running_total"];
+        return record;
+      });
+      const payload = {
+        studno,
+        lst: gradeRecordsReady,
+      };
+
+      // console.log(JSON.stringify(payload));
+
+      res = await fetch(`${BACKEND_URI}/addStudentRecord.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const error = (data && data.message) || res.status;
+        throw new Error(error);
+      }
 
       enqueueSnackbar("Student record saved", {
         variant: "success",
@@ -259,7 +291,7 @@ function AddStudentRecord() {
     delete gradeRecordCopy[uid];
     setGradeRecords(gradeRecordCopy);
   }
-
+  // TODO: refactor this; extract logic to separate function
   function updateTerm(prevValue, currValue) {
     const newTerms = terms.map((term) =>
       term === prevValue ? currValue : term
@@ -290,7 +322,7 @@ function AddStudentRecord() {
     setGradeRecords(gradeRecordsCopy);
     toggleDialog();
   }
-
+  // TODO: refactor this; extract logic to separate function
   function deleteTerm(srUid, term) {
     let termsCopy = srUidTermMap[srUid];
     if (!termsCopy) return;
