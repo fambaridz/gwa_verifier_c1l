@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Navigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import {
   Alert,
   Box,
@@ -42,6 +42,7 @@ const rows2 = [
 ];
 
 function RecordList() {
+  let navigate = useNavigate();
   const studno = useParams().id;
   let textStatus = "SATISFIED";
   const prevStatus = "UNSATISFIED";
@@ -169,6 +170,7 @@ function RecordList() {
       if (res.ok) {
         setIsDeleted(true);
         toggleDeleteDialog();
+        navigate("/records");
       }
     };
 
@@ -229,6 +231,11 @@ function RecordList() {
     fetchComments().catch(console.error);
     fetchCourses().catch(console.error);
   }, []);
+
+  function redirectToEditStudentRecords() {
+		// navigate("/records/" + studno + "/edit");
+    console.log("/records/" + studno + "/edit");
+	}
 
   return (
     <div>
@@ -390,6 +397,9 @@ function RecordList() {
           }}
         >
           <Button
+            onClick={() => {
+              redirectToEditStudentRecords();
+            }}
             variant="contained"
             style={{ backgroundColor: "#C7C7C7" }}
             sx={{ marginRight: 1 }}
