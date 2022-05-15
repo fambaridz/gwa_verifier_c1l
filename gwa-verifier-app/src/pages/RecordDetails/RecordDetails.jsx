@@ -48,8 +48,11 @@ function RecordList() {
   const [anchorElUser, setAnchorElUser, semester, setSemester] = React.useState(null);
   const [comments, setComments] = React.useState(null);
   const [courses, setCourses] = React.useState(null);
+  const [details, setDetails] = React.useState(null);
+  const [name, setName] = React.useState(null);
   const [isDeleted, setIsDeleted] = React.useState(false);
   const { open: deleteDialogStatus, toggle: toggleDeleteDialog } = useDialog();
+
 
   const [values, setValues] = React.useState({
     alertMessage: '',
@@ -191,7 +194,7 @@ function RecordList() {
     const course = {
       action: "get-courses",
       //manual stud no for testing
-      student_number: 201501234
+      student_number: studno
     }
     
     const fetchCourses= async () => {
@@ -207,12 +210,46 @@ function RecordList() {
 
       const body = await res.text()
       setCourses(JSON.parse(body))
+    }
 
+    const stud_details = {
+      action: "get-student",
+      student_number: studno
+    }
+ 
+    const fetchDetails= async () => {
+      const res = await fetch(
+        "http://localhost/backend/details.php",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(stud_details)
+        });
+
+      const body = await res.text()
+      const stud = JSON.parse(body)[0]
+      setDetails(stud)
+      setName([stud.firstname, stud.middlename, stud.lastname, stud.suffix].join(' '))
     }
 
     fetchComments().catch(console.error)
     fetchCourses().catch(console.error)
+    fetchDetails().catch(console.error)
   }, [])
+
+  // if student record was deleted
+  if(isDeleted){
+    return(
+        <Navigate to="/records"/>
+    )
+  }
+
+  // if details not yet fetched
+  if(details==null){
+    return(<></>)
+  }
 
   return (
     <div>
@@ -220,7 +257,7 @@ function RecordList() {
         {/* Toolbars for header */}
         <Toolbar>
           <Typography variant="h5" style={{ fontWeight: 1000}} component="div" sx={{ flex: 1 }}>
-            Jeff Emerson Lar
+            {name}
           </Typography>
           <Button
             variant="contained" 
@@ -254,10 +291,10 @@ function RecordList() {
         <Toolbar>
           <div>
             <Typography variant="h6" style={{ fontWeight: 1000 }} component="div" sx={{ flex: 1 }}>
-              BS Computer Science
+              {details.degree_program}
             </Typography>
             <Typography variant="h6" style={{ fontWeight: 1000 }} component="div" sx={{ flex: 1 }}>
-              2019-03845
+              {studno}
             </Typography>
           </div>
         </Toolbar>
