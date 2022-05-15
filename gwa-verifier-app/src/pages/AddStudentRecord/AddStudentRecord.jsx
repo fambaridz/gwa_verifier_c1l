@@ -231,6 +231,7 @@ function AddStudentRecord() {
           });
       } catch (error) {
         console.warn(error);
+        setSaving(false);
         return;
       }
 
@@ -353,7 +354,7 @@ function AddStudentRecord() {
         body: JSON.stringify({ ...studentRecord, studno }),
       });
       if (!res.ok) {
-        const error = (data && data.message) || res.status;
+        const error = res.status;
         throw new Error(error);
       }
 
@@ -382,7 +383,7 @@ function AddStudentRecord() {
       });
 
       if (!res.ok) {
-        const error = (data && data.message) || res.status;
+        const error = res.status;
         throw new Error(error);
       }
 
