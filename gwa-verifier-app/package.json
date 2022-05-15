@@ -47,9 +47,8 @@
         [
           "@electron-forge/plugin-webpack",
           {
-            "devContentSecurityPolicy":"connect-src 'self' * http://localhost",
-            "mainConfig": "./webpack.main.config.js",
             "devContentSecurityPolicy": "connect-src 'self' * http://localhost",
+            "mainConfig": "./webpack.main.config.js",
             "renderer": {
               "config": "./webpack.renderer.config.js",
               "entryPoints": [
@@ -97,6 +96,7 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0",
-    "react-table": "^7.7.0"
+    "react-table": "^7.7.0",
+    "validator": "^13.7.0"
   }
 }
