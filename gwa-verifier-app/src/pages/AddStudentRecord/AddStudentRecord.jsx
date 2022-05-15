@@ -19,8 +19,9 @@ import EditTermDialog from "Components/EditTermDialog";
 import DeleteTermDialog from "Components/DeleteTermDialog";
 import ParsingModal from "Components/ParsingModal";
 import { useDialog } from "../../hooks";
+import { BACKEND_URI } from "../../constants.js";
 
-const BACKEND_URI = "http://localhost/gwa-verifier-backend";
+// const BACKEND_URI = "http://localhost/gwa-verifier-backend";
 
 const acceptedFiles = ["text/csv"];
 
@@ -210,7 +211,7 @@ function AddStudentRecord() {
             if (
               !validators.gradeRegex.test(grade) ||
               !validators.termRegex.test(term) ||
-              !validators.defaultRegex.test(units) ||
+              !validators.unitsRegex.test(units) ||
               !validators.defaultRegex.test(running_total)
             ) {
               setSaving(false);
@@ -321,7 +322,7 @@ function AddStudentRecord() {
           if (
             !validators.gradeRegex.test(grade) ||
             !validators.termRegex.test(term) ||
-            !validators.defaultRegex.test(units) ||
+            !validators.unitsRegex.test(units) ||
             !validators.defaultRegex.test(running_total)
           ) {
             setSaving(false);
