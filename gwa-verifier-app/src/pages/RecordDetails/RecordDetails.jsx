@@ -233,8 +233,7 @@ function RecordList() {
   }, []);
 
   function redirectToEditStudentRecords() {
-		// navigate("/records/" + studno + "/edit");
-    console.log("/records/" + studno + "/edit");
+		navigate("/records/" + studno + "/edit");
 	}
 
   return (
