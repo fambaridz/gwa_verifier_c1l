@@ -33,8 +33,8 @@ function RecordList() {
   }
 
   function createName(item) {
-    let middlename = item.middlename == null ? "" : " " + item.middlename;
-    let suffix = item.suffix == null ? "" : " " + item.suffix + ".";
+    let middlename = ((item.middlename) == null || "" || "NULL") ? "" : " " + item.middlename;
+    let suffix = ((item.suffix) == null || "" || "NULL") ? "" : " " + item.suffix + ".";
 
     return item.lastname + ", " + item.firstname + middlename + suffix;
   }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useParams, Link } from "react-router-dom";
 import {
   Alert,
   Box,
@@ -232,6 +232,11 @@ function RecordList() {
 
   return (
     <div>
+      <Box sx={{ mt: 2.5, ml: 3, fontSize: 14 }}>
+        	<Link to="/records" className="back-link">
+          		&lt; Back to Student Records
+        	</Link>
+      	</Box>
       <Box sx={{ m: 3.5, flexGrow: 1 }}>
         {/* Toolbars for header */}
         <Toolbar>

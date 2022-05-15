@@ -60,7 +60,7 @@ function PrivateRoute({ children }){
                 onClose={handleCloseOptionsMenu}
               >
                 <MenuItem onClick={handleCloseOptionsMenu} component={Link} to={'/manage-committee'}>Manage Accounts</MenuItem>  
-                <MenuItem component={Link} to={'/login'}>Sign Out</MenuItem>
+                <MenuItem component={Link} to={'/'}>Sign Out</MenuItem>
               </Menu>
             </div>
           </Toolbar>
