@@ -1,79 +1,121 @@
-import React, { useEffect, useState, PropTypes } from "react";
-import {
-  Container,
-  IconButton,
-  Stack,
-  Box,
-  Typography,
-  Toolbar,
-  Menu,
-  MenuItem,
-  AppBar,
-} from "@mui/material";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import { ArrowDropDown } from "@mui/icons-material";
+import React, { useState } from "react";
+import { Container, Box } from "@mui/material";
+
 import { DropzoneArea } from "mui-file-dropzone";
 import StudentRecordForm from "Components/StudentRecordForm";
 import { Link, useNavigate } from "react-router-dom";
+
+import { useSnackbar } from "notistack";
+import { v4 as uuidv4 } from "uuid";
 import "./AddStudentRecord.css";
-// edit this to create the add student record/s page
 
-/*
-type annotation for StudentRecord model
-I commented this out since this feature is only available on Tyescript
-interface StudentRecord {
-  firstName: string;
-  middleName: string;
-  lastName: string;
-  suffix: string;
-  studentNo: string;
-  degree: string;
-  
-  gradeRecords: {
-    [key: string]: GradeRecord; <-- "key" here is the "term" while the value is the GradeRecord
-  }
-}
+import { extractFromFile } from "../../utils/extracters.js";
+import { fromMapToArray } from "../../utils/transformers.js";
+import GradeRecordTable from "Components/GradeRecordTable";
+import CarouselButtons from "Components/CarouselButtons";
+import AddStudentFormFooter from "Components/AddStudentFormFooter";
+import EditTermDialog from "Components/EditTermDialog";
+import DeleteTermDialog from "Components/DeleteTermDialog";
+import ParsingModal from "Components/ParsingModal";
+import { useDialog } from "../../hooks";
 
-interface GradeRecord {
-  courseNo: string;
-  grade: number;
-  units: number;
-  weight: number;
-  cumulative: number;
-}
-
- */
+const BACKEND_URI = "http://localhost/gwa-verifier-backend";
 
 const acceptedFiles = ["text/csv"];
 
 function AddStudentRecord() {
   const navigate = useNavigate();
-  const [files, setFiles] = useState([]);
-  const [studentRecords, setStudentRecords] = useState(new Array(5).fill(5));
+
+  // for notifications
+  const { enqueueSnackbar } = useSnackbar();
+  const { open: dialogOpen, toggle: toggleDialog } = useDialog();
+  const { open: deleteDialogStatus, toggle: toggleDeleteDialog } = useDialog();
+  const [studentRecords, setStudentRecords] = useState({});
+  const [gradeRecords, setGradeRecords] = useState({});
   const [page, setPage] = useState(0);
 
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [saving, setSaving] = useState(false);
 
-  const handleOpenOptionsMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
+  const [term, setTerm] = useState("");
+  const [terms, setTerms] = useState([]);
+  const [srUidTermMap, setSrUidTermMap] = useState({});
+  const [parsing, setParsing] = useState(false);
+  /*
+  the index represents the page number
+  0, 1, 2, ..., pageNum = length - 1 
+  [ uid1, uid2, uid3]
+   */
+  // sruid stands for "Student Record UID"
+  const [srUidPageMap, setSrUidPageMap] = useState([]);
 
-  const handleCloseOptionsMenu = () => {
-    setAnchorElUser(null);
-  };
+  async function handleChange(files) {
+    if (!files.length) return;
+    // get the content of all files
+    setParsing(true);
+    try {
+      const [_studentRecords, _srUidPageMap, _gradeRecords, _srUidTermMap] =
+        await extractFromFile(files);
 
-  function handleChange(files) {
-    setFiles(files);
+      const firstRecord = _srUidPageMap[0];
+      const terms = _srUidTermMap[firstRecord];
+      const firstTerm = terms[0];
+
+      setStudentRecords(_studentRecords);
+      setSrUidPageMap(_srUidPageMap);
+      setGradeRecords(_gradeRecords);
+      setTerms(terms);
+      setTerm(firstTerm);
+      setSrUidTermMap(_srUidTermMap);
+    } catch (error) {
+      console.log(error);
+    }
+    setParsing(false);
   }
 
+  function handleStudentRecordsChange(e, studNo) {
+    e.preventDefault();
+
+    const copy = {
+      ...studentRecords[studNo],
+      [e.target.name]: e.target.value,
+    };
+
+    setStudentRecords({ ...studentRecords, [studNo]: { ...copy } });
+  }
+  function getField(name) {
+    const uid = srUidPageMap[page];
+    if (!uid) return "";
+
+    const studentRecord = studentRecords[uid];
+    if (!studentRecord) return "";
+
+    const res = studentRecord[name];
+    if (!res) return "";
+    return res;
+  }
   function nextPage() {
     if (page === studentRecords.length - 1) return;
-    setPage(page + 1);
+    const newPage = page + 1;
+    updateTerms(newPage);
+    setPage(newPage);
   }
   function prevPage() {
     if (page === 0) return;
-    setPage(page - 1);
+    const newPage = page - 1;
+    updateTerms(newPage);
+    setPage(newPage);
+  }
+  /**
+   *
+   * @param {number} nextPage
+   */
+  function updateTerms(nextPage) {
+    const srUid = srUidPageMap[nextPage];
+    const _terms = srUidTermMap[srUid];
+    const [firstTerm] = _terms;
+
+    setTerms(_terms);
+    setTerm(firstTerm);
   }
 
   function redirectToStudentRecords() {
@@ -81,19 +123,203 @@ function AddStudentRecord() {
   }
 
   function popStack() {
-    const newLength = studentRecords.length - 1;
+    // TODO: extract this logic to a separate function and just import it
+    const uid = srUidPageMap[page];
+    const copyOfStudentRecords = { ...studentRecords };
+    const copyOfUidPageMap = [...srUidPageMap];
+    delete copyOfStudentRecords[uid];
+    copyOfUidPageMap.splice(page, 1);
+
+    const newLength = Object.keys(studentRecords).length - 1;
     const newPage = page === 0 ? page : page - 1;
 
-    setStudentRecords(new Array(newLength).fill(5));
+    setStudentRecords(copyOfStudentRecords);
     setPage(newPage);
-    if (newLength === 0) redirectToStudentRecords();
+    setSrUidPageMap(copyOfUidPageMap);
+    if (newLength === 0) {
+      redirectToStudentRecords();
+      return;
+    }
+    updateTerms(newPage);
+  }
+  function handleGradeRecordChange({ uid, columnId, value }) {
+    const record = gradeRecords[uid];
+
+    if (!record) return;
+    Object.assign(record, {
+      [columnId]: value,
+    });
+    setGradeRecords({ ...gradeRecords, [uid]: record });
+  }
+  function presentData() {
+    // const records = gradeRecords.filter(record => record.term === term);
+
+    // get studentUid
+    const srUid = srUidPageMap[page];
+
+    const records = fromMapToArray(gradeRecords, "uid").filter(
+      (record) => record.term === term && record.srUid === srUid
+    );
+    return records;
   }
 
-  useEffect(() => {
-    console.log(files);
-    if (files && files.length > 0)
-      setStudentRecords(new Array(files.length).fill(0));
-  }, [files]);
+  async function saveAll() {
+    setSaving(true);
+
+    // create all student info
+    let promises = Object.keys(studentRecords).map((key) => {
+      const studentRecord = studentRecords[key];
+      const { ...rest } = studentRecord;
+      return fetch(BACKEND_URI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          studNo: key,
+          ...rest,
+        }),
+      });
+    });
+    let res = await Promise.all(promises);
+
+    // now, for the grade records
+    promises = Object.keys(gradeRecords).map((key) => {
+      const gradeRecord = gradeRecords[key];
+
+      return fetch(BACKEND_URI, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(gradeRecord),
+      });
+    });
+    res = await Promise.all(promises);
+    setSaving(false);
+  }
+
+  async function saveOne() {
+    setSaving(true);
+
+    // save the data w/ respect to the current page
+
+    const uid = srUidPageMap[page];
+
+    const studentRecord = studentRecords[uid];
+
+    try {
+      const res = await fetch(`${BACKEND_URI}/addStudent.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(studentRecord),
+      });
+      if (!res.ok) {
+        const error = (data && data.message) || response.status;
+        throw new Error(error);
+      }
+
+      // TODO: save grade records
+
+      enqueueSnackbar("Student record saved", {
+        variant: "success",
+      });
+    } catch (error) {
+      console.warn(error);
+      enqueueSnackbar("Error in saving record", {
+        variant: "error",
+      });
+    }
+    setSaving(false);
+  }
+
+  function addRow() {
+    const currSrUid = srUidPageMap[page];
+    const newRecord = {
+      term,
+      courseno: "",
+      grade: "",
+      units: "",
+      enrolled: "",
+      running_total: "",
+      srUid: currSrUid,
+    };
+    const grUid = uuidv4();
+    setGradeRecords({
+      ...gradeRecords,
+      [grUid]: newRecord,
+    });
+  }
+
+  function deleteRow(uid) {
+    const gradeRecordCopy = { ...gradeRecords };
+    if (!gradeRecordCopy[uid]) return;
+    delete gradeRecordCopy[uid];
+    setGradeRecords(gradeRecordCopy);
+  }
+
+  function updateTerm(prevValue, currValue) {
+    const newTerms = terms.map((term) =>
+      term === prevValue ? currValue : term
+    );
+    const srUid = srUidPageMap[page];
+    const srUidTermMapCopy = { ...srUidTermMap };
+    Object.assign(srUidTermMapCopy, {
+      [srUid]: newTerms,
+    });
+
+    console.table(srUidTermMapCopy);
+
+    const gradeRecordsCopy = {};
+    Object.keys(gradeRecords).forEach((grUid) => {
+      const record = { ...gradeRecords[grUid] };
+      let { term, srUid: recordSrUid } = record;
+      if (recordSrUid === srUid && term === prevValue) term = currValue;
+      Object.assign(record, { term });
+      Object.assign(gradeRecordsCopy, {
+        [grUid]: record,
+      });
+    });
+
+    // since the only editable term is the selected term, we will update the current term accordingly
+    setTerm(currValue);
+    setTerms(newTerms);
+    setSrUidTermMap(srUidTermMapCopy);
+    setGradeRecords(gradeRecordsCopy);
+    toggleDialog();
+  }
+
+  function deleteTerm(srUid, term) {
+    let termsCopy = srUidTermMap[srUid];
+    if (!termsCopy) return;
+    // filter the terms
+    termsCopy = termsCopy.filter((t) => t !== term);
+
+    // filter grade records with the term and the srUid
+    const gradeRecordsCopy = {};
+    Object.keys(gradeRecords).forEach((grUid) => {
+      const record = gradeRecords[grUid];
+      // const { srUid: recordSrUid, term: t } = record;
+      if (record.srUid === srUid && record.term === term) return;
+      Object.assign(gradeRecordsCopy, {
+        [grUid]: record,
+      });
+    });
+
+    // update
+    const srUidTermMapCopy = { ...srUidTermMap };
+    Object.assign(srUidTermMapCopy, {
+      [srUid]: termsCopy,
+    });
+    const [newTerm = ""] = termsCopy;
+    setTerm(newTerm);
+    setTerms(termsCopy);
+    setSrUidTermMap(srUidTermMapCopy);
+    setGradeRecords(gradeRecordsCopy);
+    toggleDeleteDialog();
+  }
 
   function renderStudentRecordForms() {
     return (
@@ -105,45 +331,86 @@ function AddStudentRecord() {
             marginBottom: 4,
           }}
         >
-          <Stack direction="row" spacing={1} alignItems="center">
-            <IconButton disabled={page === 0} onClick={prevPage}>
-              <KeyboardArrowLeftIcon />
-            </IconButton>
-            <Typography>
-              {page + 1} out of {studentRecords.length}
-            </Typography>
-            <IconButton
-              disabled={page === studentRecords.length - 1}
-              onClick={nextPage}
-            >
-              <KeyboardArrowRightIcon />
-            </IconButton>
-          </Stack>
+          <CarouselButtons
+            currPage={page}
+            maxPage={Object.keys(studentRecords).length}
+            saving={saving}
+            prevPage={prevPage}
+            nextPage={nextPage}
+          />
         </Box>
-        <StudentRecordForm handleCancel={popStack} />
+        <StudentRecordForm
+          firstName={getField("fname")}
+          middleName={getField("mname")}
+          lastName={getField("lname")}
+          suffix={getField("suffix")}
+          studentNo={getField("studNo")}
+          degree={getField("degree")}
+          recommended={getField("recommended")}
+          term={term}
+          setTerm={setTerm}
+          terms={terms}
+          loading={saving}
+          handleAddRow={addRow}
+          handleInputChange={(e) => {
+            const uuid = srUidPageMap[page];
+            handleStudentRecordsChange(e, uuid);
+          }}
+          handleEditTerm={toggleDialog}
+          handleDeleteTerm={toggleDeleteDialog}
+          table={
+            <GradeRecordTable
+              data={presentData()}
+              handleUpdate={handleGradeRecordChange}
+              handleDelete={deleteRow}
+            />
+          }
+          footer={
+            <AddStudentFormFooter
+              popStack={popStack}
+              saveOne={saveOne}
+              saving={saving}
+            />
+          }
+        />
       </>
     );
   }
   return (
-    <div>
+    <>
+      <ParsingModal open={parsing} />
       <Box sx={{ mt: 2.5, ml: 3, fontSize: 14 }}>
         <Link to="/records" className="back-link">
           &lt; Back to Student Records
         </Link>
       </Box>
-      <Container sx={{ paddingTop: 3, paddingBottom: 5 }}>
-        {/* {renderStudentRecordForms()} */}
-        {files.length === 0 ? (
+      <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
+        {Object.keys(studentRecords).length === 0 ? (
           <DropzoneArea
             filesLimit={10}
             acceptedFiles={acceptedFiles}
             onChange={handleChange}
+            showAlerts={false}
           />
         ) : (
           renderStudentRecordForms()
         )}
       </Container>
-    </div>
+      <EditTermDialog
+        initialValue={term}
+        open={dialogOpen}
+        handleCancel={toggleDialog}
+        handleSave={updateTerm}
+      />
+      <DeleteTermDialog
+        open={deleteDialogStatus}
+        term={term}
+        srUid={srUidPageMap[page] || ""}
+        name={`${getField("lname")} ${getField("fname")}`}
+        handleCancel={toggleDeleteDialog}
+        handleDelete={deleteTerm}
+      />
+    </>
   );
 }
 

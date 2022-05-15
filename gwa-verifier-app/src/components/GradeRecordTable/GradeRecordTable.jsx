@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo } from "react";
+import PropTypes from "prop-types";
 import {
   IconButton,
   Table,
@@ -9,56 +10,19 @@ import {
   TableRow,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-
+import EditableCell from "../EditableCell";
 import { useTable } from "react-table";
 
-function GradeRecordTable() {
-  const data = useMemo(
-    () => [
-      {
-        courseNo: "ENG 10",
-        grade: 2,
-        units: 3,
-        weight: 6,
-        cumulative: 6,
-      },
-      {
-        courseNo: "ENG 10",
-        grade: 2,
-        units: 3,
-        weight: 6,
-        cumulative: 6,
-      },
-      {
-        courseNo: "ENG 10",
-        grade: 2,
-        units: 3,
-        weight: 6,
-        cumulative: 6,
-      },
-      {
-        courseNo: "ENG 10",
-        grade: 2,
-        units: 3,
-        weight: 6,
-        cumulative: 6,
-      },
-      {
-        courseNo: "ENG 10",
-        grade: 2,
-        units: 3,
-        weight: 6,
-        cumulative: 6,
-      },
-    ],
-    []
-  );
+const defaultColumn = {
+  Cell: EditableCell,
+};
 
+function GradeRecordTable({ data, handleDelete = () => {}, handleUpdate }) {
   const columns = useMemo(
     () => [
       {
         Header: "Course No.",
-        accessor: "courseNo", // accessor is the "key" in the data
+        accessor: "courseno", // accessor is the "key" in the data
       },
       {
         Header: "Grade",
@@ -69,27 +33,39 @@ function GradeRecordTable() {
         accessor: "units",
       },
       {
-        Header: "Weight",
-        accessor: "weight",
+        Header: "Enrolled",
+        accessor: "enrolled",
       },
       {
-        Header: "Cumulative",
-        accessor: "cumulative",
+        Header: "Running Total",
+        accessor: "running_total",
       },
       {
         Header: "Action",
         accessor: "action",
-        Cell: (props) => (
-          <IconButton aria-label="delete">
-            <DeleteIcon />
-          </IconButton>
-        ),
+        Cell: (props) => {
+          const {
+            row: {
+              original: { uid },
+            },
+          } = props;
+          return (
+            <IconButton aria-label="delete" onClick={() => handleDelete(uid)}>
+              <DeleteIcon />
+            </IconButton>
+          );
+        },
       },
     ],
-    []
+    [data]
   );
 
-  const tableInstance = useTable({ columns, data });
+  const tableInstance = useTable({
+    columns,
+    data,
+    defaultColumn,
+    handleUpdate,
+  });
 
   const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
     tableInstance;
@@ -110,11 +86,14 @@ function GradeRecordTable() {
         <TableBody {...getTableBodyProps()}>
           {rows.map((row) => {
             prepareRow(row);
+
             return (
               <TableRow {...row.getRowProps()}>
                 {row.cells.map((cell) => (
                   <TableCell {...cell.getCellProps()}>
-                    {cell.render("Cell")}
+                    {cell.render("Cell", {
+                      uid: row.original.uid,
+                    })}
                   </TableCell>
                 ))}
               </TableRow>
@@ -125,5 +104,11 @@ function GradeRecordTable() {
     </TableContainer>
   );
 }
+
+GradeRecordTable.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.object),
+  handleDelete: PropTypes.func,
+  handleUpdate: PropTypes.func,
+};
 
 export default GradeRecordTable;

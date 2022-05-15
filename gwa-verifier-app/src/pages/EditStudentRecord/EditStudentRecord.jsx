@@ -1,31 +1,45 @@
-import React from "react";
-import {
-  Typography,
-  Container,
-  Box,
-  IconButton,
-  Toolbar,
-  Menu,
-  MenuItem,
-  AppBar,
-} from "@mui/material";
+import React, { useState } from "react";
+import { Container } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowDropDown } from "@mui/icons-material";
+
 import StudentRecordForm from "Components/StudentRecordForm/";
+
+const BACKEND_URI = "https://eoqmx7kqcyj1866.m.pipedream.net";
 // edit this to create the edit student record page
 function EditStudentRecord() {
   const params = useParams();
   const navigate = useNavigate();
 
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [saving, setSaving] = useState(false);
+  const [studentRecord, setStudentRecord] = useState({});
+  const [gradeRecords, setGradeRecords] = useState({});
 
-  const handleOpenOptionsMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
+  async function handleSave() {
+    setSaving(true);
 
-  const handleCloseOptionsMenu = () => {
-    setAnchorElUser(null);
-  };
+    let res = await fetch(BACKEND_URI, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(studentRecord),
+    });
+
+    const promises = Object.keys(gradeRecords).map((key) => {
+      const record = gradeRecords[key];
+      return fetch(BACKEND_URI, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(record),
+      });
+    });
+
+    res = await Promise.all(promises);
+    console.log(res);
+    setTimeout(() => setSaving(false), 3000);
+  }
 
   function redirectToStudentRecords() {
     navigate("/records");
@@ -35,14 +49,16 @@ function EditStudentRecord() {
   // TODO: change this to the primary key
   const { id } = params;
   return (
-    <div>
-      <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
-        {/* <Typography variant="h1">
+    <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
+      {/* <Typography variant="h1">
           Edit student record page w/ the ff. url parameter: {id}
         </Typography> */}
-        <StudentRecordForm handleCancel={redirectToStudentRecords} />
-      </Container>
-    </div>
+      <StudentRecordForm
+        handleCancel={redirectToStudentRecords}
+        loading={saving}
+        handleSave={handleSave}
+      />
+    </Container>
   );
 }
 
