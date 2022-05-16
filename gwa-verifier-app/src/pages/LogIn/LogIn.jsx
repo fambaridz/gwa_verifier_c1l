@@ -64,7 +64,7 @@ function LogIn() {
       .then(response => response.json())
       .then(body => {
         console.log(body.success)
-        if (body.success=="false") { 
+        if (!body.success) { 
           //show failed login alert
           setValues({...values, 
             isAlert:true, 

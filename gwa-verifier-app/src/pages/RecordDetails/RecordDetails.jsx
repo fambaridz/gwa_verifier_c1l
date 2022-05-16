@@ -48,20 +48,18 @@ function RecordList() {
   let textStatus = "SATISFIED";
   const prevStatus = "UNSATISFIED";
   // const prevStatus = useParams().status;
-  const [anchorElUser, setAnchorElUser, semester, setSemester] = useState(null);
-  const [comments, setComments] = useState(null);
-  const [courses, setCourses] = useState(null);
+  const [anchorElUser, setAnchorElUser, semester, setSemester] = React.useState(null);
+  const [comments, setComments] = React.useState(null);
+  const [courses, setCourses] = React.useState(null);
   const [details, setDetails] = React.useState(null);
   const [name, setName] = React.useState(null);
-  const [isDeleted, setIsDeleted] = useState(false);
+  const [isDeleted, setIsDeleted] = React.useState(false);
   const { open: deleteDialogStatus, toggle: toggleDeleteDialog } = useDialog();
 
-  const [terms, setTerms] = useState([]);
-  const [currentTerm, setCurrenTerm] = useState("");
 
-  const [values, setValues] = useState({
-    alertMessage: "",
-    alertSeverity: "",
+  const [values, setValues] = React.useState({
+    alertMessage: '',
+    alertSeverity: '',
     isAlert: false,
   });
 
@@ -279,6 +277,18 @@ function RecordList() {
   // if details not yet fetched
   if (details == null) {
     return <></>;
+  }
+
+  // if student record was deleted
+  if(isDeleted){
+    return(
+        <Navigate to="/records"/>
+    )
+  }
+
+  // if details not yet fetched
+  if(details==null){
+    return(<></>)
   }
 
   return (
