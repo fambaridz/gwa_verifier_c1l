@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 
 import StudentRecordForm from "Components/StudentRecordForm/";
+import { BACKEND_URI } from "../../constants.js";
 
-const BACKEND_URI = "https://eoqmx7kqcyj1866.m.pipedream.net";
 // edit this to create the edit student record page
 function EditStudentRecord() {
   const params = useParams();
@@ -12,6 +12,7 @@ function EditStudentRecord() {
 
   const [saving, setSaving] = useState(false);
   const [studentRecord, setStudentRecord] = useState({});
+
   const [gradeRecords, setGradeRecords] = useState({});
 
   async function handleSave() {
@@ -46,8 +47,30 @@ function EditStudentRecord() {
     console.log("navigate");
   }
 
-  // TODO: change this to the primary key
-  const { id } = params;
+  const { id: studno } = params;
+
+  useEffect(() => {
+    async function getStudentInfo() {
+      try {
+        const res = await fetch(`${BACKEND_URI}/details.php`, {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            action: "get-student",
+            student_number: studno,
+          }),
+        });
+        const body = await res.text();
+        const student = JSON.parse(body)[0];
+        setStudentRecord(student);
+      } catch (error) {
+        console.warn(error);
+      }
+    }
+    getStudentInfo();
+  }, []);
   return (
     <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
       {/* <Typography variant="h1">
@@ -57,6 +80,18 @@ function EditStudentRecord() {
         handleCancel={redirectToStudentRecords}
         loading={saving}
         handleSave={handleSave}
+        name={""}
+        recommended=""
+        firstName=""
+        middleName=""
+        lastName=""
+        suffix=""
+        degree=""
+        studentNo={studno}
+        handleInputChange={() => {}}
+        handleEditTerm={() => {}}
+        handleDeleteTerm={() => {}}
+        terms={[]}
       />
     </Container>
   );
