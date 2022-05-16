@@ -66,8 +66,8 @@ function RecordList() {
   });
 
   function redirectToEditStudentRecords() {
-		navigate("/records/" + studno + "/edit");
-	}
+    navigate("/records/" + studno + "/edit");
+  }
 
   const handleOpenOptionsMenu = (event) => {
     setAnchorElUser(event.currentTarget);
@@ -134,7 +134,7 @@ function RecordList() {
             alertMessage: "Status Changed to SATISFIED",
           });
           setTimeout(() => {}, 1000);
-          setTimeout(window.location.reload(), 5000)
+          setTimeout(window.location.reload(), 5000);
         } else if (e.target.id == 2) {
           setValues({
             ...values,
@@ -143,7 +143,7 @@ function RecordList() {
             alertMessage: "Status Changed to UNSATISFIED",
           });
           setTimeout(() => {}, 1000);
-          setTimeout(window.location.reload(), 5000)
+          setTimeout(window.location.reload(), 5000);
         } else if (e.target.id == 3) {
           setValues({
             ...values,
@@ -152,7 +152,7 @@ function RecordList() {
             alertMessage: "Status Changed to UNVERIFIED",
           });
           setTimeout(() => {}, 1000);
-          setTimeout(window.location.reload(), 5000)
+          setTimeout(window.location.reload(), 5000);
         } else if (e.target.id == 4) {
           setValues({
             ...values,
@@ -161,7 +161,7 @@ function RecordList() {
             alertMessage: "Status Changed to DEFICIENT",
           });
           setTimeout(() => {}, 1000);
-          setTimeout(window.location.reload(), 5000)
+          setTimeout(window.location.reload(), 5000);
         }
       });
     setAnchorEl(null);
@@ -245,8 +245,8 @@ function RecordList() {
 
     const stud_details = {
       action: "get-student",
-      student_number: studno
-    }
+      student_number: studno,
+    };
 
     const fetchDetails = async () => {
       const res = await fetch(`${BACKEND_URI}/record-details-api/details.php`, {
@@ -260,8 +260,10 @@ function RecordList() {
       const body = await res.text();
       const stud = JSON.parse(body)[0];
       setDetails(stud);
-      setName([stud.firstname, stud.middlename, stud.lastname, stud.suffix].join(' '));
-    }
+      setName(
+        [stud.firstname, stud.middlename, stud.lastname, stud.suffix].join(" ")
+      );
+    };
 
     fetchComments().catch(console.error);
     fetchCourses().catch(console.error);
@@ -270,24 +272,22 @@ function RecordList() {
   }, []);
 
   // if student record was deleted
-  if(isDeleted){
-    return(
-      <Navigate to="/records/"/>
-    )
+  if (isDeleted) {
+    return <Navigate to="/records/" />;
   }
 
   // if details not yet fetched
-  if(details==null){
-    return(<></>)
+  if (details == null) {
+    return <></>;
   }
 
   return (
     <div>
       <Box sx={{ mt: 2.5, ml: 3, fontSize: 14 }}>
-        	<Link to="/records" className="back-link">
-          		&lt; Back to Student Records
-        	</Link>
-      	</Box>
+        <Link to="/records" className="back-link">
+          &lt; Back to Student Records
+        </Link>
+      </Box>
       <Box sx={{ m: 3.5, flexGrow: 1 }}>
         {/* Toolbars for header */}
         <Toolbar>
@@ -334,7 +334,7 @@ function RecordList() {
               Deficient
             </MenuItem>
           </Menu>
-        <StudentStatus student={details}/>
+          <StudentStatus student={details} />
         </Toolbar>
         <Toolbar>
           <div>
@@ -372,8 +372,10 @@ function RecordList() {
               label="Semester"
               onChange={(e) => setCurrenTerm(e.target.value)}
             >
-              {terms.map((term) => (
-                <MenuItem value={term}>{term}</MenuItem>
+              {terms.map((term, idx) => (
+                <MenuItem value={term} key={idx}>
+                  {term}
+                </MenuItem>
               ))}
               {/* <MenuItem value={10}>Semester 1 2020-2021</MenuItem>
               <MenuItem value={20}>Semester 2 2020-2021</MenuItem>
@@ -447,7 +449,7 @@ function RecordList() {
         </Box>
         <DeleteRecordDialog
           open={deleteDialogStatus}
-          name={name}
+          name={name || ""}
           studno={studno}
           handleCancel={toggleDeleteDialog}
           handleDelete={handleDeleteRecord}

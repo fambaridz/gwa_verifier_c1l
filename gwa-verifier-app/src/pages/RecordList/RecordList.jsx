@@ -33,8 +33,10 @@ function RecordList() {
   }
 
   function createName(item) {
-    let middlename = ((item.middlename) == null || "" || "NULL") ? "" : " " + item.middlename;
-    let suffix = ((item.suffix) == null || "" || "NULL") ? "" : " " + item.suffix + ".";
+    let middlename =
+      item.middlename == null || "" || "NULL" ? "" : " " + item.middlename;
+    let suffix =
+      item.suffix == null || "" || "NULL" ? "" : " " + item.suffix + ".";
 
     return item.lastname + ", " + item.firstname + middlename + suffix;
   }
@@ -135,8 +137,9 @@ function RecordList() {
     <div>
       <DeleteRecordDialog
         open={deleteDialogStatus}
-        name={name}
-        studno={studno}
+        // provide default values
+        name={name || ""}
+        studno={studno || ""}
         handleCancel={toggleDeleteDialog}
         handleDelete={handleDeleteRecord}
       />
@@ -150,18 +153,18 @@ function RecordList() {
           >
             Student Records
           </Typography>
-          <ThemeProvider>
-            <Button
-              onClick={() => {
-                redirectToAddStudentRecords();
-              }}
-              variant="contained"
-              color="secondary"
-              endIcon={<Add />}
-            >
-              Add Student Record
-            </Button>
-          </ThemeProvider>
+          {/* omitted ThemeProvider since it's not necessary to include it here; it's already included in App.jsx */}
+
+          <Button
+            onClick={() => {
+              redirectToAddStudentRecords();
+            }}
+            variant="contained"
+            color="secondary"
+            endIcon={<Add />}
+          >
+            Add Student Record
+          </Button>
         </Toolbar>
         <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
           <div style={{ height: 400, width: "100%" }}>
