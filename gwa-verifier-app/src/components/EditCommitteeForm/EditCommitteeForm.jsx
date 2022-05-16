@@ -78,7 +78,7 @@ function EditCommitteeForm(props) {
 		}
 		console.log(JSON.stringify(editAccountInfo));
 		fetch(
-			  "http://localhost/gwa-verifier-backend/committee-api.php",
+			  "http://localhost/gwa-verifier-backend/committee-api/committee-api.php",
 			  {
 				  method: "PUT",
 				  headers: { 'Content-Type': 'application/json' },

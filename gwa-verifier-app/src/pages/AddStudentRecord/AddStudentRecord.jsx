@@ -250,7 +250,7 @@ function AddStudentRecord() {
 
     try {
       promises = studentRecordsCopy.map((studentRecord) => {
-        return fetch(`${BACKEND_URI}/addStudent.php`, {
+        return fetch(`${BACKEND_URI}/add-edit-record-api/addStudent.php`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -262,7 +262,7 @@ function AddStudentRecord() {
       await Promise.all(promises);
 
       promises = gradeRecordsCopy.map((gradeRecord) => {
-        return fetch(`${BACKEND_URI}/addStudentRecord.php`, {
+        return fetch(`${BACKEND_URI}/add-edit-record-api/addStudentRecord.php`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -347,7 +347,7 @@ function AddStudentRecord() {
 
     try {
       // creating student record info is working
-      let res = await fetch(`${BACKEND_URI}/addStudent.php`, {
+      let res = await fetch(`${BACKEND_URI}/add-edit-record-api/addStudent.php`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -375,7 +375,7 @@ function AddStudentRecord() {
 
       // console.log(JSON.stringify(payload));
 
-      const res = await fetch(`${BACKEND_URI}/addStudentRecord.php`, {
+      const res = await fetch(`${BACKEND_URI}/add-edit-record-api/addStudentRecord.php`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

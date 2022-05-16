@@ -108,7 +108,7 @@ function RecordList() {
 
     console.log(statusChange);
 
-    fetch(`${BACKEND_URI}/details.php`, {
+    fetch(`${BACKEND_URI}/record-details-api/details.php`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -174,7 +174,7 @@ function RecordList() {
     };
 
     const deleteRecord = async () => {
-      const res = await fetch(`${BACKEND_URI}/details.php`, {
+      const res = await fetch(`${BACKEND_URI}/record-details-api/details.php`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -199,7 +199,7 @@ function RecordList() {
     };
 
     const fetchComments = async () => {
-      const res = await fetch(`${BACKEND_URI}/details.php`, {
+      const res = await fetch(`${BACKEND_URI}/record-details-api/details.php`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -218,7 +218,7 @@ function RecordList() {
     };
 
     const fetchCourses = async () => {
-      const res = await fetch(`${BACKEND_URI}/details.php`, {
+      const res = await fetch(`${BACKEND_URI}/record-details-api/details.php`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -249,7 +249,7 @@ function RecordList() {
     }
 
     const fetchDetails = async () => {
-      const res = await fetch(`${BACKEND_URI}/details.php`, {
+      const res = await fetch(`${BACKEND_URI}/record-details-api/details.php`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -87,7 +87,7 @@ function RecordList() {
 
   React.useEffect(() => {
     const fetchStudents = async () => {
-      const res = await fetch(`${BACKEND_URI}/studentList.php`, {
+      const res = await fetch(`${BACKEND_URI}/record-list-api/studentList.php`, {
         method: "GET",
       });
 
@@ -113,7 +113,7 @@ function RecordList() {
     const record = { target: studno };
 
     const deleteRecord = async () => {
-      const res = await fetch(`${BACKEND_URI}/studentList.php`, {
+      const res = await fetch(`${BACKEND_URI}/record-list-api/studentList.php`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

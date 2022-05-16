@@ -81,7 +81,7 @@ function AddCommitteeForm(props) {
 		}
 		if(addvalues.confirmpass === addvalues.password){
 			fetch(
-			  "http://localhost/gwa-verifier-backend/committee-api.php",
+			  "http://localhost/gwa-verifier-backend/committee-api/committee-api.php",
 			  {
 				  method: "POST",
 				  headers: { 'Content-Type': 'application/json' },

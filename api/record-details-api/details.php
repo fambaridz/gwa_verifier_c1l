@@ -2,6 +2,7 @@
 // Author: Tomboc, Ma. Zeit Elizha
 
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: *");
 $host = "localhost"; 
 $user = "root"; 
