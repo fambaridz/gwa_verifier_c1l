@@ -11,6 +11,7 @@ import {
 
 import { ThemeProvider } from "@mui/private-theming";
 import validator from 'validator';
+import { BACKEND_URI } from "../../constants.js";
 
 const style = {
 	position: 'absolute',
@@ -81,7 +82,7 @@ function AddCommitteeForm(props) {
 		}
 		if(addvalues.confirmpass === addvalues.password){
 			fetch(
-			  "http://localhost/gwa-verifier-backend/committee-api/committee-api.php",
+				`${BACKEND_URI}/committee-api/committee-api.php`,
 			  {
 				  method: "POST",
 				  headers: { 'Content-Type': 'application/json' },

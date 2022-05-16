@@ -25,6 +25,7 @@ import validator from 'validator';
 import AddCommitteeForm from "Components/AddCommitteeForm";
 import EditCommitteeForm from "Components/EditCommitteeForm";
 import DeleteCommitteeForm from "Components/DeleteCommitteeForm";
+import { BACKEND_URI } from "../../constants.js";
 
 //Changes made in committee-api.php to bypass verification for testing
 //CASE 1-3 commented out
@@ -64,7 +65,7 @@ function ManageCommitteeAccounts() {
 
 	useEffect(() => {
 		fetch(
-			"http://localhost/gwa-verifier-backend/committee-api/committee-api.php",
+			`${BACKEND_URI}/committee-api/committee-api.php`,
 			{
 				method: "GET",
 			})

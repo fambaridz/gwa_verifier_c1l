@@ -13,6 +13,7 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import logo from "Assets/logo.png";
 import "./LogIn.css";
+import { BACKEND_URI } from "../../constants.js";
 
 
 function LogIn() {
@@ -52,7 +53,7 @@ function LogIn() {
     }
     console.log(credentials)
     fetch(
-      "http://localhost/gwa-verifier-backend/login-api/login.php",
+      `${BACKEND_URI}/login-api/login.php`,
       {
         method: "POST",
         headers: {

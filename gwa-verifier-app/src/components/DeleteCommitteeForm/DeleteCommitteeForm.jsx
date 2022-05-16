@@ -10,6 +10,7 @@ import {
  } from "@mui/material";
 
 import { ThemeProvider } from "@mui/private-theming";
+import { BACKEND_URI } from "../../constants.js";
 
 const style = {
 	position: 'absolute',
@@ -30,7 +31,7 @@ function DeleteCommitteeForm(props) {
 		  event.preventDefault();
 		  const credentials = {email: props.email}
 		  fetch(
-			  "http://localhost/gwa-verifier-backend/committee-api/committee-api.php",
+			`${BACKEND_URI}/committee-api/committee-api.php`,
 			  {
 				  method: "DELETE",
 				  body: JSON.stringify(credentials)
