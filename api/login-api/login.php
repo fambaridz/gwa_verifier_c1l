@@ -1,5 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: *"); //add this CORS header to enable any domain to send HTTP requests to these endpoints:
+header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: *");
 
@@ -8,15 +8,13 @@ include_once 'database_login.php';
 
 $data = json_decode(file_get_contents('php://input'));
 
-//$userEmail = $decodedData['Email'];
-//$userPw = ($decodedData['Password']);
-
 //if input fields is empty
 if (!isset($data->Email) || !isset($data->Password)){
     echo "Input fields is empty";
 } else {        //if input fields is not empty
     $email = trim($data->Email);
-    $password = trim($data->Password);
+    $hashed_password = trim($data->Password);
+    //$hashed_password = hash('sha256', trim($data->Password));
         
     //SQL Query
     $sql = "SELECT * FROM committee WHERE email=?";
@@ -34,16 +32,35 @@ if (!isset($data->Email) || !isset($data->Password)){
 
         //check if email is registered
         if(mysqli_num_rows($result) == 0){
-            echo '{"success":"false"}';
+            $object = array("success"=>False);
+            $json_object = json_encode($object);
+            echo $json_object;
         } else {
             $row = mysqli_fetch_assoc($result);
 
-            //check if passwords match
-            if(!($password == $row['password'])){
-                echo '{"success":"false"}';
+            //check if passwords match 
+            if(!($hashed_password == $row['password'])){
+                $object = array("success"=>False);
+                $json_object = json_encode($object);
+                echo $json_object;
             } else {
-                echo '{"success":"true"}';
+                $object = array("success"=>True);
+                $json_object = json_encode($object);
+                echo $json_object;
+                setcookie('email', $email, time()+60*60*7);
+                session_start();
+                $_SESSION['email'] = $email;
             }
         }
     }
 }
+
+$conn->close();
+/* 
+
+References:
+Prepare statements: https://www.youtube.com/watch?v=I4JYwRIjX6c
+Handle json objects: https://www.w3schools.com/js/js_json_php.asp
+Decrypt password: https://www.php.net/manual/en/function.password-verify.php
+
+*/
