@@ -19,7 +19,10 @@ import AddStudentRecordPage from "Pages/AddStudentRecord";
 import { SnackbarProvider } from "notistack";
 
 import PrivateRoute from "./PrivateRoute.jsx";
+// example usage of cookies
+import Cookies from "universal-cookie";
 
+const cookies = new Cookies();
 // a placeholder component to test if the material ui components are being rendered
 // you can delete this TL anytime
 
@@ -53,6 +56,8 @@ const routes = [
 function App() {
   React.useEffect(() => {
     console.log(window);
+    // logs all cookies, remove this in production
+    console.log(cookies.getAll());
   }, []);
   return (
     <ThemeProvider theme={theme}>
