@@ -26,7 +26,7 @@ $suffix = isset($data['suffix']) ? $data['suffix'] : 0;
 $degree = isset($data['degree']) ? $data['degree'] : 0;
 
 //query - insert student no, last name, first name, middle name, suffix, degree, recommended no units, credited units, gwa, status
-$sql = "INSERT INTO student VALUES ('$studno','$lname','$fname','$mname','$suffix','$degree',1,1,1.5,'-')";
+$sql = "INSERT INTO student VALUES ('$studno','$lname','$fname','$mname','$suffix','$degree',1,1,1.5,'UNVERIFIED')";
 if($studno == 0) die();
 // run SQL statement
 
