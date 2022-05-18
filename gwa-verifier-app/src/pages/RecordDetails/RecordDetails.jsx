@@ -56,6 +56,8 @@ function RecordList() {
   const [isDeleted, setIsDeleted] = React.useState(false);
   const { open: deleteDialogStatus, toggle: toggleDeleteDialog } = useDialog();
 
+  const [terms, setTerms] = useState([]);
+  const [currentTerm, setCurrenTerm] = useState("");
 
   const [values, setValues] = React.useState({
     alertMessage: '',
@@ -268,16 +270,6 @@ function RecordList() {
     fetchDetails().catch(console.error);
     console.log(details);
   }, []);
-
-  // if student record was deleted
-  if (isDeleted) {
-    return <Navigate to="/records/" />;
-  }
-
-  // if details not yet fetched
-  if (details == null) {
-    return <></>;
-  }
 
   // if student record was deleted
   if(isDeleted){
