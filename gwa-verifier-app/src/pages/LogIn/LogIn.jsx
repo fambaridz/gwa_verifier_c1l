@@ -14,6 +14,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import logo from "Assets/logo.png";
 import "./LogIn.css";
 import { BACKEND_URI } from "../../constants.js";
+import Cookies from "universal-cookie";
 
 
 function LogIn() {
@@ -72,6 +73,18 @@ function LogIn() {
             alertMessage:"Failed to log in. Please check your email/password"})
         }
         else {
+          // successful log in. store the email as a cookie
+          const cookies = new Cookies();
+          cookies.set(
+            "email",
+            values.email,
+            {
+              path: BACKEND_URI,
+              age: 60*60,
+              sameSite: "lax",
+            }
+          );
+
           //show successful login alert
           setValues({...values, 
             isAlert:true, 
