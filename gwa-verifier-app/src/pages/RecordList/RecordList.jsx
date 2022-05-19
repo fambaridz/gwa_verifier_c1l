@@ -1,9 +1,8 @@
 import * as React from "react";
 import { Box, Button, Toolbar, Typography } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { Add, Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { ThemeProvider } from "@mui/material";
 import DeleteRecordDialog from "Components/DeleteRecordDialog";
 import { useDialog } from "../../hooks";
 import { BACKEND_URI } from "../../constants.js";
@@ -19,6 +18,14 @@ function RecordList() {
   const [name, setName] = React.useState(null);
   const [students, setStudents] = React.useState([]);
   var studentList = [];
+
+  function CustomToolbar() {
+    return (
+      <GridToolbarContainer>
+        <GridToolbarExport />
+      </GridToolbarContainer>
+    )
+  }
 
   function redirectToAddStudentRecords() {
     navigate("/records/add");
@@ -55,7 +62,8 @@ function RecordList() {
     {
       field: "name",
       headerName: "Name",
-      width: 310,
+      minWidth: 370,
+      flex: 1,
       renderCell: (params) => (
         <>
           <Button
@@ -68,15 +76,16 @@ function RecordList() {
         </>
       ),
     },
-    { field: "studno", headerName: "Student Number", width: 120 },
-    { field: "degreeProgram", headerName: "Degree Program", width: 310 },
-    { field: "gwa", headerName: "GWA", width: 80 },
-    { field: "status", headerName: "Status", width: 120 },
+    { field: "studno", headerName: "Student Number", minWidth: 130, flex: 1 },
+    { field: "degreeProgram", headerName: "Degree Program", minWidth: 70, flex: 1 },
+    { field: "gwa", headerName: "GWA", minWidth: 80, flex: 1 },
+    { field: "status", headerName: "Status", minWidth: 120, flex: 1 },
     {
       field: "action",
       type: "actions",
       headerName: "Action",
-      width: 70,
+      minWidth: 70,
+      flex: 1,
       renderCell: (params) => (
         <>
           <Button onClick={() => openDeleteDialog(params.id)}>
@@ -173,6 +182,9 @@ function RecordList() {
               columns={columns}
               pageSize={20}
               rowsPerPageOptions={[20]}
+              components={{
+                Toolbar: CustomToolbar,
+              }}
             />
           </div>
         </Box>
