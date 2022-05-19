@@ -11,12 +11,19 @@
     display: flex;
     flex: 1;
     height: 100%;
+    justify-content: center;
+    background: rgb(1,68,33);
+    background: linear-gradient(59deg, rgba(1,68,33,1) 0%, rgba(123,17,19,1) 100%);
+}
+
+.login-left-caption{
     padding: 20px;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-end;
-    background: rgb(1,68,33);
-    background: linear-gradient(59deg, rgba(1,68,33,1) 0%, rgba(123,17,19,1) 100%);
+    position: absolute;
+    bottom: 0;
+    left: 0;
 }
 
 .login-right{
@@ -45,6 +52,11 @@
 .login-logo{
     width: 96px;
     width: 25vh;
+}
+
+.app-logo{
+    /* width: 320px; */
+    width: 100vh;
 }
 
 .login-form-label{

@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import logo from "Assets/logo.png";
+import appLogo from "Assets/appLogo.png";
 import "./LogIn.css";
 import { BACKEND_URI } from "../../constants.js";
 
@@ -120,8 +121,11 @@ function LogIn() {
   return (
     <div className="login-container">
       <div className="login-left">
-        <Typography variant="" className="login-welcome">WELCOME TO</Typography>
-        <Typography variant="" className="login-appname">GWA Verifier</Typography>
+        <img src={appLogo} className="app-logo"/>
+        <div className="login-left-caption">
+          <Typography variant="" className="login-welcome">WELCOME TO</Typography><br />
+          <Typography variant="" className="login-appname">GWA Verifier</Typography>
+        </div>
       </div>
       <div className="login-right">
         <img src={logo} className="login-logo"/>
