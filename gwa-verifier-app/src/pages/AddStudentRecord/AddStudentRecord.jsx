@@ -262,13 +262,16 @@ function AddStudentRecord() {
       await Promise.all(promises);
 
       promises = gradeRecordsCopy.map((gradeRecord) => {
-        return fetch(`${BACKEND_URI}/add-edit-record-api/addStudentRecord.php`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(gradeRecord),
-        });
+        return fetch(
+          `${BACKEND_URI}/add-edit-record-api/addStudentRecord.php`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(gradeRecord),
+          }
+        );
       });
 
       await Promise.all(promises);
@@ -345,28 +348,37 @@ function AddStudentRecord() {
       return;
     }
 
-    try {
-      // creating student record info is working
-      let res = await fetch(`${BACKEND_URI}/add-edit-record-api/addStudent.php`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...studentRecord, studno }),
-      });
-      if (!res.ok) {
-        const error = res.status;
-        throw new Error(error);
-      }
+    // try {
+    //   // creating student record info is working
+    //   const payload = {
+    //     ...studentRecord,
+    //     studno,
+    //   };
+    //   console.table(payload);
+    //   let res = await fetch(
+    //     `${BACKEND_URI}/add-edit-record-api/addStudent.php`,
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         "Content-Type": "application/json",
+    //       },
+    //       body: JSON.stringify(payload),
+    //     }
+    //   );
+    //   if (!res.ok) {
+    //     console.table(res);
+    //     const error = res.status;
+    //     throw new Error(error);
+    //   }
 
-      // ready the data
-    } catch (error) {
-      console.warn(error);
-      enqueueSnackbar("Error in saving record", {
-        variant: "error",
-      });
-      return;
-    }
+    //   // ready the data
+    // } catch (error) {
+    //   console.warn(error);
+    //   enqueueSnackbar("Error in saving record", {
+    //     variant: "error",
+    //   });
+    //   return;
+    // }
     try {
       const payload = {
         studno,
@@ -374,19 +386,48 @@ function AddStudentRecord() {
       };
 
       // console.log(JSON.stringify(payload));
+      const payload2 = {
+        student_number: Number.parseInt(studno),
+        student_record: gradeRecordsReady.map((record) => ({
+          ...record,
+          course_number: record.courseno,
+          running_total: record.total,
+        })),
+      };
 
-      const res = await fetch(`${BACKEND_URI}/add-edit-record-api/addStudentRecord.php`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const _res = await fetch(
+        `${BACKEND_URI}/add-edit-record-api/verify-student-record.php`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload2),
+        }
+      );
 
-      if (!res.ok) {
+      if (!_res.ok) {
         const error = res.status;
         throw new Error(error);
       }
+
+      console.log(_res.data);
+
+      // const res = await fetch(
+      //   `${BACKEND_URI}/add-edit-record-api/addStudentRecord.php`,
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify(payload),
+      //   }
+      // );
+
+      // if (!res.ok) {
+      //   const error = res.status;
+      //   throw new Error(error);
+      // }
 
       enqueueSnackbar("Student record saved", {
         variant: "success",
