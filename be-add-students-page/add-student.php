@@ -26,31 +26,36 @@ $suffix = isset($data['suffix']) ? $data['suffix'] : 0;
 $degree = isset($data['degree']) ? $data['degree'] : 0;
 
 // check if student number already exists in the database
-function check_studno_if_exist($studno){
-    $sql = "SELECT FROM student WHERE student_number=$studno";
+function check_studno_if_exist($studno, $con){
+    $sql = "SELECT student_number FROM student WHERE student_number=$studno";
     $result = mysqli_query($con,$sql);
 
     //return 1 if existing
-    if(mysqli_num_rows($result)==1) {
+    if(mysqli_num_rows($result)>=1) {
         return 1;
     }
-    return 0;
+    else{
+      return 0;
+    }
 }
 
 //checks if degree exists in degree_curriculums table
-function check_degree_if_exist($degree){
-    $sql = "SELECT FROM degree_curriculums WHERE degree_nickname=$degree";
+function check_degree_if_exist($degree, $con){
+    $sql = "SELECT degree_nickname FROM degree_curriculums WHERE degree_nickname='$degree'";
     $result = mysqli_query($con,$sql);
 
     //return 1 if existing
-    if(mysqli_num_rows($result)==1) {
+    if(mysqli_num_rows($result)>=1) {
         return 1;
     }
-    return 0;
+    else{
+      return 0;
+    }
 }
 
-if(!check_studno_if_exist($studno)){
-    if(check_degree_if_exist($degree)){
+
+if(!check_studno_if_exist($studno, $con)){
+    if(check_degree_if_exist($degree, $con)){
         //query - insert student no, last name, first name, middle name, suffix, degree, recommended no units, credited units, gwa, status
         $sql = "INSERT INTO student VALUES ('$studno','$lname','$fname','$mname','$suffix','$degree',1,1,1.5,'-')";
 
