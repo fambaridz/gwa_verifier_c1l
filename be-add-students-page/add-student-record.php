@@ -12,10 +12,10 @@ For front-end requests:
     body: 
         {
           "studno":<int>,
-          "subject_record": 
+          "student_record": 
           {
             [
-              "course_no":<string>,
+              "courseno":<string>,
               "grade":<string>,
               "units":<string>,
               "enrolled":<float>,
@@ -26,7 +26,7 @@ For front-end requests:
             .
             .
             [
-              "course_no":<string>,
+              "courseno":<string>,
               "grade":<string>,
               "units":<string>,
               "enrolled":<float>,
