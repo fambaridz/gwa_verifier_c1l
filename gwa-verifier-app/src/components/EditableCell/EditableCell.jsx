@@ -1,21 +1,33 @@
 import React, { useState, useEffect, useCallback } from "react";
 import TextField from "@mui/material/TextField";
 import { ErrorTooltip } from "../Tooltips";
-import { defaultRegex, gradeRegex } from "../../utils/validators.js";
+import {
+  defaultRegex,
+  gradeRegex,
+  unitsRegex,
+} from "../../utils/validators.js";
 
 const ERROR_MESSAGES = {
   REQUIRED: "This field is required",
   GRADE:
     "P, S, INC, DRP, or a numeric grade with 4 significant digits is only allowed",
+  UNITS: "Whole numbers only, except for '190' and '200' subjects",
   DEFAULT: "Numbers up to 4 significant digits only",
 };
 
 function checkIfError({ name, value }) {
-  if (name !== "grade") return !defaultRegex.test(value);
-  return !gradeRegex.test(value);
+  switch (name) {
+    case "grade":
+      return !gradeRegex.test(value);
+    case "units":
+      return !unitsRegex.test(value);
+    default:
+      return !defaultRegex.test(value);
+  }
+  // if (name !== "grade") return !defaultRegex.test(value);
+  // return !gradeRegex.test(value);
 }
 
-let counter = 0;
 function EditableCell({
   value: initialValue,
   handleUpdate,
@@ -33,18 +45,48 @@ function EditableCell({
       return;
     }
 
-    if (columnId === "courseno") return;
-
-    if (columnId !== "grade" && !defaultRegex.test(value)) {
-      setHelperText(ERROR_MESSAGES.DEFAULT);
-      return;
-    }
-
-    if (!gradeRegex.test(value)) {
-      setHelperText(ERROR_MESSAGES.GRADE);
-      return;
+    switch (columnId) {
+      case "courseno":
+        break;
+      case "units":
+        if (!unitsRegex.test(value)) {
+          setHelperText(ERROR_MESSAGES.UNITS);
+          return;
+        }
+        break;
+      case "grade":
+        if (!gradeRegex.test(value)) {
+          setHelperText(ERROR_MESSAGES.GRADE);
+          return;
+        }
+        break;
+      case "running_total":
+      case "enrolled":
+        if (defaultRegex.test(value)) {
+          setHelperText(ERROR_MESSAGES.DEFAULT);
+          return;
+        }
+        break;
     }
     setHelperText("");
+
+    // if (columnId === "courseno") return;
+
+    // if (columnId === "units" && !unitsRegex.test(value)) {
+    //   setHelperText(ERROR_MESSAGES.UNITS);
+    //   return;
+    // }
+
+    // if (columnId !== "grade" && !defaultRegex.test(value)) {
+    //   setHelperText(ERROR_MESSAGES.DEFAULT);
+    //   return;
+    // }
+
+    // if (!gradeRegex.test(value)) {
+    //   setHelperText(ERROR_MESSAGES.GRADE);
+    //   return;
+    // }
+    // setHelperText("");
   };
   const onChange = (e) => {
     const { value } = e.target;

@@ -11,6 +11,7 @@ import "./AddStudentRecord.css";
 
 import { extractFromFile } from "../../utils/extracters.js";
 import { fromMapToArray } from "../../utils/transformers.js";
+import * as validators from "../../utils/validators.js";
 import GradeRecordTable from "Components/GradeRecordTable";
 import CarouselButtons from "Components/CarouselButtons";
 import AddStudentFormFooter from "Components/AddStudentFormFooter";
@@ -18,8 +19,9 @@ import EditTermDialog from "Components/EditTermDialog";
 import DeleteTermDialog from "Components/DeleteTermDialog";
 import ParsingModal from "Components/ParsingModal";
 import { useDialog } from "../../hooks";
+import { BACKEND_URI } from "../../constants.js";
 
-const BACKEND_URI = "http://localhost/gwa-verifier-backend";
+// const BACKEND_URI = "http://localhost/gwa-verifier-backend";
 
 const acceptedFiles = ["text/csv"];
 
@@ -167,35 +169,121 @@ function AddStudentRecord() {
     setSaving(true);
 
     // create all student info
-    let promises = Object.keys(studentRecords).map((key) => {
-      const studentRecord = studentRecords[key];
-      const { ...rest } = studentRecord;
-      return fetch(BACKEND_URI, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          studNo: key,
-          ...rest,
-        }),
+
+    // create paylaod for student records and grade records
+    /**
+     * StudentRecord[]
+     */
+    let studentRecordsCopy = [];
+    /**
+     * [{
+     *  studno: string,
+     *  list: GradeRecord[]
+     * }]
+     */
+    let gradeRecordsCopy = [];
+    for (let srUid of Object.keys(studentRecords)) {
+      let { studNo: studno, ...rest } = studentRecords[srUid];
+      // input validation for studentRecord
+      if (
+        !validators.studentNoRegex.test(studno) ||
+        !validators.recommendedUnitsRegex.test(rest.recommended)
+      ) {
+        setSaving(false);
+
+        enqueueSnackbar("Cannot save all students, some still have errors", {
+          variant: "error",
+        });
+        return;
+      }
+
+      studno = studno.split("-").join("");
+
+      // get all grades for student
+      let grades = [];
+      try {
+        grades = Object.keys(gradeRecords)
+          .filter((grUid) => gradeRecords[grUid].srUid === srUid)
+          .map((grUid) => {
+            let record = { ...gradeRecords[grUid] };
+            const { grade, units, term, running_total } = record;
+
+            if (
+              !validators.gradeRegex.test(grade) ||
+              !validators.termRegex.test(term) ||
+              !validators.unitsRegex.test(units) ||
+              !validators.defaultRegex.test(running_total)
+            ) {
+              setSaving(false);
+              enqueueSnackbar(
+                "Cannot save all student records, some still have errors",
+                {
+                  variant: "error",
+                }
+              );
+              throw new Error();
+            }
+
+            Object.assign(record, {
+              total: record.running_total,
+            });
+            delete record["running_total"];
+            return record;
+          });
+      } catch (error) {
+        console.warn(error);
+        setSaving(false);
+        return;
+      }
+
+      studentRecordsCopy.push({
+        studno,
+        ...rest,
       });
-    });
-    let res = await Promise.all(promises);
+      gradeRecordsCopy.push({
+        studno,
+        lst: grades,
+      });
+    }
+
+    let promises;
+
+    try {
+      promises = studentRecordsCopy.map((studentRecord) => {
+        return fetch(`${BACKEND_URI}/addStudent.php`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(studentRecord),
+        });
+      });
+
+      await Promise.all(promises);
+
+      promises = gradeRecordsCopy.map((gradeRecord) => {
+        return fetch(`${BACKEND_URI}/addStudentRecord.php`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(gradeRecord),
+        });
+      });
+
+      await Promise.all(promises);
+      enqueueSnackbar("Student records saved", {
+        variant: "success",
+      });
+    } catch (error) {
+      console.warn(error);
+      enqueueSnackbar("Error in saving student records", {
+        variant: "Error",
+      });
+    }
 
     // now, for the grade records
-    promises = Object.keys(gradeRecords).map((key) => {
-      const gradeRecord = gradeRecords[key];
 
-      return fetch(BACKEND_URI, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(gradeRecord),
-      });
-    });
-    res = await Promise.all(promises);
     setSaving(false);
   }
 
@@ -207,31 +295,103 @@ function AddStudentRecord() {
     const uid = srUidPageMap[page];
 
     const studentRecord = studentRecords[uid];
+    let { studNo: studno, recommended } = studentRecord;
+    // input validation for student info
+    if (
+      !validators.studentNoRegex.test(studno) ||
+      !validators.recommendedUnitsRegex.test(recommended)
+    ) {
+      setSaving(false);
+      console.log(studno, recommended);
+      enqueueSnackbar("Cannot save all students, some still have errors", {
+        variant: "error",
+      });
+      return;
+    }
+
+    studno = studno.split("-").join("");
+
+    let gradeRecordsReady = [];
+    try {
+      gradeRecordsReady = Object.keys(gradeRecords)
+        .filter((grUid) => gradeRecords[grUid].srUid === uid)
+        .map((grUid) => {
+          let record = { ...gradeRecords[grUid] };
+          const { grade, units, term, running_total } = record;
+
+          if (
+            !validators.gradeRegex.test(grade) ||
+            !validators.termRegex.test(term) ||
+            !validators.unitsRegex.test(units) ||
+            !validators.defaultRegex.test(running_total)
+          ) {
+            setSaving(false);
+            enqueueSnackbar(
+              "Cannot save all student records, some still have errors",
+              {
+                variant: "error",
+              }
+            );
+            throw new Error();
+          }
+          Object.assign(record, {
+            total: record.running_total,
+          });
+          delete record["running_total"];
+          return record;
+        });
+    } catch (error) {
+      console.warn(error);
+      return;
+    }
 
     try {
-      const res = await fetch(`${BACKEND_URI}/addStudent.php`, {
+      // creating student record info is working
+      let res = await fetch(`${BACKEND_URI}/addStudent.php`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(studentRecord),
+        body: JSON.stringify({ ...studentRecord, studno }),
       });
       if (!res.ok) {
-        const error = (data && data.message) || response.status;
+        const error = res.status;
         throw new Error(error);
       }
 
-      // TODO: save grade records
-
-      enqueueSnackbar("Student record saved", {
-        variant: "success",
-      });
+      // ready the data
     } catch (error) {
       console.warn(error);
       enqueueSnackbar("Error in saving record", {
         variant: "error",
       });
+      return;
     }
+    try {
+      const payload = {
+        studno,
+        lst: gradeRecordsReady,
+      };
+
+      // console.log(JSON.stringify(payload));
+
+      const res = await fetch(`${BACKEND_URI}/addStudentRecord.php`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const error = res.status;
+        throw new Error(error);
+      }
+
+      enqueueSnackbar("Student record saved", {
+        variant: "success",
+      });
+    } catch (error) {}
     setSaving(false);
   }
 
@@ -259,7 +419,7 @@ function AddStudentRecord() {
     delete gradeRecordCopy[uid];
     setGradeRecords(gradeRecordCopy);
   }
-
+  // TODO: refactor this; extract logic to separate function
   function updateTerm(prevValue, currValue) {
     const newTerms = terms.map((term) =>
       term === prevValue ? currValue : term
@@ -290,7 +450,7 @@ function AddStudentRecord() {
     setGradeRecords(gradeRecordsCopy);
     toggleDialog();
   }
-
+  // TODO: refactor this; extract logic to separate function
   function deleteTerm(srUid, term) {
     let termsCopy = srUidTermMap[srUid];
     if (!termsCopy) return;
@@ -370,6 +530,7 @@ function AddStudentRecord() {
               popStack={popStack}
               saveOne={saveOne}
               saving={saving}
+              saveAll={saveAll}
             />
           }
         />

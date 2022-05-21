@@ -37,7 +37,7 @@ const routes = [
     name: "Manage committee accounts page",
   },
   {
-    to: "/login",
+    to: "/",
     name: "Login page",
   },
   {
@@ -59,13 +59,13 @@ function App() {
       <CssBaseline />
       <SnackbarProvider maxSnack={3}>
         <Router>
-          <List>
+          {/* <List>
             {routes.map((route, idx) => (
               <ListItem key={idx}>
                 <Link to={route.to}>{route.name}</Link>
               </ListItem>
             ))}
-          </List>
+          </List> */}
           <Routes>
             <Route
               path="/records"
@@ -91,7 +91,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/" element={<LoginPage />} />
             <Route
               path="/records/add"
               element={

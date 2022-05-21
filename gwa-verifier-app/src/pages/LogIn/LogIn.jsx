@@ -52,7 +52,7 @@ function LogIn() {
     }
     console.log(credentials)
     fetch(
-      "http://localhost/backend/login.php",
+      "http://localhost/gwa-verifier-backend/login.php",
       {
         method: "POST",
         headers: {

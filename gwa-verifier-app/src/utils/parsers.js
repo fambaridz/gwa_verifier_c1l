@@ -12,7 +12,7 @@ export function csvToArray(str, delimiter = ",") {
         .trim()
         .slice(str.indexOf("\n") + 1)
         .split("\n");
-      const regex = /(l|Il|ll|M)\/[0-9]{2}\/[0-9]{2}/m;
+      const regex = /[A-Za-z]+\/[0-9]{2}\/[0-9]{2}/m;
       const footer = rows.splice(rows.length - 5, 5);
 
       let [, [, gwa], recommended] = footer;

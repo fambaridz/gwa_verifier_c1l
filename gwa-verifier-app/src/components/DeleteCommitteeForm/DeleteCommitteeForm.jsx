@@ -30,7 +30,7 @@ function DeleteCommitteeForm(props) {
 		  event.preventDefault();
 		  const credentials = {email: props.email}
 		  fetch(
-			  "http://localhost/backend/committee-api.php",
+			  "http://localhost/gwa-verifier-backend/committee-api.php",
 			  {
 				  method: "DELETE",
 				  body: JSON.stringify(credentials)

@@ -6,18 +6,20 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TableRow
+  TableRow,
 } from "@mui/material";
 
-function RecordDetailTable({courses}) {
-  if(courses == null){
-    return(
-      <Box sx={{display:"flex", justifyContent:"center", marginTop:"30px"}}>
-            <CircularProgress sx={{ margin:"auto"}}/>
+function RecordDetailTable({ courses }) {
+  if (courses == null) {
+    return (
+      <Box
+        sx={{ display: "flex", justifyContent: "center", marginTop: "30px" }}
+      >
+        <CircularProgress sx={{ margin: "auto" }} />
       </Box>
-    )
+    );
   } else {
-    return(
+    return (
       <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
         <Table size="medium">
           <TableHead>
@@ -25,15 +27,13 @@ function RecordDetailTable({courses}) {
               <TableCell>Course</TableCell>
               <TableCell>No of Units</TableCell>
               <TableCell>Grade</TableCell>
-              <TableCell> </TableCell>
-              <TableCell> </TableCell>
+              <TableCell>Enrolled</TableCell>
+              <TableCell>Running Total</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {courses.map((row) => (
-              <TableRow
-                key={row.id}
-              >
+              <TableRow key={row.id}>
                 <TableCell component="th" scope="row">
                   {row.course_number}
                 </TableCell>
@@ -47,8 +47,7 @@ function RecordDetailTable({courses}) {
           </TableBody>
         </Table>
       </Box>
-    )
-
+    );
   }
 }
 

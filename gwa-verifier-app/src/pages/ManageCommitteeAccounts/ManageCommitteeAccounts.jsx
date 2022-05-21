@@ -64,7 +64,7 @@ function ManageCommitteeAccounts() {
 
 	useEffect(() => {
 		fetch(
-			"http://localhost/backend/committee-api.php",
+			"http://localhost/gwa-verifier-backend/committee-api.php",
 			{
 				method: "GET",
 			})
