@@ -2,6 +2,7 @@
 // Author: Tomboc, Ma. Zeit Elizha
 
 header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: *");
 $host = "localhost"; 
 $user = "root"; 
@@ -56,8 +57,15 @@ if($method == "POST") {
     }
   }
 
-  // send value of computed GWA to frontend
-  echo json_encode($total_enrolled/$total_units);
+  // create stdClass/object for response
+  $response = new stdClass();
+  $response->total_enrolled = $total_enrolled;
+  $response->total_units = $total_units;
+  $response->gwa = $total_enrolled/$total_units;
+
+  // send response object to frontend
+  // response: {total_enrolled: <val>, total_units: <val>, gwa: <val>}
+  echo json_encode($response);
 }
 
 $con->close();
