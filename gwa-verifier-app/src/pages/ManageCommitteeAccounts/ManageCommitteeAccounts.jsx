@@ -25,20 +25,16 @@ import validator from "validator";
 import AddCommitteeForm from "Components/AddCommitteeForm";
 import EditCommitteeForm from "Components/EditCommitteeForm";
 import DeleteCommitteeForm from "Components/DeleteCommitteeForm";
+import Cookies from "universal-cookie";
 import { BACKEND_URI } from "../../constants.js";
-
-//Changes made in committee-api.php to bypass verification for testing
-//CASE 1-3 commented out
-//added $verified = true
 
 //used gwa_verifier_c1l_db, committee table for testing
 
 //Known Issues
-//Can edit anything but email
-//Doesn't detect if user already exist when adding committee account
-//If password is left blank null value will be taken and encrypted and password will be changed with encrypted null
+//Can edit anything but email ~api side problem (might be just dumb and wrong) ~Zenn
 
 function ManageCommitteeAccounts() {
+	const cookies = new Cookies();
   const [openAdd, setOpenAdd] = React.useState(false);
 
   function EditCell(props) {
@@ -53,6 +49,8 @@ function ManageCommitteeAccounts() {
           lastname={props.lastname}
           middlename={props.middlename}
           suffix={props.suffix}
+		  password={props.password}
+		  account_made_by={cookies.get('email')} 
         />
         <TableCell>
           <IconButton onClick={() => setOpenEdit(true)}>
@@ -80,13 +78,13 @@ function ManageCommitteeAccounts() {
     );
   }
 
-  function createData(email, firstname, lastname, middlename, suffix) {
-    return { email, firstname, lastname, middlename, suffix };
+  function createData(email, firstname, lastname, middlename, suffix, password) {
+    return { email, firstname, lastname, middlename, suffix, password };
   }
 
   const [rows, setRow] = React.useState([]);
   const dataRows = [];
-
+  const emailExisting = [];
 	useEffect(() => {
 		fetch(
 			`${BACKEND_URI}/committee-api/committee-api.php`,
@@ -99,24 +97,37 @@ function ManageCommitteeAccounts() {
       })
 			.then((data) => {
 				data.map(item => {
-					dataRows.push(
-            createData(
-              item.email,
-              item.firstname,
-              item.lastname,
-              item.middlename,
-              item.suffix
-              )
-            );
+					if(item.account_made_by === null){
+						
+					}else{
+								dataRows.push(
+								
+									createData(
+									  item.email,
+									  item.firstname,
+									  item.lastname,
+									  item.middlename,
+									  item.suffix,
+									  item.password
+									  )
+								
+						);
+					}
+				
 				});
 				setRow(dataRows)
+				
+				data.map(item => {
+					emailExisting.push(item.email)
+				});
+				
 			})
 		 .catch((err) => console.warn(err));
 	}, [])
 	
 	return (
     <div>
-      <AddCommitteeForm open={openAdd} handleClose={() => setOpenAdd(false)} />
+      <AddCommitteeForm open={openAdd} data={emailExisting} account_made_by={cookies.get('email')} handleClose={() => setOpenAdd(false)} />
       <Box sx={{ mt: 2.5, ml: 3, fontSize: 14 }}>
         <Link to="/records" className="back-link">
           &lt; Back to Student Records
@@ -181,6 +192,7 @@ function ManageCommitteeAccounts() {
                         middlename={row.middlename}
                         lastname={row.lastname}
                         suffix={row.suffix}
+						password={row.password}
                       />
                       <DeleteCell email={row.email} />
                     </TableRow>
