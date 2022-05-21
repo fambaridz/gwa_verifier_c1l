@@ -125,45 +125,6 @@ function SummativeTable({ term, student_number, all_courses, sem_courses }) {
           <TableCell> {totalTakenTowardGPA - totalNonPass}</TableCell>
           </TableRow>
           <TableRow
-              key={11}
-              >
-          <TableCell component="th" scope="row">
-            <Typography sx={{ color: 'transparent' }}> blank space </Typography>
-          </TableCell>
-          <TableCell> </TableCell>
-          <TableCell> </TableCell>
-          </TableRow>
-          {/* Row 3 Units not for GPA */}
-          <TableRow
-              key={3}
-              >
-          <TableCell component="th" scope="row">
-            Units not for GPA
-          </TableCell>
-          <TableCell> </TableCell>
-          <TableCell> </TableCell>
-          </TableRow>
-          {/* Row 4 Taken */}
-          <TableRow
-              key={4}
-              >
-          <TableCell component="th" scope="row">
-            Taken
-          </TableCell>
-          <TableCell> </TableCell>
-          <TableCell> </TableCell>
-          </TableRow>
-          {/* Row 5 Passed */}
-          <TableRow
-              key={5}
-              >
-          <TableCell component="th" scope="row">
-            Passed
-          </TableCell>
-          <TableCell> </TableCell>
-          <TableCell> </TableCell>
-          </TableRow>
-          <TableRow
               key={12}
               >
           <TableCell component="th" scope="row">
