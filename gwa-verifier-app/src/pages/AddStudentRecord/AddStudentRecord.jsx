@@ -74,15 +74,14 @@ function AddStudentRecord() {
     setParsing(false);
   }
 
-  function handleStudentRecordsChange(e, studNo) {
-    e.preventDefault();
-
+  function handleStudentRecordsChange({ name, value }) {
+    const uuid = srUidPageMap[page];
     const copy = {
-      ...studentRecords[studNo],
-      [e.target.name]: e.target.value,
+      ...studentRecords[uuid],
+      [name]: value,
     };
 
-    setStudentRecords({ ...studentRecords, [studNo]: { ...copy } });
+    setStudentRecords({ ...studentRecords, [uuid]: { ...copy } });
   }
   function getField(name) {
     const uid = srUidPageMap[page];
@@ -385,15 +384,19 @@ function AddStudentRecord() {
         lst: gradeRecordsReady,
       };
 
+      console.log(JSON.stringify(studentRecords[srUidPageMap[page]]));
+
       // console.log(JSON.stringify(payload));
       const payload2 = {
-        student_number: Number.parseInt(studno),
+        studno: Number.parseInt(studno),
         student_record: gradeRecordsReady.map((record) => ({
           ...record,
           course_number: record.courseno,
           running_total: record.total,
         })),
       };
+
+      console.log(JSON.stringify(payload2));
 
       const _res = await fetch(
         `${BACKEND_URI}/add-edit-record-api/verify-student-record.php`,
@@ -432,7 +435,10 @@ function AddStudentRecord() {
       enqueueSnackbar("Student record saved", {
         variant: "success",
       });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
+
     setSaving(false);
   }
 
@@ -545,7 +551,7 @@ function AddStudentRecord() {
           middleName={getField("mname")}
           lastName={getField("lname")}
           suffix={getField("suffix")}
-          studentNo={getField("studNo")}
+          studNo={getField("studNo")}
           degree={getField("degree")}
           recommended={getField("recommended")}
           term={term}
@@ -553,10 +559,11 @@ function AddStudentRecord() {
           terms={terms}
           loading={saving}
           handleAddRow={addRow}
-          handleInputChange={(e) => {
-            const uuid = srUidPageMap[page];
-            handleStudentRecordsChange(e, uuid);
-          }}
+          handleInputChange={handleStudentRecordsChange}
+          // handleInputChange={(e) => {
+          //   const uuid = srUidPageMap[page];
+          //   handleStudentRecordsChange(e, uuid);
+          // }}
           handleEditTerm={toggleDialog}
           handleDeleteTerm={toggleDeleteDialog}
           table={

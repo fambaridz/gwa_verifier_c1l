@@ -190,7 +190,7 @@ function EditStudentRecord() {
         middleName={getField("mname")}
         lastName={getField("lname")}
         suffix={getField("suffix")}
-        studentNo={getField("studNo")}
+        studNo={getField("studNo")}
         degree={getField("degree")}
         recommended={getField("recommended")}
         handleInputChange={handleStudentRecordsChange}

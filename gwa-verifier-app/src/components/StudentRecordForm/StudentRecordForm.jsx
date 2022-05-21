@@ -31,7 +31,7 @@ function StudentRecordForm({
   lastName,
   suffix,
   degree,
-  studentNo,
+  studNo,
   recommended,
   loading = false,
   handleInputChange = () => {},
@@ -60,12 +60,20 @@ function StudentRecordForm({
       lname: lastName,
       suffix,
       degree,
-      studentNo,
+      studNo,
       recommended,
     });
-  }, []);
+  }, [firstName, middleName, lastName, suffix, degree, studNo, recommended]);
 
-  const [info, setInfo] = useState({});
+  const [info, setInfo] = useState({
+    fname: "",
+    mname: "",
+    lname: "",
+    suffix: "",
+    degree: "",
+    studNo: "",
+    recommended: "",
+  });
   const [comment, setComment] = useState("");
 
   function handleLocalChanges(e) {
@@ -195,7 +203,7 @@ function StudentRecordForm({
               inputProps: {
                 "aria-label": "student-no",
               },
-              value: info.studentNo,
+              value: info.studNo,
             })}
           </Grid>
           <Grid item xs={2}>
@@ -315,7 +323,7 @@ StudentRecordForm.propTypes = {
   lastName: PropTypes.string.isRequired,
   suffix: PropTypes.string.isRequired,
   degree: PropTypes.string.isRequired,
-  studentNo: PropTypes.string.isRequired,
+  studNo: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   handleInputChange: PropTypes.func.isRequired,
   footer: PropTypes.element,
