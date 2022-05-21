@@ -6,7 +6,7 @@ header("Access-Control-Allow-Methods: *");
 $host = "localhost"; 
 $user = "root"; 
 $password = ""; 
-$dbname = "gwa_verifier_c1l_db"; 
+$dbname = "gwa_verifier_cmsc_128"; 
 
 //connect to database
 $con = mysqli_connect($host, $user, $password,$dbname);
@@ -15,21 +15,24 @@ $con = mysqli_connect($host, $user, $password,$dbname);
 if (!$con) {
   die("Connection failed: " . mysqli_connect_error());
 }
-
 // get the body of fetch then decode it
 $data = json_decode(file_get_contents('php://input'), true);  //json_decode == json_parse
-$email = isset($data['email']) ? $data['email'] : 0;
+
 $studno = isset($data['studno']) ? (int)$data['studno'] : 0;
-$comment = isset($data['comment']) ? $data['comment'] : 0;
+$lname = isset($data['lname']) ? $data['lname'] : 0;
+$fname = isset($data['fname']) ? $data['fname'] : 0;
+$mname = isset($data['mname']) ? $data['mname'] : 0;
+$suffix = isset($data['suffix']) ? $data['suffix'] : 0;
+$degree = isset($data['degree']) ? $data['degree'] : 0;
 
-//query
-$sql = "INSERT INTO committee_student VALUES ('$email','$studno','$comment')";
+//query - insert student no, last name, first name, middle name, suffix, degree, recommended no units, credited units, gwa, status
+$sql = "INSERT INTO student VALUES ('$studno','$lname','$fname','$mname','$suffix','$degree',1,1,1.5,'-')";
+
 if($studno == 0) die();
-// run SQL statement
 
+// run SQL statement
 $result = mysqli_query($con,$sql);
 
-// die if SQL statement failed
 if (!$result) {
   echo "error";
 } else {
