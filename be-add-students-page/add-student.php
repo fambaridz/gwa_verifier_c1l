@@ -57,7 +57,7 @@ function check_degree_if_exist($degree, $con){
 if(!check_studno_if_exist($studno, $con)){
     if(check_degree_if_exist($degree, $con)){
         //query - insert student no, last name, first name, middle name, suffix, degree, recommended no units, credited units, gwa, status
-        $sql = "INSERT INTO student VALUES ('$studno','$lname','$fname','$mname','$suffix','$degree',1,1,1.5,'-')";
+        $sql = "INSERT INTO student VALUES ('$studno','$lname','$fname','$mname','$suffix','$degree',1,1,1.5,'INCOMPLETE')";
 
         // run SQL statement
         $result = mysqli_query($con,$sql);
