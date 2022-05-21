@@ -86,7 +86,7 @@ function AddCommitteeForm(props) {
       password: addvalues.password,
     };
     if (addvalues.confirmpass === addvalues.password) {
-      fetch(`${BACKEND_URI}/committee-api.php`, {
+      fetch(`${BACKEND_URI}/committee-api/committee-api.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(addAccountInfo),
