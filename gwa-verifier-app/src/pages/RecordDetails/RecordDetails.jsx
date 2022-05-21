@@ -45,8 +45,8 @@ const rows2 = [
 function RecordList() {
   let navigate = useNavigate();
   const studno = useParams().id;
-  let textStatus = "SATISFIED";
-  const prevStatus = "UNSATISFIED";
+  let textStatus = "SATISFACTORY";
+  const prevStatus = "UNSATISFACTORY";
   // const prevStatus = useParams().status;
   const [anchorElUser, setAnchorElUser, semester, setSemester] = React.useState(null);
   const [comments, setComments] = React.useState(null);
@@ -91,13 +91,13 @@ function RecordList() {
     let prevStatus = details.status;
 
     if (e.target.id == 1) {
-      newStatus = "SATISFIED";
+      newStatus = "SATISFACTORY";
     } else if (e.target.id == 2) {
-      newStatus = "UNSATISFIED";
+      newStatus = "UNSATISFACTORY";
     } else if (e.target.id == 3) {
-      newStatus = "UNVERIFIED";
+      newStatus = "UNCHECKED";
     } else if (e.target.id == 4) {
-      newStatus = "DEFICIENT";
+      newStatus = "PENDING";
     }
     const statusChange = {
       action: "status-change",
@@ -131,7 +131,7 @@ function RecordList() {
             ...values,
             isAlert: true,
             alertSeverity: "success",
-            alertMessage: "Status Changed to SATISFIED",
+            alertMessage: "Status Changed to SATISFACTORY",
           });
           setTimeout(() => {}, 1000);
           setTimeout(window.location.reload(), 5000);
@@ -140,7 +140,7 @@ function RecordList() {
             ...values,
             isAlert: true,
             alertSeverity: "success",
-            alertMessage: "Status Changed to UNSATISFIED",
+            alertMessage: "Status Changed to UNSATISFACTORY",
           });
           setTimeout(() => {}, 1000);
           setTimeout(window.location.reload(), 5000);
@@ -149,7 +149,7 @@ function RecordList() {
             ...values,
             isAlert: true,
             alertSeverity: "success",
-            alertMessage: "Status Changed to UNVERIFIED",
+            alertMessage: "Status Changed to UNCHECKED",
           });
           setTimeout(() => {}, 1000);
           setTimeout(window.location.reload(), 5000);
@@ -158,7 +158,7 @@ function RecordList() {
             ...values,
             isAlert: true,
             alertSeverity: "success",
-            alertMessage: "Status Changed to DEFICIENT",
+            alertMessage: "Status Changed to PENDING",
           });
           setTimeout(() => {}, 1000);
           setTimeout(window.location.reload(), 5000);
@@ -283,6 +283,10 @@ function RecordList() {
     return(<></>)
   }
 
+  function isIncomplete(student) {
+    return student.status === "INCOMPLETE"
+  }
+
   return (
     <div>
       <Box sx={{ mt: 2.5, ml: 3, fontSize: 14 }}>
@@ -311,6 +315,7 @@ function RecordList() {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
             onClick={handleClick}
+            disabled={isIncomplete(details)}
           >
             Mark As
           </Button>
@@ -324,16 +329,16 @@ function RecordList() {
             }}
           >
             <MenuItem onClick={handleClose} id={1}>
-              Satisfied
+              Satisfactory
             </MenuItem>
             <MenuItem onClick={handleClose} id={2}>
-              Unsatisfied
+              Unsatisfactory
             </MenuItem>
             <MenuItem onClick={handleClose} id={3}>
-              Unverified
+              Unchecked
             </MenuItem>
             <MenuItem onClick={handleClose} id={4}>
-              Deficient
+              Pending
             </MenuItem>
           </Menu>
           <StudentStatus student={details} />
