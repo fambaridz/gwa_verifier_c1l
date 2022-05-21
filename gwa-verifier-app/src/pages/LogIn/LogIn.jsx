@@ -73,17 +73,20 @@ function LogIn() {
             alertMessage:"Failed to log in. Please check your email/password"})
         }
         else {
-          // successful log in. store the email as a cookie
+          // successful log in. store the user info in cookies
           const cookies = new Cookies();
-          cookies.set(
-            "email",
-            values.email,
-            {
-              path: BACKEND_URI,
-              age: 60*60,
-              sameSite: "lax",
-            }
-          );
+          cookies.set("email",values.email,{path: "/"});
+          cookies.set("fname",body.firstname,{path: "/"});
+          cookies.set("midname",body.middlename,{path: "/"});
+          cookies.set("lname",body.lastname,{path: "/"});
+          cookies.set("suffix",body.suffix,{path: "/"});
+          cookies.set("superuser",body.superuser,{path: "/"});
+          // console.log(cookies.get("email"));
+          // console.log(cookies.get("fname"));
+          // console.log(cookies.get("midname"));
+          // console.log(cookies.get("lname"));
+          // console.log(cookies.get("suffix"));
+          // console.log(cookies.get("superuser"));
 
           //show successful login alert
           setValues({...values, 

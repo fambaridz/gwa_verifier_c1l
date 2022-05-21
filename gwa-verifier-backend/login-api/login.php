@@ -13,8 +13,8 @@ if (!isset($data->Email) || !isset($data->Password)){
     echo "Input fields is empty";
 } else {        //if input fields is not empty
     $email = trim($data->Email);
-    $hashed_password = trim($data->Password);
-    //$hashed_password = hash('sha256', trim($data->Password));
+    //$hashed_password = trim($data->Password);
+    $hashed_password = hash('sha256', trim($data->Password));
         
     //SQL Query
     $sql = "SELECT * FROM committee WHERE email=?";
@@ -40,16 +40,18 @@ if (!isset($data->Email) || !isset($data->Password)){
 
             //check if passwords match 
             if(!($hashed_password == $row['password'])){
-                $object = array("success"=>False);
+                if($row["account_made_by"]=='NULL'){
+                    $superuser_flag = True;
+                } else {
+                    $superuser_flag = False;
+                }
+                $object = array("success"=>False, "firstname"=>$row[firstname], "middlename"=>$row[middlename], "lastname"=>$row[lastname], "suffix"=>$row[suffix], "superuser"=>$superuser_flag);
                 $json_object = json_encode($object);
                 echo $json_object;
             } else {
                 $object = array("success"=>True);
                 $json_object = json_encode($object);
                 echo $json_object;
-                setcookie('email', $email, time()+60*60*7);
-                session_start();
-                $_SESSION['email'] = $email;
             }
         }
     }
