@@ -54,6 +54,14 @@ if (!$con) {
   die("Connection failed: " . mysqli_connect_error());
 }
 
+// I got this from details.php, credits to Zeit's work on handling preflight requests
+// for PREFLIGHT request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+  header("HTTP/1.1 200 OK");
+  return;
+}
+
+
 //decode JSON object from HTTP body
 $data = json_decode(file_get_contents('php://input'));  //json_decode == json_parse
 
