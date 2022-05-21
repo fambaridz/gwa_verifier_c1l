@@ -26,7 +26,7 @@ $body = json_decode(file_get_contents('php://input'));
 // { action: 'get-comments', student_number: this.state.student_number }, METHOD: POST
 // { action: 'status-change', student_number: this.state.student_number,  prevStatus: this.state.status, newStatus: value}, METHOD: POST
 // { action: 'delete-record', student_number: this.state.student_number}, METHOD: DELETE
-// { action: 'delete-record', term: term}, METHOD: POST
+// { action: 'record-per-semester', term: term}, METHOD: POST
 
 if (!$con) {
   die("Connection failed: " . mysqli_connect_error());
@@ -56,12 +56,12 @@ switch ($body->action) {
     break;
   case 'status-change':
     // changes the status of a student record
-    // valid status changes: UNVERIFIED <-> DEFICIENT <-> SATISFIED or UNSATISFIED
+    // valid status changes: UNCHECKED <-> PENDING <-> SATISFACTORY or UNSATISFACTORY
     if(
-      ($body->prevStatus == "UNVERIFIED" and $body->newStatus == "DEFICIENT") or
-      ($body->prevStatus == "SATISFIED" and $body->newStatus != "UNVERIFIED") or
-      ($body->prevStatus == "UNSATISFIED" and $body->newStatus != "UNVERIFIED") or
-      ($body->prevStatus == "DEFICIENT")
+      ($body->prevStatus == "UNCHECKED" and $body->newStatus == "PENDING") or
+      ($body->prevStatus == "SATISFACTORY" and $body->newStatus != "UNCHECKED") or
+      ($body->prevStatus == "UNSATISFACTORY" and $body->newStatus != "UNCHECKED") or
+      ($body->prevStatus == "PENDING")
       ) {
         $sql = "UPDATE student SET status = '$body->newStatus' WHERE student.student_number = '$body->student_number'"; 
         $result = mysqli_query($con,$sql);

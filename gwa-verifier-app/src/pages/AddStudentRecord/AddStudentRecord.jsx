@@ -250,7 +250,7 @@ function AddStudentRecord() {
 
     try {
       promises = studentRecordsCopy.map((studentRecord) => {
-        return fetch(`${BACKEND_URI}/add-edit-record-api/addStudent.php`, {
+        return fetch(`${BACKEND_URI}/add-edit-record-api/add-student.php`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
