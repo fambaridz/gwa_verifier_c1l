@@ -41,6 +41,9 @@ function StudentRecordForm({
   handleAddRow = () => {},
   handleEditTerm = () => {},
   handleDeleteTerm = () => {},
+  handleComment = () =>{},
+  comment,
+  index,
   setTerm = () => {},
   term,
   terms,
@@ -242,10 +245,12 @@ function StudentRecordForm({
         </Box>
         <Typography variant="p">Comments / Justifications</Typography>
         <TextareaAutosize
+          value={comment}
           aria-label="minimum height"
           minRows={5}
-          placeholder="Minimum 3 rows"
+          placeholder="Add comments or justifications"
           color="default"
+          onChange={(e)=>{handleComment(e,index)} }
           sx={{
             border: "none",
           }}

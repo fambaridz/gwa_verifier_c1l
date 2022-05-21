@@ -20,6 +20,7 @@ import DeleteTermDialog from "Components/DeleteTermDialog";
 import ParsingModal from "Components/ParsingModal";
 import { useDialog } from "../../hooks";
 import { BACKEND_URI } from "../../constants.js";
+import Cookies from "universal-cookie";
 
 // const BACKEND_URI = "http://localhost/gwa-verifier-backend";
 
@@ -42,6 +43,7 @@ function AddStudentRecord() {
   const [terms, setTerms] = useState([]);
   const [srUidTermMap, setSrUidTermMap] = useState({});
   const [parsing, setParsing] = useState(false);
+  const [comments, setComment] = useState([]);
   /*
   the index represents the page number
   0, 1, 2, ..., pageNum = length - 1 
@@ -49,6 +51,10 @@ function AddStudentRecord() {
    */
   // sruid stands for "Student Record UID"
   const [srUidPageMap, setSrUidPageMap] = useState([]);
+
+  //  get user's email from cookies
+  const cookie = new Cookies();
+  const email = cookie.get("email")
 
   async function handleChange(files) {
     if (!files.length) return;
@@ -72,6 +78,13 @@ function AddStudentRecord() {
       console.log(error);
     }
     setParsing(false);
+  }
+
+  function handleCommentChange(e, index){
+    e.preventDefault();
+    const updateComment = [...comments];
+    updateComment[index] = e.target.value;
+    setComment(updateComment); 
   }
 
   function handleStudentRecordsChange(e, studNo) {
@@ -242,13 +255,44 @@ function AddStudentRecord() {
       });
       gradeRecordsCopy.push({
         studno,
-        lst: grades,
+        list: grades,
       });
     }
 
-    let promises;
+    // compile comments for POST request payload
+    let userComments = [];
 
+    comments.forEach((comment,index)=>{
+      if(!comment|| comment.trim()==""){
+        return;
+      }
+      const sruid = srUidPageMap[index];
+
+      const userComment={
+        email:email,
+        studno: studentRecords[sruid].studNo.split("-").join(""),
+        comment: comment.trim()
+      }
+      userComments.push(userComment);
+    });
+
+    console.log(userComments);
+    
+    let promises;
     try {
+      promises = userComments.map((userComment) => {
+        return fetch(`${BACKEND_URI}/add-edit-record-api/addComment.php`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userComment),
+        });
+      });
+
+      await Promise.all(promises);
+
+
       promises = studentRecordsCopy.map((studentRecord) => {
         return fetch(`${BACKEND_URI}/add-edit-record-api/addStudent.php`, {
           method: "POST",
@@ -343,6 +387,31 @@ function AddStudentRecord() {
     } catch (error) {
       console.warn(error);
       return;
+    }
+    // addComment POST request
+    if(comments[page] && comments[page].trim()!==""){
+      try{
+  
+        const payload = {
+          email,
+          studno,
+          comment: comments[page].trim()
+        };
+        console.log(payload);
+        const res = await fetch(`${BACKEND_URI}/add-edit-record-api/addComment.php`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+  
+        if (!res.ok) {
+          const error = res.status;
+          throw new Error(error);
+        }
+  
+      }catch(error){}
     }
 
     try {
@@ -518,6 +587,9 @@ function AddStudentRecord() {
           }}
           handleEditTerm={toggleDialog}
           handleDeleteTerm={toggleDeleteDialog}
+          handleComment = {handleCommentChange}
+          comment={comments[page]||""}
+          index={page}
           table={
             <GradeRecordTable
               data={presentData()}
@@ -537,42 +609,42 @@ function AddStudentRecord() {
       </>
     );
   }
-  return (
-    <>
-      <ParsingModal open={parsing} />
-      <Box sx={{ mt: 2.5, ml: 3, fontSize: 14 }}>
-        <Link to="/records" className="back-link">
-          &lt; Back to Student Records
-        </Link>
-      </Box>
-      <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
-        {Object.keys(studentRecords).length === 0 ? (
-          <DropzoneArea
-            filesLimit={10}
-            acceptedFiles={acceptedFiles}
-            onChange={handleChange}
-            showAlerts={false}
-          />
-        ) : (
-          renderStudentRecordForms()
-        )}
-      </Container>
-      <EditTermDialog
-        initialValue={term}
-        open={dialogOpen}
-        handleCancel={toggleDialog}
-        handleSave={updateTerm}
-      />
-      <DeleteTermDialog
-        open={deleteDialogStatus}
-        term={term}
-        srUid={srUidPageMap[page] || ""}
-        name={`${getField("lname")} ${getField("fname")}`}
-        handleCancel={toggleDeleteDialog}
-        handleDelete={deleteTerm}
-      />
-    </>
-  );
-}
-
+    return (
+      <>
+        <ParsingModal open={parsing} />
+        <Box sx={{ mt: 2.5, ml: 3, fontSize: 14 }}>
+          <Link to="/records" className="back-link">
+            &lt; Back to Student Records
+          </Link>
+        </Box>
+        <Container sx={{ paddingTop: 5, paddingBottom: 5 }}>
+          {Object.keys(studentRecords).length === 0 ? (
+            <DropzoneArea
+              filesLimit={10}
+              acceptedFiles={acceptedFiles}
+              onChange={handleChange}
+              showAlerts={false}
+            />
+          ) : (
+            renderStudentRecordForms()
+          )}
+        </Container>
+        <EditTermDialog
+          initialValue={term}
+          open={dialogOpen}
+          handleCancel={toggleDialog}
+          handleSave={updateTerm}
+        />
+        <DeleteTermDialog
+          open={deleteDialogStatus}
+          term={term}
+          srUid={srUidPageMap[page] || ""}
+          name={`${getField("lname")} ${getField("fname")}`}
+          handleCancel={toggleDeleteDialog}
+          handleDelete={deleteTerm}
+        />
+      </>
+    );
+  }
+  
 export default AddStudentRecord;
