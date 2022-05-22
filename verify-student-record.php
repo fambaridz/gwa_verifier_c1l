@@ -187,9 +187,7 @@ function is_elective ($con, $course, &$expected_units, &$subject_elective){
   }
 
 foreach($student_record as $entry) {
-  $units_taken += $units;
-  $running_enrolled += $units * $grade;
-  
+ 
   init: //intializations needed for verification
 
   $courseno = $entry->courseno;   //fields from entry
@@ -484,7 +482,7 @@ $response['nstp1_taken'] = $nstp1_taken;
 $response['nstp2_taken'] = $nstp2_taken;
 $response['total_units_taken'] = $total_units_taken;
 $response['records_remarks'] = $records_remarks;
-$response['gwa'] = $running_enrolled / $units_taken;
+$response['gwa'] = $calculated_total / $total_units_taken;
 
 //print_r($response); //uncomment to properly see response
 echo json_encode($response);
