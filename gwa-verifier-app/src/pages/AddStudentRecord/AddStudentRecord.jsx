@@ -4,7 +4,8 @@ import { Container, Box } from "@mui/material";
 import { DropzoneArea } from "mui-file-dropzone";
 import StudentRecordForm from "Components/StudentRecordForm";
 import { Link, useNavigate } from "react-router-dom";
-
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 import { useSnackbar } from "notistack";
 import { v4 as uuidv4 } from "uuid";
 import "./AddStudentRecord.css";
@@ -42,6 +43,15 @@ function AddStudentRecord() {
   const [terms, setTerms] = useState([]);
   const [srUidTermMap, setSrUidTermMap] = useState({});
   const [parsing, setParsing] = useState(false);
+
+  /**
+   * {
+   *    [uid]: messages[]
+   * }
+   */
+  const [studentInfoErrors, setStudentInfoErrors] = useState({});
+  const [studentRecordErrors, setStudentRecordErrors] = useState({});
+
   /*
   the index represents the page number
   0, 1, 2, ..., pageNum = length - 1 
@@ -247,6 +257,7 @@ function AddStudentRecord() {
 
     let promises;
 
+    // add student info
     try {
       promises = studentRecordsCopy.map((studentRecord) => {
         return fetch(`${BACKEND_URI}/add-edit-record-api/add-student.php`, {
@@ -289,6 +300,61 @@ function AddStudentRecord() {
     setSaving(false);
   }
 
+  function verifyStudentRecords({ studno, gradeRecordsReady, recommended }) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const payload2 = {
+          studno: Number.parseInt(studno),
+          student_record: gradeRecordsReady.map((record) => ({
+            ...record,
+            course_number: record.courseno,
+            running_total: record.total,
+          })),
+        };
+
+        console.log(JSON.stringify(payload2));
+
+        const _res = await fetch(
+          `${BACKEND_URI}/add-edit-record-api/verify-student-record.php`,
+
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload2),
+          }
+        );
+
+        const data = await _res.json();
+        if (!data) throw new Error("Cannot parse json data");
+
+        const { error, records_remarks } = data;
+
+        if (!error) {
+          enqueueSnackbar("Student records are valid. You can now save it", {
+            variant: "success",
+          });
+          resolve();
+          return;
+        }
+
+        // compose error message
+        const [studentInfoErrors, studentRecordErrors] = getErrorMessages({
+          ...data,
+          recommended: parseInt(recommended),
+        });
+
+        reject([studentInfoErrors, studentRecordErrors]);
+
+        console.table(records_remarks);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
+  }
+
   async function saveOne() {
     setSaving(true);
 
@@ -314,6 +380,8 @@ function AddStudentRecord() {
     studno = studno.split("-").join("");
 
     let gradeRecordsReady = [];
+
+    // verify student records / grade records locally
     try {
       gradeRecordsReady = Object.keys(gradeRecords)
         .filter((grUid) => gradeRecords[grUid].srUid === uid)
@@ -344,6 +412,28 @@ function AddStudentRecord() {
         });
     } catch (error) {
       console.warn(error);
+      return;
+    }
+
+    // verify if student records are valid by sending a request to the backend
+    try {
+      await verifyStudentRecords({
+        studno,
+        uid,
+        gradeRecordsReady,
+        recommended,
+      });
+    } catch (error) {
+      console.warn(error);
+      if (error && error.length) {
+        const [studentInfoErrors, studentRecordErrors] = error;
+        setStudentInfoErrors({ [uid]: studentInfoErrors });
+        setStudentRecordErrors({ [uid]: studentRecordErrors });
+        enqueueSnackbar("Errors in student records. Please see message", {
+          variant: "error",
+        });
+      }
+      setSaving(false);
       return;
     }
 
@@ -378,68 +468,35 @@ function AddStudentRecord() {
     //   });
     //   return;
     // }
+
+    // save grade records
     try {
       const payload = {
         studno,
         lst: gradeRecordsReady,
       };
 
-      console.log(JSON.stringify(studentRecords[srUidPageMap[page]]));
+      console.log(JSON.stringify(payload));
 
-      // console.log(JSON.stringify(payload));
-      const payload2 = {
-        studno: Number.parseInt(studno),
-        student_record: gradeRecordsReady.map((record) => ({
-          ...record,
-          course_number: record.courseno,
-          running_total: record.total,
-        })),
-      };
-
-      console.log(JSON.stringify(payload2));
-
-      const _res = await fetch(
-        `${BACKEND_URI}/add-edit-record-api/verify-student-record.php`,
+      const res = await fetch(
+        `${BACKEND_URI}/add-edit-record-api/addStudentRecord.php`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(payload2),
+          body: JSON.stringify(payload),
         }
       );
 
-      if (!_res.ok) {
+      if (!res.ok) {
         const error = res.status;
         throw new Error(error);
       }
-
-      console.log(_res.data);
-
-      // const res = await fetch(
-      //   `${BACKEND_URI}/add-edit-record-api/addStudentRecord.php`,
-      //   {
-      //     method: "POST",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //     },
-      //     body: JSON.stringify(payload),
-      //   }
-      // );
-
-      // if (!res.ok) {
-      //   const error = res.status;
-      //   throw new Error(error);
-      // }
-
-      enqueueSnackbar("Student record saved", {
-        variant: "success",
-      });
     } catch (error) {
       console.log(error);
+      setSaving(false);
     }
-
-    setSaving(false);
   }
 
   function addRow() {
@@ -528,6 +585,21 @@ function AddStudentRecord() {
     toggleDeleteDialog();
   }
 
+  function renderErrors({ title, messages }) {
+    const uid = srUidPageMap[page];
+    const keys = Object.keys(messages);
+    const listItems =
+      keys.length !== 0 && keys.includes(uid)
+        ? messages[uid].map((message, idx) => <li key={idx}>{message}</li>)
+        : null;
+    return listItems && listItems.length > 0 ? (
+      <Alert severity="error">
+        <AlertTitle>{title}</AlertTitle>
+        <ul>{listItems}</ul>
+      </Alert>
+    ) : null;
+  }
+
   function renderStudentRecordForms() {
     return (
       <>
@@ -546,6 +618,10 @@ function AddStudentRecord() {
             nextPage={nextPage}
           />
         </Box>
+        {renderErrors({
+          title: "Error in student information",
+          messages: studentInfoErrors,
+        })}
         <StudentRecordForm
           firstName={getField("fname")}
           middleName={getField("mname")}
@@ -567,11 +643,17 @@ function AddStudentRecord() {
           handleEditTerm={toggleDialog}
           handleDeleteTerm={toggleDeleteDialog}
           table={
-            <GradeRecordTable
-              data={presentData()}
-              handleUpdate={handleGradeRecordChange}
-              handleDelete={deleteRow}
-            />
+            <>
+              {renderErrors({
+                title: "Error in grades",
+                messages: studentRecordErrors,
+              })}
+              <GradeRecordTable
+                data={presentData()}
+                handleUpdate={handleGradeRecordChange}
+                handleDelete={deleteRow}
+              />
+            </>
           }
           footer={
             <AddStudentFormFooter
@@ -585,6 +667,7 @@ function AddStudentRecord() {
       </>
     );
   }
+
   return (
     <>
       <ParsingModal open={parsing} />
@@ -624,3 +707,64 @@ function AddStudentRecord() {
 }
 
 export default AddStudentRecord;
+
+function getErrorMessages(data) {
+  const {
+    hk11_required,
+    hk11_taken,
+    hk1213_required,
+    hk1213_taken,
+    nstp1_required,
+    nstp1_taken,
+    nstp2_required,
+    nstp2_taken,
+    recommended_required,
+    recommended,
+    major_units_required,
+    major_units_taken,
+    ge_units_required,
+    ge_units_taken,
+    elective_units_required,
+    elective_units_taken,
+  } = data;
+
+  const studentRecordErrors = [];
+  const studentInfoErrors = [];
+
+  if (hk11_required !== hk11_taken)
+    studentRecordErrors.push(
+      `HK11 is not enough. Currently taken is ${hk11_taken} but required is ${hk11_required}`
+    );
+  if (hk1213_required !== hk1213_taken)
+    studentRecordErrors.push(
+      `HK12 and HK13 is not enough. Currently taken is ${hk1213_taken} but required is ${hk1213_required}`
+    );
+
+  if (nstp1_required !== nstp1_taken)
+    studentRecordErrors.push(
+      `NSTP 1 is not enough. Currently taken is ${nstp1_taken} but required is ${nstp1_required}`
+    );
+  if (nstp2_required !== nstp2_taken)
+    studentRecordErrors.push(
+      `NSTP 2 is not enough. Currently taken is ${nstp2_taken} but required is ${nstp2_required}`
+    );
+
+  if (recommended < recommended_required)
+    studentInfoErrors.push(
+      `Provided recommended units taken (${recommended}) is less than actual recommended units: ${recommended_required}`
+    );
+  if (major_units_taken < major_units_required)
+    studentRecordErrors.push(
+      `Major units taken (${major_units_taken}) is less than major units required: ${major_units_required}`
+    );
+  if (ge_units_taken < ge_units_required)
+    studentRecordErrors.push(
+      `GE units taken (${ge_units_taken}) is less than GE units required: (${ge_units_required})`
+    );
+  if (elective_units_taken < elective_units_required)
+    studentRecordErrors.push(
+      `Elective units taken  (${elective_units_taken}) is less than elective units required (${elective_units_required})`
+    );
+
+  return [studentInfoErrors, studentRecordErrors];
+}
