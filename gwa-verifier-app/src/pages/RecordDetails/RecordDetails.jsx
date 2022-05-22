@@ -17,30 +17,15 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import { DataGrid, GridActionsCellItem, gridColumnsTotalWidthSelector } from "@mui/x-data-grid";
 import { Add, Search, Delete } from "@mui/icons-material";
 import CommitteeComments from "Components/CommitteeComments";
 import RecordDetailTable from "Components/RecordDetailTable";
 import DeleteRecordDialog from "Components/DeleteRecordDialog";
 import StudentStatus from "Components/StudentStatus";
+import SummativeTable from "Components/SummativeTable";
 import { useDialog } from "../../hooks";
 import { BACKEND_URI } from "../../constants.js";
-
-// Sample Data
-function createData(zero, one, two) {
-  return { zero, one, two };
-}
-
-const rows2 = [
-  createData("Units Toward GPA:", " ", " "),
-  createData("Taken", 15.0, 36.0),
-  createData("Passed", 15.0, 36.0),
-  createData("Units Not for GPA", 3.0, 19.0),
-  createData("GPA Calculations", 3.0, 19.0),
-  createData("Total Grade Points", 15.0, 41.25),
-  createData("/ Units Taken Toward GPA", 15.0, 36.0),
-  createData("= GPA", 1.0, 1.146),
-];
 
 function RecordList() {
   let navigate = useNavigate();
@@ -48,7 +33,7 @@ function RecordList() {
   let textStatus = "SATISFACTORY";
   const prevStatus = "UNSATISFACTORY";
   // const prevStatus = useParams().status;
-  const [anchorElUser, setAnchorElUser, semester, setSemester] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [comments, setComments] = React.useState(null);
   const [courses, setCourses] = React.useState(null);
   const [details, setDetails] = React.useState(null);
@@ -68,18 +53,6 @@ function RecordList() {
   function redirectToEditStudentRecords() {
     navigate("/records/" + studno + "/edit");
   }
-
-  const handleOpenOptionsMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseOptionsMenu = () => {
-    setAnchorElUser(null);
-  };
-
-  const handleChange = (event) => {
-    setSemester(event.target.value);
-  };
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -213,7 +186,6 @@ function RecordList() {
 
     const course = {
       action: "get-courses",
-      //manual stud no for testing
       student_number: studno,
     };
 
@@ -268,7 +240,6 @@ function RecordList() {
     fetchComments().catch(console.error);
     fetchCourses().catch(console.error);
     fetchDetails().catch(console.error);
-    console.log(details);
   }, []);
 
   // if student record was deleted
@@ -377,17 +348,13 @@ function RecordList() {
               id="select"
               value={currentTerm}
               label="Semester"
-              onChange={(e) => setCurrenTerm(e.target.value)}
+              onChange={e => setCurrenTerm(e.target.value)}
             >
               {terms.map((term, idx) => (
                 <MenuItem value={term} key={idx}>
                   {term}
                 </MenuItem>
               ))}
-              {/* <MenuItem value={10}>Semester 1 2020-2021</MenuItem>
-              <MenuItem value={20}>Semester 2 2020-2021</MenuItem>
-              <MenuItem value={30}>Semester 1 2019-2020</MenuItem>
-              <MenuItem value={40}>Semester 2 2019-2020</MenuItem> */}
             </Select>
           </FormControl>
         </Box>
@@ -400,31 +367,16 @@ function RecordList() {
           }
         />
         {/* Table 2 */}
-        <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
-          <Table size="small" aria-label="a dense table">
-            <TableHead>
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell>From Enrollment</TableCell>
-                <TableCell>Cumulative Total</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows2.map((row) => (
-                <TableRow
-                  key={row.zero}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.zero}
-                  </TableCell>
-                  <TableCell>{row.one}</TableCell>
-                  <TableCell>{row.two}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
+        <SummativeTable
+          term={currentTerm}
+          student_number={studno}
+          all_courses = {courses}
+          sem_courses={
+            courses && currentTerm !== "All"
+              ? courses.filter((course) => course.term === currentTerm)
+              : courses
+          }
+        />
         {/* Comments */}
         <CommitteeComments comments={comments} />
         {/* Edit and Delete Buttons */}
