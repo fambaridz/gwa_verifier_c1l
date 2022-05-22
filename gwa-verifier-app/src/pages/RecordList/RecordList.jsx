@@ -176,7 +176,7 @@ function RecordList() {
           </Button>
         </Toolbar>
         <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
-          <div style={{ height: 400, width: "100%" }}>
+          <div style={{ height: 600, width: "100%" }}>
             <DataGrid
               rows={studentList}
               columns={columns}
