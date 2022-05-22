@@ -101,11 +101,11 @@ $nstp1_taken = 0;
 $nstp2_taken = 0; 
 $total_units_taken = 0;
 
+$running_total = 0;
+$total_units = 0;
+
 $complete = 0;
 $error = 0;
-
-$running_enrolled = 0;      //added by: Francis Bejosano
-$units_taken = 0;
 
 $calculated_total = 0;                                          //stores summation of enrolled units; updated for every pass in each entry in the student record
 /**
@@ -196,6 +196,10 @@ foreach($student_record as $entry) {
   $enrolled = $entry->enrolled;
   $total = $entry->total;
   $term = $entry->term;
+
+  $total_units += (int)$units;
+  $temp = (float)$units * (float)$grade;
+  $running_total += $temp;
 
   $valid_entry = 0;  //to know if this entry has valid values and format, and can be safely added to the database
 
@@ -482,7 +486,7 @@ $response['nstp1_taken'] = $nstp1_taken;
 $response['nstp2_taken'] = $nstp2_taken;
 $response['total_units_taken'] = $total_units_taken;
 $response['records_remarks'] = $records_remarks;
-$response['gwa'] = $calculated_total / $total_units_taken;
+$response['gwa'] = (float)$running_total / (float)$total_units;
 
 //print_r($response); //uncomment to properly see response
 echo json_encode($response);
