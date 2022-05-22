@@ -13,19 +13,17 @@ For front-end requests:
     Method: GET
     body: 
         {
-            "session_email": <email_string>[*]
-            "email": <email_string>[**]
-            "lastname": <string>[***]
-            "firstname": <string>[***]
-            "middlename": <string>[***]
-            "suffix": <string>[***]
-            "password": <string>[***]
+            "email": <email_string>[*]
+            "lastname": <string>[**]
+            "firstname": <string>[**]
+            "middlename": <string>[**]
+            "suffix": <string>[**]
+            "password": <string>[*]
         }
     Legend:
-        [*] Field is always required at ALL request methods
-        [**] Field is required on PUT, POST, and DELETE request methods
-        [***] Field is required on PUT and POST methods
-    
+        [*] Field is required on PUT, POST, and DELETE request methods
+        [**] Field is required on PUT and POST methods
+        [***] FIELD is required on PUT method
 */
 
 
@@ -51,36 +49,48 @@ $committee = json_decode(file_get_contents('php://input'));
     For future reference, validation is done using jwt or query in session table
 */
 
+
+//To do (if necessary)
+//Prevent parsing error
+//session_start();
+//echo $_SESSION["email"];
+
+
+$cookie_email = "email";
+/*
+
 //Check if credential exists
+//todo
+if( array_key_exists("email",$_COOKIE) and isset($_COOKIE["email"]) ){
+    $sql = "SELECT account_made_by from committee where email = '$_COOKIE[$cookie_email]'";    
+    $result = mysqli_query($conn,$sql);
+    $verified = false;
+}else{
+    //CASE 1: No cookie Throw 401 Unauthorized error.
+    header('HTTP/1.0 401 Unauthorized');
+    $conn->close();
+    exit();
+}
 
-// if(property_exists($committee,'session_email')){
-//     $sql = "SELECT account_made_by from committee where email = '$committee->session_email'";
-//     $result = mysqli_query($con,$sql);
-//     $verified = false;
-// }else{
-//     //CASE 1: NO Credentials. Throw 401 Unauthorized error.
-//     header('HTTP/1.0 401 Unauthorized');
-//     $con->close();
-//     exit();
-// }
 
-// //Checks if user is superuser (Superuser's account is made by 'NULL')
-// //CASE 2: User does not exist. Throw 401 Unauthorized error.
-// if(mysqli_num_rows($result)==0){     
-//     header('HTTP/1.0 401 Unauthorized');
-//     mysqli_free_result($result);
-// }else{
-//     //CASE 3: User is not a superuser. Throw 403 Forbidden error.
-//     $checker = mysqli_fetch_assoc($result);
-//     if($checker['account_made_by'] == "NULL"){
-//         $verified = true;
-//     }
-//     else{
-//         header('HTTP/1.0 403 Forbidden');
-//         mysqli_free_result($result);
-//     }
-// }
-$verified = true;
+//Checks if user is superuser (Superuser's account is made by 'NULL')
+//CASE 2: User does not exist. Throw 401 Unauthorized error.
+if(mysqli_num_rows($result)==0){     
+    header('HTTP/1.0 401 Unauthorized');
+    mysqli_free_result($result);
+}else{
+    //CASE 3: User is not a superuser. Throw 403 Forbidden error.
+    $checker = mysqli_fetch_assoc($result);
+    if(is_null($checker['account_made_by'])){
+        $verified = true;
+    }
+    else{
+        header('HTTP/1.0 403 Forbidden');
+        mysqli_free_result($result);
+    }
+}
+*/
+$verified=true;
 //Case 4: User is superuser. Has privilege to access/modify full DB content
 if($verified){
     //determine which method was called
@@ -100,7 +110,7 @@ if($verified){
                 $encrypted_password = hash('sha256',$committee->password);
                 //sql query 
                 $sql = "INSERT INTO committee VALUES (  '$committee->email', 
-                                                        '$committee->session_email', 
+                                                        '$_COOKIE[$cookie_email]', 
                                                         '$encrypted_password', 
                                                         '$committee->lastname', 
                                                         '$committee->firstname', 
@@ -140,17 +150,29 @@ if($verified){
 
             //if so, proceed
             if(mysqli_num_rows($result)==1){
-                $encrypted_password = hash('sha256',$committee->password);
-                $sql = "UPDATE committee SET    email = '$committee->email',
-                                                password = '$encrypted_password', 
-                                                lastname = '$committee->lastname', 
-                                                firstname = '$committee->firstname', 
-                                                middlename ='$committee->middlename', 
-                                                suffix = '$committee->suffix' WHERE email = '$committee->email'";
-                $result = mysqli_query($conn,$sql);
+                //Check if password exists
+                if(isset($committee->password) && $committee->password!=""){
+                    $encrypted_password = hash('sha256',$committee->password);
+                    $sql = "UPDATE committee SET    email = '$committee->email',
+                                                    password = '$encrypted_password', 
+                                                    lastname = '$committee->lastname', 
+                                                    firstname = '$committee->firstname', 
+                                                    middlename ='$committee->middlename', 
+                                                    suffix = '$committee->suffix' WHERE email = '$committee->email'";
+                    $result = mysqli_query($conn,$sql);                    
+                }
+                else{
+                    $sql = "UPDATE committee SET    email = '$committee->email', 
+                                                    lastname = '$committee->lastname', 
+                                                    firstname = '$committee->firstname', 
+                                                    middlename ='$committee->middlename', 
+                                                    suffix = '$committee->suffix' WHERE email = '$committee->email'";
+                    $result = mysqli_query($conn,$sql);
+                }
+
             } else {
                 //else, exit
-                echo $committee->email . "does not exists";
+                echo $committee->email . "does not exist.";
                 mysqli_free_result($result);
             }
 
@@ -168,7 +190,7 @@ if($verified){
                 $result = mysqli_query($conn,$sql);
             } else {
                 //else, exit
-                echo $committee->email . "does not exists";
+                echo $committee->email . "does not exist.";
                 mysqli_free_result($result);
             }
 
