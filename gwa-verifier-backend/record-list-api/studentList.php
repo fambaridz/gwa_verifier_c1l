@@ -1,8 +1,8 @@
 <?php
 header("Access-Control-Allow-Origin: *"); //Allow CORS for any domain
+header('Content-Type: application/json; charset=utf-8');
 header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: *");
-header('Content-Type: application/json; charset=utf-8');
 $host = "localhost";
 $user = "root";
 $password = "";
@@ -72,10 +72,14 @@ else if ($method == 'POST') {
     while($r = mysqli_fetch_assoc($result)) {
         $new[] = $r; 
     }
-    
+
+    //Update comments in committee_student
+    $sql = "DELETE FROM `committee_student` WHERE student_number = '{$target->target}'";
+    $result = mysqli_query($con,$sql);
+
+
 }
 
 echo json_encode($new);
 // exit
 $con->close();
-
