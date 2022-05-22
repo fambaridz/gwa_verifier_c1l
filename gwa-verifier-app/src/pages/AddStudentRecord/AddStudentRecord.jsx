@@ -16,8 +16,10 @@ import * as validators from "../../utils/validators.js";
 import GradeRecordTable from "Components/GradeRecordTable";
 import CarouselButtons from "Components/CarouselButtons";
 import AddStudentFormFooter from "Components/AddStudentFormFooter";
+import StudentFormFooter from "Components/StudentFormFooter";
 import EditTermDialog from "Components/EditTermDialog";
 import DeleteTermDialog from "Components/DeleteTermDialog";
+import ForceSaveDialog from "Components/ForceSaveDialog";
 import ParsingModal from "Components/ParsingModal";
 import { useDialog } from "../../hooks";
 import { BACKEND_URI } from "../../constants.js";
@@ -59,6 +61,8 @@ function AddStudentRecord() {
    */
   // sruid stands for "Student Record UID"
   const [srUidPageMap, setSrUidPageMap] = useState([]);
+
+  const [showForceSave, setShowForceSave] = useState(false);
 
   async function handleChange(files) {
     if (!files.length) return;
@@ -174,132 +178,6 @@ function AddStudentRecord() {
     return records;
   }
 
-  async function saveAll() {
-    setSaving(true);
-
-    // create all student info
-
-    // create paylaod for student records and grade records
-    /**
-     * StudentRecord[]
-     */
-    let studentRecordsCopy = [];
-    /**
-     * [{
-     *  studno: string,
-     *  list: GradeRecord[]
-     * }]
-     */
-    let gradeRecordsCopy = [];
-    for (let srUid of Object.keys(studentRecords)) {
-      let { studNo: studno, ...rest } = studentRecords[srUid];
-      // input validation for studentRecord
-      if (
-        !validators.studentNoRegex.test(studno) ||
-        !validators.recommendedUnitsRegex.test(rest.recommended)
-      ) {
-        setSaving(false);
-
-        enqueueSnackbar("Cannot save all students, some still have errors", {
-          variant: "error",
-        });
-        return;
-      }
-
-      studno = studno.split("-").join("");
-
-      // get all grades for student
-      let grades = [];
-      try {
-        grades = Object.keys(gradeRecords)
-          .filter((grUid) => gradeRecords[grUid].srUid === srUid)
-          .map((grUid) => {
-            let record = { ...gradeRecords[grUid] };
-            const { grade, units, term, running_total } = record;
-
-            if (
-              !validators.gradeRegex.test(grade) ||
-              !validators.termRegex.test(term) ||
-              !validators.unitsRegex.test(units) ||
-              !validators.defaultRegex.test(running_total)
-            ) {
-              setSaving(false);
-              enqueueSnackbar(
-                "Cannot save all student records, some still have errors",
-                {
-                  variant: "error",
-                }
-              );
-              throw new Error();
-            }
-
-            Object.assign(record, {
-              total: record.running_total,
-            });
-            delete record["running_total"];
-            return record;
-          });
-      } catch (error) {
-        console.warn(error);
-        setSaving(false);
-        return;
-      }
-
-      studentRecordsCopy.push({
-        studno,
-        ...rest,
-      });
-      gradeRecordsCopy.push({
-        studno,
-        lst: grades,
-      });
-    }
-
-    let promises;
-
-    // add student info
-    try {
-      promises = studentRecordsCopy.map((studentRecord) => {
-        return fetch(`${BACKEND_URI}/add-edit-record-api/add-student.php`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(studentRecord),
-        });
-      });
-
-      await Promise.all(promises);
-
-      promises = gradeRecordsCopy.map((gradeRecord) => {
-        return fetch(
-          `${BACKEND_URI}/add-edit-record-api/addStudentRecord.php`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(gradeRecord),
-          }
-        );
-      });
-
-      await Promise.all(promises);
-      enqueueSnackbar("Student records saved", {
-        variant: "success",
-      });
-    } catch (error) {
-      console.warn(error);
-      enqueueSnackbar("Error in saving student records", {
-        variant: "Error",
-      });
-    }
-
-    // now, for the grade records
-
-    setSaving(false);
-  }
-
   function verifyStudentRecords({ studno, gradeRecordsReady, recommended }) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -355,22 +233,56 @@ function AddStudentRecord() {
     });
   }
 
-  async function saveOne() {
-    setSaving(true);
+  function locallyVerifyStudent({ studno, recommended }) {
+    if (
+      !validators.studentNoRegex.test(studno) ||
+      !validators.recommendedUnitsRegex.test(recommended)
+    ) {
+      return false;
+    }
+    return true;
+  }
 
+  function locallyVerifyGradeRecords({ uid }) {
+    return new Promise((resolve, reject) => {
+      const gradeRecordsReady = Object.keys(gradeRecords)
+        .filter((grUid) => gradeRecords[grUid].srUid === uid)
+        .map((grUid) => {
+          let record = { ...gradeRecords[grUid] };
+          const { grade, units, term, running_total } = record;
+
+          if (
+            !validators.gradeRegex.test(grade) ||
+            !validators.termRegex.test(term) ||
+            !validators.unitsRegex.test(units) ||
+            !validators.defaultRegex.test(running_total)
+          ) {
+            reject();
+          }
+          Object.assign(record, {
+            total: record.running_total,
+          });
+          delete record["running_total"];
+          return record;
+        });
+      resolve(gradeRecordsReady);
+    });
+  }
+
+  async function saveOne() {
     // save the data w/ respect to the current page
 
+    console.log("SAVING?");
     const uid = srUidPageMap[page];
 
     const studentRecord = studentRecords[uid];
     let { studNo: studno, recommended } = studentRecord;
     // input validation for student info
+
     if (
       !validators.studentNoRegex.test(studno) ||
       !validators.recommendedUnitsRegex.test(recommended)
     ) {
-      setSaving(false);
-      console.log(studno, recommended);
       enqueueSnackbar("Cannot save all students, some still have errors", {
         variant: "error",
       });
@@ -383,35 +295,16 @@ function AddStudentRecord() {
 
     // verify student records / grade records locally
     try {
-      gradeRecordsReady = Object.keys(gradeRecords)
-        .filter((grUid) => gradeRecords[grUid].srUid === uid)
-        .map((grUid) => {
-          let record = { ...gradeRecords[grUid] };
-          const { grade, units, term, running_total } = record;
-
-          if (
-            !validators.gradeRegex.test(grade) ||
-            !validators.termRegex.test(term) ||
-            !validators.unitsRegex.test(units) ||
-            !validators.defaultRegex.test(running_total)
-          ) {
-            setSaving(false);
-            enqueueSnackbar(
-              "Cannot save all student records, some still have errors",
-              {
-                variant: "error",
-              }
-            );
-            throw new Error();
-          }
-          Object.assign(record, {
-            total: record.running_total,
-          });
-          delete record["running_total"];
-          return record;
-        });
+      gradeRecordsReady = await locallyVerifyGradeRecords({ uid });
     } catch (error) {
       console.warn(error);
+      setSaving(false);
+      enqueueSnackbar(
+        "Cannot save all student records, some still have errors",
+        {
+          variant: "error",
+        }
+      );
       return;
     }
 
@@ -437,37 +330,40 @@ function AddStudentRecord() {
       return;
     }
 
-    // try {
-    //   // creating student record info is working
-    //   const payload = {
-    //     ...studentRecord,
-    //     studno,
-    //   };
-    //   console.table(payload);
-    //   let res = await fetch(
-    //     `${BACKEND_URI}/add-edit-record-api/addStudent.php`,
-    //     {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify(payload),
-    //     }
-    //   );
-    //   if (!res.ok) {
-    //     console.table(res);
-    //     const error = res.status;
-    //     throw new Error(error);
-    //   }
+    try {
+      // creating student record info is working
+      const payload = {
+        ...studentRecord,
+        studno,
+        status: "UNCHECKED",
+      };
+      console.table(payload);
+      let res = await fetch(
+        `${BACKEND_URI}/add-edit-record-api/add-student.php`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
-    //   // ready the data
-    // } catch (error) {
-    //   console.warn(error);
-    //   enqueueSnackbar("Error in saving record", {
-    //     variant: "error",
-    //   });
-    //   return;
-    // }
+      if (!res.ok) {
+        console.table(res);
+        const data = await res.json();
+        const { msg } = data;
+        throw new Error(msg);
+      }
+
+      // ready the data
+    } catch (error) {
+      console.warn(error);
+      enqueueSnackbar(`Error in saving record: ${error}`, {
+        variant: "error",
+      });
+      return;
+    }
 
     // save grade records
     try {
@@ -497,6 +393,117 @@ function AddStudentRecord() {
       console.log(error);
       setSaving(false);
     }
+    enqueueSnackbar(`Student successfully saved.`, {
+      variant: "success",
+    });
+    setSaving(false);
+  }
+
+  async function forceSave() {
+    // save the data w/ respect to the current page
+
+    const uid = srUidPageMap[page];
+
+    const studentRecord = studentRecords[uid];
+    let { studNo: studno, recommended } = studentRecord;
+    // input validation for student info
+
+    if (!locallyVerifyStudent({ studno, recommended })) {
+      enqueueSnackbar("Cannot save all students, some still have errors", {
+        variant: "error",
+      });
+      return;
+    }
+
+    studno = studno.split("-").join("");
+
+    let gradeRecordsReady = [];
+
+    // verify student records / grade records locally
+    try {
+      gradeRecordsReady = await locallyVerifyGradeRecords({ uid });
+    } catch (error) {
+      console.warn(error);
+      enqueueSnackbar(
+        "Cannot save all student records, some still have errors",
+        {
+          variant: "error",
+        }
+      );
+      return;
+    }
+    setSaving(true);
+
+    try {
+      // creating student record info is working
+      const payload = {
+        ...studentRecord,
+        studno,
+        status: "INCOMPLETE",
+      };
+      console.table(payload);
+      let res = await fetch(
+        `${BACKEND_URI}/add-edit-record-api/add-student.php`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!res.ok) {
+        console.table(res);
+        const data = await res.json();
+        const { msg } = data;
+        const error = res.status;
+        throw new Error(msg);
+      }
+
+      // ready the data
+    } catch (error) {
+      console.warn(error);
+      enqueueSnackbar(`Error in saving record: ${error}`, {
+        variant: "error",
+      });
+      setSaving(false);
+      return;
+    }
+
+    // save grade records
+    try {
+      const payload = {
+        studno,
+        lst: gradeRecordsReady,
+      };
+
+      console.log(JSON.stringify(payload));
+
+      const res = await fetch(
+        `${BACKEND_URI}/add-edit-record-api/addStudentRecord.php`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      if (!res.ok) {
+        const error = res.status;
+        throw new Error(error);
+      }
+    } catch (error) {
+      console.log(error);
+      setSaving(false);
+    }
+    enqueueSnackbar(`Student successfully saved.`, {
+      variant: "success",
+    });
+    setSaving(false);
+    setShowForceSave(false);
   }
 
   function addRow() {
@@ -656,11 +663,17 @@ function AddStudentRecord() {
             </>
           }
           footer={
-            <AddStudentFormFooter
+            // <AddStudentFormFooter
+            //   popStack={popStack}
+            //   saveOne={saveOne}
+            //   saving={saving}
+            //   saveAll={saveAll}
+            // />
+            <StudentFormFooter
               popStack={popStack}
-              saveOne={saveOne}
-              saving={saving}
-              saveAll={saveAll}
+              onSave={() => saveOne()}
+              loading={saving}
+              cb={() => setShowForceSave(true)}
             />
           }
         />
@@ -701,6 +714,11 @@ function AddStudentRecord() {
         name={`${getField("lname")} ${getField("fname")}`}
         handleCancel={toggleDeleteDialog}
         handleDelete={deleteTerm}
+      />
+      <ForceSaveDialog
+        open={showForceSave}
+        handleCancel={() => setShowForceSave(false)}
+        onSuccess={forceSave}
       />
     </>
   );
@@ -751,7 +769,7 @@ function getErrorMessages(data) {
 
   if (recommended < recommended_required)
     studentInfoErrors.push(
-      `Provided recommended units taken (${recommended}) is less than actual recommended units: ${recommended_required}`
+      `Provided recommended units (${recommended}) is less than actual recommended units: ${recommended_required}`
     );
   if (major_units_taken < major_units_required)
     studentRecordErrors.push(
