@@ -138,10 +138,10 @@ function LogIn() {
     <div className="login-container">
       <div className="login-left">
         <img src={appLogo} className="app-logo"/>
-        <div className="login-left-caption">
+        {/* <div className="login-left-caption">
           <Typography variant="" className="login-welcome">WELCOME TO</Typography><br />
           <Typography variant="" className="login-appname">GWA Verifier</Typography>
-        </div>
+        </div> */}
       </div>
       <div className="login-right">
         <img src={logo} className="login-logo"/>
