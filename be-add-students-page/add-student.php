@@ -26,7 +26,7 @@ $suffix = isset($data['suffix']) ? $data['suffix'] : 0;
 $degree = isset($data['degree']) ? $data['degree'] : 0;
 $rec_units = isset($data['rec_units']) ? (int)$data['rec_units'] : 0;
 $cred_units = isset($data['cred_units']) ? (int)$data['cred_units'] : 0;
-$gwa = isset($data['gwa']) ? $data['gwa'] : 0;
+$gwa = isset($data['gwa']) ? (float)$data['gwa'] : 0;
 $status = isset($data['status']) ? $data['status'] : 0;
 
 // check if student number already exists in the database
