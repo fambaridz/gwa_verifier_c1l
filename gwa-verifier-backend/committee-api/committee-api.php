@@ -1,5 +1,8 @@
 <?php
 
+header("Access-Control-Allow-Origin: *"); 
+header("Access-Control-Allow-Headers: *");
+header("Access-Control-Allow-Methods: *");
 /*
 API for requests done on committee page.
 For front-end requests:

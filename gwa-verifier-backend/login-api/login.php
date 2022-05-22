@@ -44,12 +44,14 @@ if (!isset($data->Email) || !isset($data->Password)){
                 $json_object = json_encode($object);
                 echo $json_object;
             } else {
-                $object = array("success"=>True);
+                 if(is_null($row["account_made_by"])){
+                    $superuser_flag = True;
+                } else {
+                    $superuser_flag = False;
+                }
+                $object = array("success"=>True, "firstname"=>$row['firstname'], "middlename"=>$row['middlename'], "lastname"=>$row['lastname'], "suffix"=>$row['suffix'], "superuser"=>$superuser_flag);
                 $json_object = json_encode($object);
                 echo $json_object;
-                setcookie('email', $email, time()+60*60*7);
-                session_start();
-                $_SESSION['email'] = $email;
             }
         }
     }
