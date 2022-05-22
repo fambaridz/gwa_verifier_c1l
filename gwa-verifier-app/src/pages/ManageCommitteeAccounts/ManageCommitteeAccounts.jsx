@@ -70,16 +70,15 @@ function ManageCommitteeAccounts() {
           email={props.email}
         />
         <TableCell>
-          <IconButton onClick={() => setOpenDelete(true)}>
-            <Delete color="primary" />
+          <IconButton onClick={() => setOpenDelete(true)} disabled={props.account_made_by === null} >
+            <Delete color={props.account_made_by === null ? "gray" : "primary"} />
           </IconButton>
         </TableCell>
       </>
     );
   }
-
-  function createData(email, firstname, lastname, middlename, suffix, password) {
-    return { email, firstname, lastname, middlename, suffix, password };
+  function createData(email, firstname, lastname, middlename, suffix, account_made_by) {
+    return { email, firstname, lastname, middlename, suffix, account_made_by };
   }
 
   const [rows, setRow] = React.useState([]);
@@ -97,9 +96,7 @@ function ManageCommitteeAccounts() {
       })
 			.then((data) => {
 				data.map(item => {
-					if(item.account_made_by === null){
-						
-					}else{
+					
 								dataRows.push(
 								
 									createData(
@@ -108,15 +105,15 @@ function ManageCommitteeAccounts() {
 									  item.lastname,
 									  item.middlename,
 									  item.suffix,
-									  item.password
+									  item.account_made_by
 									  )
 								
 						);
-					}
+					
 				
 				});
 				setRow(dataRows)
-				
+				console.log(dataRows)
 				data.map(item => {
 					emailExisting.push(item.email)
 				});
@@ -192,9 +189,8 @@ function ManageCommitteeAccounts() {
                         middlename={row.middlename}
                         lastname={row.lastname}
                         suffix={row.suffix}
-						password={row.password}
                       />
-                      <DeleteCell email={row.email} />
+					  {row.account_made_by === null ? <TableCell> </TableCell> :  <DeleteCell email={row.email}/>}
                     </TableRow>
                   ))}
                 </TableBody>

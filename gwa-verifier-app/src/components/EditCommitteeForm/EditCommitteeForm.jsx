@@ -39,14 +39,15 @@ function EditCommitteeForm(props) {
 		firstname: props.firstname,
 		middlename:props.middlename,
 		suffix:props.suffix,
-		password: props.password,
-		confirmpass: props.password
+		password: null,
+		confirmpass: null
 	});
 	const [isEmailValid,setisEmailValid] = React.useState(false);
 	const [isPassValid,setisPassValid] = React.useState(true);
 	const [isPassMatch,setisPassMatch] = React.useState(true);
 	const [dirtyEmail, setDirtyEmail] = React.useState(false);
-	const handleFocus = (event) => event.target.select();
+	const [dirtyPass, setDirtyPass] = React.useState(false);
+	const passError = dirtyPass && isPassValid === false;
 	const handleEditChange = (prop) => (event) => {
 		setEditValues({ ...editvalues, [prop]: event.target.value });
 
@@ -154,18 +155,18 @@ function EditCommitteeForm(props) {
 						defaultValue={props.suffix} />
 					</FormControl>
 				</Stack>
+				
 				<TextField
 				label="Password"
 				fullWidth={true} 
 				sx={{my:1}} 
-				error={isPassValid === false} 
-				helperText={ isPassValid === false ? "Password must have 6 or more characters." : ""} 
+				error={passError} 
+				 onBlur={() => setDirtyPass(true)}
+				helperText={ passError ? "Password must have 6 or more characters." : ""} 
 				onChange={handleEditChange('password')} 
 				variant="outlined" 
-				type="password"
-				defaultValue={props.password}
-				onFocus={handleFocus}
-				required={true}/>
+				type="password"/>
+				
 				<TextField 
 				label="Confirm Password" 
 				fullWidth={true} 
@@ -174,10 +175,7 @@ function EditCommitteeForm(props) {
 				helperText={ isPassMatch === false ? "Passwords not match." : ""}
 				onChange={handleEditChange('confirmpass')}
 				variant="outlined" 
-				type="password" 
-				defaultValue={props.password}
-				onFocus={handleFocus}
-				required={true}/>	
+				type="password" />	
 				<Button sx={{my:1.5}}  type="submit" className="modalButton" variant="contained">Submit</Button>
 			</form>
 			<Dialog
