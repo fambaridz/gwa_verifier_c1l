@@ -104,6 +104,9 @@ $total_units_taken = 0;
 $complete = 0;
 $error = 0;
 
+$running_enrolled = 0;      //added by: Francis Bejosano
+$units_taken = 0;
+
 $calculated_total = 0;                                          //stores summation of enrolled units; updated for every pass in each entry in the student record
 /**
  * $response will contain all relevant details about the student's degree
@@ -184,6 +187,8 @@ function is_elective ($con, $course, &$expected_units, &$subject_elective){
   }
 
 foreach($student_record as $entry) {
+  $units_taken += $units;
+  $running_enrolled += $units * $grade;
   
   init: //intializations needed for verification
 
@@ -479,7 +484,7 @@ $response['nstp1_taken'] = $nstp1_taken;
 $response['nstp2_taken'] = $nstp2_taken;
 $response['total_units_taken'] = $total_units_taken;
 $response['records_remarks'] = $records_remarks;
-$response['gwa'] = $calculated_total / $total_units_taken;
+$response['gwa'] = $running_enrolled / $units_taken;
 
 //print_r($response); //uncomment to properly see response
 echo json_encode($response);
