@@ -402,10 +402,8 @@ foreach($student_record as $entry) {
 
     /*$sql = "INSERT INTO student_record(student_number, course_number, grade, units, enrolled, running_total, term)
             VALUES ('$student_number','$courseno','$grade','$units','$enrolled','$total','$term')";
-
     // run SQL statement
     $result = mysqli_query($con,$sql);
-
     if (!$result) {
       echo "error";
     } else {
@@ -417,7 +415,6 @@ foreach($student_record as $entry) {
         case 1:
           $majors_taken += $units;
           break;
-
         case 3:
           $ge_units_taken += $units;
           break;
@@ -479,9 +476,8 @@ $response['nstp1_taken'] = $nstp1_taken;
 $response['nstp2_taken'] = $nstp2_taken;
 $response['total_units_taken'] = $total_units_taken;
 $response['records_remarks'] = $records_remarks;
-$response['gwa'] = $calculated_total / $total_units_taken;
 
 //print_r($response); //uncomment to properly see response
 echo json_encode($response);
 
-$con->close();
+$con->close()
