@@ -440,6 +440,9 @@ function AddStudentRecord() {
         ...studentRecord,
         studno,
         status: "INCOMPLETE",
+        rec_units: 0,
+        cred_units: 0,
+        gwa: 0,
       };
       console.table(payload);
       let res = await fetch(
