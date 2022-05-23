@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import {
   Typography,
@@ -31,7 +31,7 @@ function StudentRecordForm({
   lastName,
   suffix,
   degree,
-  studentNo,
+  studNo,
   recommended,
   loading = false,
   handleInputChange = () => {},
@@ -48,9 +48,43 @@ function StudentRecordForm({
   term,
   terms,
   table = <p>Table goes here</p>,
+  extraFeaturesEnabled = true,
+
+  updateComment = () => {},
 }) {
   function handleChange(event) {
     setTerm(event.target.value);
+  }
+
+  useEffect(() => {
+    setInfo({
+      fname: firstName,
+      mname: middleName,
+      lname: lastName,
+      suffix,
+      degree,
+      studNo,
+      recommended,
+    });
+  }, [firstName, middleName, lastName, suffix, degree, studNo, recommended]);
+
+  const [info, setInfo] = useState({
+    fname: "",
+    mname: "",
+    lname: "",
+    suffix: "",
+    degree: "",
+    studNo: "",
+    recommended: "",
+  });
+  const [comment, setComment] = useState("");
+
+  function handleLocalChanges(e) {
+    e.preventDefault();
+    setInfo({
+      ...info,
+      [e.target.name]: e.target.value,
+    });
   }
 
   function renderTextField(props) {
@@ -74,9 +108,10 @@ function StudentRecordForm({
           width: "100%",
           maxWidth: 600,
         }}
-        onChange={handleInputChange}
+        onChange={handleLocalChanges}
         error={error}
         helperText={helperText}
+        onBlur={() => handleInputChange({ name, value: info[name] })}
         {...props}
       />
     );
@@ -98,7 +133,7 @@ function StudentRecordForm({
                 "aria-label": "first-name",
               },
 
-              value: firstName,
+              value: info.fname,
             })}
           </Grid>
 
@@ -114,7 +149,7 @@ function StudentRecordForm({
                 "aria-label": "middle-name",
               },
 
-              value: middleName,
+              value: info.mname,
             })}
           </Grid>
 
@@ -129,7 +164,7 @@ function StudentRecordForm({
                 "aria-label": "last-name",
               },
 
-              value: lastName,
+              value: info.lname,
             })}
           </Grid>
 
@@ -143,7 +178,7 @@ function StudentRecordForm({
               inputProps: {
                 "aria-label": "suffix",
               },
-              value: suffix,
+              value: info.suffix,
             })}
           </Grid>
 
@@ -157,7 +192,7 @@ function StudentRecordForm({
               inputProps: {
                 "aria-label": "degree",
               },
-              value: degree,
+              value: info.degree,
             })}
           </Grid>
 
@@ -171,7 +206,7 @@ function StudentRecordForm({
               inputProps: {
                 "aria-label": "student-no",
               },
-              value: studentNo,
+              value: info.studNo,
             })}
           </Grid>
           <Grid item xs={2}>
@@ -184,7 +219,7 @@ function StudentRecordForm({
               inputProps: {
                 "aria-label": "recommended-units",
               },
-              value: recommended,
+              value: info.recommended,
             })}
           </Grid>
         </Grid>
@@ -221,39 +256,40 @@ function StudentRecordForm({
               </Select>
             </FormControl>
           </ErrorTooltip>
-          <ButtonGroup
-            variant="outlined"
-            color="default"
-            size="large"
-            aria-label="outlined button group"
-          >
-            <Button onClick={handleEditTerm}>Edit Term</Button>
-            <Button onClick={handleDeleteTerm}>Delete Term</Button>
-          </ButtonGroup>
+          {extraFeaturesEnabled && (
+            <ButtonGroup
+              variant="outlined"
+              color="default"
+              size="large"
+              aria-label="outlined button group"
+            >
+              <Button onClick={handleEditTerm}>Edit Term</Button>
+              <Button onClick={handleDeleteTerm}>Delete Term</Button>
+            </ButtonGroup>
+          )}
         </Stack>
         <Box>
           {table}
-          <Button
-            variant="outlined"
-            startIcon={<AddIcon />}
-            color="default"
-            onClick={handleAddRow}
-            fullWidth
-          >
-            Add new row
-          </Button>
+          {extraFeaturesEnabled && (
+            <Button
+              variant="outlined"
+              startIcon={<AddIcon />}
+              color="default"
+              onClick={handleAddRow}
+              fullWidth
+            >
+              Add new row
+            </Button>
+          )}
         </Box>
         <Typography variant="p">Comments / Justifications</Typography>
-        <TextareaAutosize
+        <TextField
+          multiline
+          rows={3}
+          placeholder="Good job!"
           value={comment}
-          aria-label="minimum height"
-          minRows={5}
-          placeholder="Add comments or justifications"
-          color="default"
-          onChange={(e)=>{handleComment(e,index)} }
-          sx={{
-            border: "none",
-          }}
+          onChange={(e) => setComment(e.target.value)}
+          onBlur={() => updateComment(comment)}
           // style={{ width: '100%' }}
         />
         {footer || (
@@ -290,7 +326,7 @@ StudentRecordForm.propTypes = {
   lastName: PropTypes.string.isRequired,
   suffix: PropTypes.string.isRequired,
   degree: PropTypes.string.isRequired,
-  studentNo: PropTypes.string.isRequired,
+  studNo: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
   handleInputChange: PropTypes.func.isRequired,
   footer: PropTypes.element,
@@ -303,5 +339,8 @@ StudentRecordForm.propTypes = {
   table: PropTypes.element,
   handleEditTerm: PropTypes.func.isRequired,
   handleDeleteTerm: PropTypes.func.isRequired,
+  extraFeaturesEnabled: PropTypes.bool,
+
+  updateComment: PropTypes.func,
 };
 export default StudentRecordForm;

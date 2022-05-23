@@ -1,14 +1,8 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { Stack, Button } from "@mui/material";
 import SplitButton from "../SplitButton";
 
-function AddStudentFormFooter({
-  popStack,
-  saveOne,
-  saving,
-  saveAll = () => console.log("Save all records"),
-}) {
+function StudentFormFooter({ popStack, onSave, loading, cb }) {
   return (
     <Stack direction="row" spacing={2} sx={{ alignSelf: "end" }}>
       <Button
@@ -22,13 +16,13 @@ function AddStudentFormFooter({
 
       <SplitButton
         label="Verify & Save"
-        onClick={saveOne}
-        loading={saving}
+        onClick={onSave}
+        loading={loading}
         loadingText="Saving..."
         menuItems={[
           {
-            value: "Verify & Save all",
-            cb: saveAll,
+            value: "Force Save",
+            cb,
           },
         ]}
       />
@@ -36,11 +30,4 @@ function AddStudentFormFooter({
   );
 }
 
-AddStudentFormFooter.propTypes = {
-  popStack: PropTypes.func.isRequired,
-  saveOne: PropTypes.func.isRequired,
-  saving: PropTypes.bool.isRequired,
-  saveAll: PropTypes.func,
-};
-
-export default AddStudentFormFooter;
+export default StudentFormFooter;

@@ -5,8 +5,8 @@ header("Access-Control-Allow-Methods: *");
 
 $host = "localhost"; 
 $user = "root"; 
-$password = ""; 
-$dbname = "gwa_verifier_cmsc_128"; 
+$password = "kikoman23142314"; 
+$dbname = "gwa_verifier_c1l_db"; 
 
 //connect to database
 $con = mysqli_connect($host, $user, $password,$dbname);
@@ -19,24 +19,17 @@ if (!$con) {
 $data = json_decode(file_get_contents('php://input'), true);  //json_decode == json_parse
 
 $studno = isset($data['studno']) ? (int)$data['studno'] : 0;
-$lname = isset($data['lname']) ? $data['lname'] : 0;
-$fname = isset($data['fname']) ? $data['fname'] : 0;
-$mname = isset($data['mname']) ? $data['mname'] : 0;
-$suffix = isset($data['suffix']) ? $data['suffix'] : 0;
-$degree = isset($data['degree']) ? $data['degree'] : 0;
+$new_status = isset($data['new_status']) ? $data['new_status'] : 0;
 
-//query - insert student no, last name, first name, middle name, suffix, degree, recommended no units, credited units, gwa, status
-$sql = "INSERT INTO student VALUES ('$studno','$lname','$fname','$mname','$suffix','$degree',1,1,1.5,'-')";
-
-if($studno == 0) die();
-
-// run SQL statement
+//update status using the student number
+$sql = "UPDATE student SET status='$new_status' WHERE student_number='$studno'";
 $result = mysqli_query($con,$sql);
 
 if (!$result) {
-  echo "error";
+    echo "error";
 } else {
-  echo http_response_code();
+    echo http_response_code();      //returns 200 if update is successful
 }
+
 
 $con->close();
