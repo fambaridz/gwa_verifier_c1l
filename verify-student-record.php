@@ -13,7 +13,6 @@ For front-end requests:
         {
           "studno":<int>,
           "degree":<string>,
-          "rec_units":<int>,
           "student_record": 
           {
             [
@@ -459,6 +458,28 @@ foreach ($student_record as $entry) {
     }
 
   } else {
+    //this should be fine, total_units_taken naman unang chinecheck
+    if ($total_units_taken == 0 && !in_array($subject_elective, array(0,1,2,3))) {
+      $msg = "stopping verification early because of an inconsistency found in $courseno, please make sure the following are correct:";
+      if (!$valid_grade)
+        $msg .= " grade: $grade; unexpected value/format;";
+      if (!$valid_units)
+        $msg .= " units: $units; expected: $expected_units;";
+      if (!$valid_enrolled)
+        $msg .= " enrolled: $enrolled; expected: $calculated_enrolled;";
+      if (!$valid_total)
+        $msg .= " running total: $total; expected: $calculated_total;";
+      if (!$valid_term)
+        $msg .= " term: $term; unexpected value/format;";
+      $msg .= " continuing verification will result in total units taken of 0. notice: total units taken will only start adding if (1) entry has valid formatting (2) the entry has a passing grade (3) the entry has non-zero units";
+      $payload = array('msg' => $msg);
+      //hoo boy that is a long boi
+      header('Content-type: application/json');
+      http_response_code(400);
+      echo json_encode($payload);
+      goto close;
+    }
+
     $remarks .= "Error: $courseno not added to database, please double-check the following:\n";
     if (!$valid_grade)
       $remarks .= "- grade, $grade; unexpected value/format\n";
@@ -471,7 +492,7 @@ foreach ($student_record as $entry) {
     if (!$valid_term)
       $remarks .= "- term, $term; unexpected value/format\n";
   }
-
+  //echo "$courseno checked!\n"; //uncomment to see what courses have been checked
   compilation:  //after checking an entire entry, record in an array all details about it's validity and remarks
   //echo $remarks."\n";
   $records_remarks[] = array(
@@ -487,10 +508,9 @@ foreach ($student_record as $entry) {
     'valid_term' => $valid_term
   );
 }
-
+//for the case only valid entries with 0 units are checked
 if ($total_units_taken == 0) {
-  $payload = array('msg' => "error: total units taken is 0, cannot calculate gwa; please make sure there is at least one valid entry that has a passing grade AND with units greater than 0, especially the starting entry to at least obtain a partial gwa");
-  //hoo boy that is a long boi
+  $payload = array('msg' => "error: total units taken is 0, cannot calculate gwa");
   header('Content-type: application/json');
   http_response_code(400);
   echo json_encode($payload);
