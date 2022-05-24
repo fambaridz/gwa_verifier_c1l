@@ -3,6 +3,23 @@ header("Access-Control-Allow-Origin: *"); //add this CORS header to enable any d
 header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: *");
 
+// sample json data 
+// note that there should be an entry of this in database for testing
+// {
+// 	"old_stud_no": "200001234",
+// 	"new_stud_no": "201901234",
+// 	"lname": "TEST",
+// 	"fname": "HELLO",
+// 	"mname": "WORLD",
+// 	"degree": "BSCS",
+// 	"suffix": null,
+// 	"recommended_number_units": "150",
+// 	"credited_units": "150",
+// 	"gwa": "1.99",
+// 	"status": "qualified"
+// }
+
+
 // constants
 $DEFAULT_STATUS = 'INCOMPLETE';
 $SUCCESS_RESPONSE = 200;
