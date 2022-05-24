@@ -488,6 +488,15 @@ foreach ($student_record as $entry) {
   );
 }
 
+if ($total_units_taken == 0) {
+  $payload = array('msg' => "error: total units taken is 0, cannot calculate gwa; please make sure there is at least one valid entry that has a passing grade AND with units greater than 0, especially the starting entry to at least obtain a partial gwa");
+  //hoo boy that is a long boi
+  header('Content-type: application/json');
+  http_response_code(400);
+  echo json_encode($payload);
+  goto close;
+}
+
 //final additions to the response
 if (
   $major_units_taken == $major_units_required &&
@@ -509,6 +518,7 @@ $response['hk1213_taken'] = $hk1213_taken;
 $response['nstp1_taken'] = $nstp1_taken;
 $response['nstp2_taken'] = $nstp2_taken;
 $response['total_units_taken'] = $total_units_taken;
+//notice: total_units_taken will only contain units from entries that are VALID AND PASSING
 $response['gwa'] = (float)$calculated_total / (float)$total_units_taken;
 $response['records_remarks'] = $records_remarks;
 
