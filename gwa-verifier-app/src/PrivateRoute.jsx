@@ -9,6 +9,8 @@ import {
     MenuItem,
     Toolbar,
   } from "@mui/material";
+import navbarLogo from "Assets/navbarLogo.png";
+import "./PrivateRoute.css";
 import { ArrowDropDown } from "@mui/icons-material";
 import Cookies from "universal-cookie";
 
@@ -94,9 +96,12 @@ function PrivateRoute({ children }){
       <Box sx={{flexGrow: 1}}>
         <AppBar position="static">
           <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            <Box sx={{flexGrow: 1}}>
+              <img src={navbarLogo} className="navbar-logo"/>
+            </Box>
+            {/* <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
                 Verifier
-            </Typography>
+            </Typography> */}
             <Typography variant="h6" style={{ fontWeight: 800 }} component="div" >
                 {userName}
             </Typography>
