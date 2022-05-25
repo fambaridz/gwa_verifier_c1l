@@ -47,8 +47,9 @@ function StudentRecordForm({
   table = <p>Table goes here</p>,
   extraFeaturesEnabled = true,
   handleComment = () => {},
+  error,
   comment,
-  index,
+  index, 
 }) {
   function handleChange(event) {
     setTerm(event.target.value);
@@ -283,6 +284,8 @@ function StudentRecordForm({
         <TextField
           multiline
           rows={3}
+          error={error}
+          helperText={error && "Comments are required when saving changes"}
           placeholder="Good job!"
           value={comment}
           onChange={(e) =>  handleComment(e,index)}

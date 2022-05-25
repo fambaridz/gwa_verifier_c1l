@@ -15,13 +15,22 @@ function EditStudentRecord() {
   const [studentRecord, setStudentRecord] = useState({});
 
   const [gradeRecords, setGradeRecords] = useState({});
-  const [comment, setComment] = useState(null);
+  const [comment, setComment] = useState("");
+  const [error, setError] = useState(false);
 
   async function handleSave() {
     setSaving(true);
 
+    if((!comment) && comment.trim()==""){
+      toggleError();
+      return setSaving(false);
+    }
+
+    // remove error message
+    if(error) toggleError();
+
     // addComment POST request
-    if(comment!==null){
+    try{
       const cookie = new Cookies();
       const email = cookie.get("email")
   
@@ -43,6 +52,9 @@ function EditStudentRecord() {
         return setSaving(false);
       }
       console.log("Comment saved")
+
+    }catch(error){
+      setSaving(false);
     }
 
     // commented out first bc of errors - christine
@@ -78,6 +90,10 @@ function EditStudentRecord() {
   function handleCommentChange(e){
     e.preventDefault();
     setComment(e.currentTarget.value)
+  }
+
+  function toggleError(){
+    setError(!error);
   }
 
   const { id: studno } = params;
@@ -125,6 +141,8 @@ function EditStudentRecord() {
         handleEditTerm={() => {}}
         handleDeleteTerm={() => {}}
         handleComment={handleCommentChange}
+        comment={comment}
+        error={error}
         terms={[]}
       />
     </Container>
