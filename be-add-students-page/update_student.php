@@ -182,12 +182,9 @@ if (check_studno_if_exist($old_stud_no, $con)){
           
           echo http_response_code();      //returns 200 if insertion is successful
         }
-    }
-    else echo "Degree does not exist";
-  }
-  else echo "The new student number already exists";
-}else{
-  echo 'Student ID:'. $old_stud_no. ' is not existing the database';
-}
+    }else echo "Degree does not exist";
+  }else echo "The new student number already exists";
+}else echo 'Student ID:'. $old_stud_no. ' is not existing the database';
+
 
 $con->close();
