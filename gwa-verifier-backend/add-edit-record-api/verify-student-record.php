@@ -12,6 +12,7 @@ For front-end requests:
     body: 
         {
           "studno":<int>,
+          "degree":<string>,
           "student_record": 
           {
             [
@@ -54,7 +55,8 @@ if (!$con) {
   die("Connection failed: " . mysqli_connect_error());
 }
 
-// I got this from details.php, credits to Zeit's work on handling preflight requests
+// "I got this from details.php, credits to Zeit's work on handling preflight requests" - Ian; 
+// "tenks Ian" - Allen
 // for PREFLIGHT request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
   header("HTTP/1.1 200 OK");
@@ -64,26 +66,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 //decode JSON object from HTTP body
 $data = json_decode(file_get_contents('php://input'));  //json_decode == json_parse
 
-$student_number = $data->studno;    //stores the student's student number
-$student_record = $data->student_record;    //stores the student's records to be evaluated
+//[1] check studno...
+//[1.1] if NULL
+if(!isset($data->studno)) {
+  $payload = array('msg' => "no student number provided; send as 'studno'");
+  header('Content-type: application/json');
+  http_response_code(400);
+  echo json_encode($payload);
+  goto close;
+}
+$studno = $data->studno;
+//[1.2] if valid format 
+if(!preg_match("/^[1-9][0-9]{8}$/", $studno)) {
+  $payload = array('msg' => "student number: '" . $studno . "' has invalid format; expected exactly 9 digits, with first digit being 1-9");
+  header('Content-type: application/json');
+  http_response_code(400);
+  echo json_encode($payload);
+  goto close;
+}
+//[1.3] if in the database
+$sql = "SELECT student_number FROM student WHERE student_number = $studno";
+$result = mysqli_query($con,$sql);
+if(mysqli_num_rows($result)==1) {
+  $payload = array('msg' => "error: student number: '" . $studno . "' is already taken");
+  header('Content-type: application/json');
+  http_response_code(400);
+  echo json_encode($payload);
+  goto close;
+}
 
+//[2] check degree_program...
+//[2.1] if NULL
+if(!isset($data->degree)) {
+  $payload = array('msg' => "no degree program provided; send as 'degree'");
+  header('Content-type: application/json');
+  http_response_code(400);
+  echo json_encode($payload);
+  goto close;
+}
+$degree = $data->degree;
 /**
  * TEMPORARY:
  * for now, student's Degree ID will be based off the a general degree found in the "degree_curriculum table" (those with an empty "major column"); 
- * this is found by:
- * 1. getting the degree_program of the student and finding a matching degree_nickname in degree_curriculum table
- * 2. finding the row where 'major' column is '' AND 'old_new' column is 'New' 
- * this  will return a table with a single row with the specified conditions
- * this is only to see if the to be added student record is valid or invalid once a degree ID is set for the student, for now
  * will be updated once there is a properly defined basis for student's Degree ID
  */
+$sql = "SELECT * FROM degree_curriculums WHERE degree_nickname = '$degree' AND major = '' AND old_new = 'New'";
+$result = mysqli_query($con,$sql);
+//[2.2] if in the database
+if(mysqli_num_rows($result)==0) {
+  $payload = array('msg' => "error: degree program: '" . $degree . "' does not exist");
+  header('Content-type: application/json');
+  http_response_code(400);
+  echo json_encode($payload);
+  goto close;
+}
 
-$sql = "SELECT student_number, degree_id, degree_nickname, old_new, major, major_units, options, ge_electives_units, electives_units, recommended_units
-        FROM degree_curriculums, student
-        WHERE student_number = $student_number AND degree_curriculums.degree_nickname = student.degree_program AND major = '' AND old_new = 'New'";
+$student_degree = mysqli_fetch_assoc($result);  //stores all information about the degree
 
-$result = mysqli_query($con, $sql);
-$student_degree = mysqli_fetch_assoc($result);
+//[3] check student record...
+//[3.1] if not NULL
+if(!isset($data->student_record)) {
+  $payload = array('msg' => "no student record provided; send as 'student_record'");
+  header('Content-type: application/json');
+  http_response_code(400);
+  echo json_encode($payload);
+  goto close;
+}
+$student_record = $data->student_record;    //stores the student's records to be evaluated
 
 $degree_id = (int)$student_degree['degree_id'];                      //stores the student's degree id
 $degree_program = $student_degree['degree_nickname'];
@@ -108,20 +157,18 @@ $nstp1_taken = 0;
 $nstp2_taken = 0;
 $total_units_taken = 0;
 
-$running_total = 0;
-$total_units = 0;
 
 $complete = 0;
 $error = 0;
 
-$calculated_total = 0;                                          //stores summation of enrolled units; updated for every pass in each entry in the student record
+$calculated_total = 0;  //stores summation of enrolled units; updated for every pass in each entry in the student record
 /**
  * $response will contain all relevant details about the student's degree
  * and the validity of a student record and the fields inside a student_record
  */
 
 $response = array(
-  'student_number' => $student_number,
+  'studno' => $studno,
   'complete' => 0,
   'error' => 0,
   'degree_id' => $degree_id,
@@ -206,10 +253,6 @@ foreach ($student_record as $entry) {
   $total = $entry->total;
   $term = $entry->term;
 
-  $total_units += (int)$units;
-  $temp = (float)$units * (float)$grade;
-  $running_total += $temp;
-
   $valid_entry = 0;  //to know if this entry has valid values and format, and can be safely added to the database
 
   $subject_elective = NULL;
@@ -255,8 +298,6 @@ foreach ($student_record as $entry) {
     $subject_elective = 8;
     $expected_units = $entry->units;
   }
-
-
 
   validity:  //program section where format and values are verified
 
@@ -416,33 +457,29 @@ foreach ($student_record as $entry) {
       $total_units_taken += $units;
     }
 
-    /*$sql = "INSERT INTO student_record(student_number, course_number, grade, units, enrolled, running_total, term)
-            VALUES ('$student_number','$courseno','$grade','$units','$enrolled','$total','$term')";
-    // run SQL statement
-    $result = mysqli_query($con,$sql);
-    if (!$result) {
-      echo "error";
-    } else {
-      echo http_response_code() . " OK: $courseno added to database\n";
-      $remarks .= "$courseno successfully added to database\n";
-      //update units taken, depending on category and in total
-      $total_units_taken += $units;
-      switch($subject_elective) {
-        case 1:
-          $majors_taken += $units;
-          break;
-        case 3:
-          $ge_units_taken += $units;
-          break;
-          
-        case 4:
-          $elective_units_taken += $units;
-          break;
-      }
-        
-    }
-    */
   } else {
+    //this should be fine, total_units_taken naman unang chinecheck
+    if ($total_units_taken == 0 && !in_array($subject_elective, array(0,1,2,3))) {
+      $msg = "stopping verification early because of an inconsistency found in $courseno, please make sure the following are correct:";
+      if (!$valid_grade)
+        $msg .= " grade: $grade; unexpected value/format;";
+      if (!$valid_units)
+        $msg .= " units: $units; expected: $expected_units;";
+      if (!$valid_enrolled)
+        $msg .= " enrolled: $enrolled; expected: $calculated_enrolled;";
+      if (!$valid_total)
+        $msg .= " running total: $total; expected: $calculated_total;";
+      if (!$valid_term)
+        $msg .= " term: $term; unexpected value/format;";
+      $msg .= " continuing verification will result in total units taken of 0. notice: total units taken will only start adding if (1) entry has valid formatting (2) the entry has a passing grade (3) the entry has non-zero units";
+      $payload = array('msg' => $msg);
+      //hoo boy that is a long boi
+      header('Content-type: application/json');
+      http_response_code(400);
+      echo json_encode($payload);
+      goto close;
+    }
+
     $remarks .= "Error: $courseno not added to database, please double-check the following:\n";
     if (!$valid_grade)
       $remarks .= "- grade, $grade; unexpected value/format\n";
@@ -455,7 +492,7 @@ foreach ($student_record as $entry) {
     if (!$valid_term)
       $remarks .= "- term, $term; unexpected value/format\n";
   }
-
+  //echo "$courseno checked!\n"; //uncomment to see what courses have been checked
   compilation:  //after checking an entire entry, record in an array all details about it's validity and remarks
   //echo $remarks."\n";
   $records_remarks[] = array(
@@ -470,6 +507,14 @@ foreach ($student_record as $entry) {
     'valid_total' => $valid_total,
     'valid_term' => $valid_term
   );
+}
+//for the case only valid entries with 0 units are checked
+if ($total_units_taken == 0) {
+  $payload = array('msg' => "error: total units taken is 0, cannot calculate gwa");
+  header('Content-type: application/json');
+  http_response_code(400);
+  echo json_encode($payload);
+  goto close;
 }
 
 //final additions to the response
@@ -493,10 +538,13 @@ $response['hk1213_taken'] = $hk1213_taken;
 $response['nstp1_taken'] = $nstp1_taken;
 $response['nstp2_taken'] = $nstp2_taken;
 $response['total_units_taken'] = $total_units_taken;
+//notice: total_units_taken will only contain units from entries that are VALID AND PASSING
+$response['gwa'] = (float)$calculated_total / (float)$total_units_taken;
 $response['records_remarks'] = $records_remarks;
-$response['gwa'] = (float)$running_total / (float)$total_units;
 
-//print_r($response); //uncomment to properly see response
+
+//print_r($response); //uncomment to see a pretty/cleaner version of what the response looks like :>
 echo json_encode($response);
 
+close:
 $con->close();
