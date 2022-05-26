@@ -390,7 +390,7 @@ foreach ($student_record as $entry) {
         }
         break;
       case 5:   //check if majors units have exceeded
-        if ($majors_taken + $units > (float)$major_units_required) {
+        if (($majors_taken + $units) > (float)$major_units_required) {
           $remarks .= "Exceed: $courseno cannot added to database, will exceed major units required\n - major units taken: $major_taken\n - major units required: $major_required";
           $exceed = 1;
           $error = 1;
@@ -398,7 +398,7 @@ foreach ($student_record as $entry) {
         }
         break;
       case 7:   //check if ge units have exceeded
-        if ($ge_units_taken + $units > (float)$ge_units_required) {
+        if (($ge_units_taken + $units) > (float)$ge_units_required) {
           $remarks .= "Exceed: $courseno cannot added to database, will exceed ge units required\n - ge units taken: $ge_units_taken\n - ge units required: $ge_units_required";
           $exceed = 1;
           $error = 1;
@@ -406,7 +406,7 @@ foreach ($student_record as $entry) {
         }
         break;
       case 8:   //check if elective units have exceeded
-        if ($elective_units_taken + $units > (float)$elective_units_required) {
+        if (($elective_units_taken + $units) > (float)$elective_units_required) {
           $remarks .= "Exceed: $courseno cannot added to database, will exceed elective units required\n - elective units taken: $elective_units_taken\n - elective units required: $elective_units_required";
           $exceed = 1;
           $error = 1;
