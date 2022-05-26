@@ -22,8 +22,8 @@ $lst = $data['lst'];    //get list of inputs
 $studno = $data['studno'];  //student number
 
 foreach($lst as $i) {
-  $grade = (int)$i['grade'];
-  $units = (float)$i['units'];
+  $grade = $i['grade'];
+  $units = $i['units'];
   $enrolled = (float)$i['enrolled'];
   $runningtotal = (double)$i['total'];
 
