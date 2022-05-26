@@ -280,7 +280,16 @@ foreach ($student_record as $entry) {
   //various error flags for entries, use as needed
   $duplicate = 0; //duplicate entry 
   $exceed = 0;     //units taken will exceed
+  $remarks = '';
 
+  check_if_duplicate:
+  //check if this course has already been taken
+  if (in_array($courseno, $passed_courses)) {
+    $remarks .= "Duplicate: $courseno cannot be added to database\n";
+    $duplicate = 1;
+    $error = 1;
+    goto compilation;
+  } 
 
   categorize: //program section that finds if a record is a subject/elective/hk/nstp
   //function calls pass by reference $expected_units and $subject_elective
@@ -296,13 +305,83 @@ foreach ($student_record as $entry) {
     $expected_units = 3;  //need confirmation if 3
   }
 
-  validity:  //program section where format and values are verified
+  check_if_exceed:
+  if (($total_units_taken + (int)$units) > (float)$recommended_required) {
+    $remarks .= "Exceed: $courseno cannot be added to database, will exceed total units required\n - total units taken: $total_units_taken\n - recommended units required: $recommended_required";
+    $error = 1;
+    goto compilation;
+  }
+  //secondly, check if subject is a majors/ge/elective and check if the taken units won't exceed yet
+  switch ($subject_elective) {
+    case 0:   //check if student already took HK 11
+      if ($hk11_taken + 1 > $hk11_required) {
+        $remarks .= "Exceed: HK 11 was already taken";
+        $duplicate = 1;
+        $exceed = 1;
+        $error = 1;
+        goto compilation;
+      }
+      break;
+    case 1:   //
+      if ($hk1213_taken + 1 > $hk1213_required) {
+        $remarks .= "Exceed: HK 12/13 was already finished twice";
+        $duplicate = 1;
+        $exceed = 1;
+        $error = 1;
+        goto compilation;
+      }
+      break;
+    case 2:   //
+      if ($nstp1_taken + 1 > $nstp1_required) {
+        $remarks .= "Exceed: NSTP 1 was already taken";
+        $duplicate = 1;
+        $exceed = 1;
+        $error = 1;
+        goto compilation;
+      }
+      break;
+    case 3:   //
+      if ($nstp2_taken + 1 > $nstp1_required) {
+        $remarks .= "Exceed: NSTP 2 was already taken";
+        $duplicate = 1;
+        $exceed = 1;
+        $error = 1;
+        goto compilation;
+      }
+      break;
+    case 5:   //check if majors units have exceeded
+      if (($majors_taken + $units) > (float)$major_units_required) {
+        $remarks .= "Exceed: $courseno cannot added to database, will exceed major units required\n - major units taken: $major_taken\n - major units required: $major_required";
+        $exceed = 1;
+        $error = 1;
+        goto compilation;
+      }
+      break;
+    case 7:   //check if ge units have exceeded
+      if (($ge_units_taken + $units) > (float)$ge_units_required) {
+        $remarks .= "Exceed: $courseno cannot added to database, will exceed ge units required\n - ge units taken: $ge_units_taken\n - ge units required: $ge_units_required";
+        $exceed = 1;
+        $error = 1;
+        goto compilation;
+      }
+      break;
+    case 8:   //check if elective units have exceeded
+      if (($elective_units_taken + $units) > (float)$elective_units_required) {
+        $remarks .= "Exceed: $courseno cannot added to database, will exceed elective units required\n - elective units taken: $elective_units_taken\n - elective units required: $elective_units_required";
+        $exceed = 1;
+        $error = 1;
+        goto compilation;
+      }
+      break;
+  }
 
-  //units:
+  valid_format_values:  //program section where format and values are verified
+  units:
   if ($units == $expected_units)
     $valid_units = 1;
   else $error = 1;
-  //grades:
+  
+  grades:
   //if grade is passing
   if (in_array($grade, $passing_grade)) {
     $valid_grade = 1;
@@ -312,112 +391,28 @@ foreach ($student_record as $entry) {
   //else, if grade is non-passing
   else if (in_array($grade, $non_passing_grade))
     $valid_grade = 1;
-
   //else, grade is invalid
   else $error = 1;
-  //enrolled: calculated $enrolled here should be equal to the value in the entry->enrolled AND should follow the format (either whole number or float with at most 2 decimal digits)
-  if ($calculated_enrolled == (float)$enrolled && preg_match("/\b^[0-9]+(\.[0-9]{1,2}){0,1}$/", $enrolled))
+  
+  enrolled: //calculated $enrolled here should be equal to the value in the entry->enrolled AND should follow the format (either whole number or float with at most 2 decimal digits)
+  if ($calculated_enrolled == (float)$enrolled && preg_match("/\b^[0-9]+(\.[0-9]{1,2}){0,1}$/", $enrolled)) 
     $valid_enrolled = 1;
   else $error = 1;
 
+  running_total:
   $calculated_running_total += $calculated_enrolled;
-  //running total: 
   if ($calculated_running_total == (float)$total && preg_match("/\b^[0-9]+(\.[0-9]{1,2}){0,1}$/", $total))
     $valid_total = 1;
   else $error = 1;
 
-  //term: regex; to update: midyear case
+  term: // to update: midyear case, over/underload
   if (preg_match("/\bI{1,2}\/[0-9]{2}\/[0-9]{2}$/", $term))
     $valid_term = 1;
   else $error = 1;
-  //student_record: check if all fields are valid
-
-
-  $remarks = '';
 
   insertability:
   //if everything has been valid thus far
-
   if ($valid_grade && $valid_units && $valid_enrolled && $valid_total && $valid_term) {
-    //firstly, check if recommended_required is about to be reached
-    if (in_array($courseno, $passed_courses)) {
-      $remarks .= "Duplicate: $courseno cannot be added to database\n";
-      $duplicate = 1;
-      $error = 1;
-      goto compilation;
-    }
-    if (($total_units_taken + $units) > (float)$recommended_required) {
-      $remarks .= "Exceed: $courseno cannot be added to database, will exceed total units required\n - total units taken: $total_units_taken\n - recommended units required: $recommended_required";
-      $error = 1;
-      goto compilation;
-    }
-    //secondly, check if subject is a majors/ge/elective and check if the taken units won't exceed yet
-    switch ($subject_elective) {
-      case 0:   //check if student already took HK 11
-        if ($hk11_taken + 1 > $hk11_required) {
-          $remarks .= "Exceed: HK 11 was already taken";
-          $duplicate = 1;
-          $exceed = 1;
-          $error = 1;
-          goto compilation;
-        }
-        break;
-      case 1:   //
-        if ($hk1213_taken + 1 > $hk1213_required) {
-          $remarks .= "Exceed: HK 12/13 was already finished twice";
-          $duplicate = 1;
-          $exceed = 1;
-          $error = 1;
-          goto compilation;
-        }
-        break;
-      case 2:   //
-        if ($nstp1_taken + 1 > $nstp1_required) {
-          $remarks .= "Exceed: NSTP 1 was already taken";
-          $duplicate = 1;
-          $exceed = 1;
-          $error = 1;
-          goto compilation;
-        }
-        break;
-      case 3:   //
-        if ($nstp2_taken + 1 > $nstp1_required) {
-          $remarks .= "Exceed: NSTP 2 was already taken";
-          $duplicate = 1;
-          $exceed = 1;
-          $error = 1;
-          goto compilation;
-        }
-        break;
-      case 5:   //check if majors units have exceeded
-        if (($majors_taken + $units) > (float)$major_units_required) {
-          $remarks .= "Exceed: $courseno cannot added to database, will exceed major units required\n - major units taken: $major_taken\n - major units required: $major_required";
-          $exceed = 1;
-          $error = 1;
-          goto compilation;
-        }
-        break;
-      case 7:   //check if ge units have exceeded
-        if (($ge_units_taken + $units) > (float)$ge_units_required) {
-          $remarks .= "Exceed: $courseno cannot added to database, will exceed ge units required\n - ge units taken: $ge_units_taken\n - ge units required: $ge_units_required";
-          $exceed = 1;
-          $error = 1;
-          goto compilation;
-        }
-        break;
-      case 8:   //check if elective units have exceeded
-        if (($elective_units_taken + $units) > (float)$elective_units_required) {
-          $remarks .= "Exceed: $courseno cannot added to database, will exceed elective units required\n - elective units taken: $elective_units_taken\n - elective units required: $elective_units_required";
-          $exceed = 1;
-          $error = 1;
-          goto compilation;
-        }
-        break;
-    }
-
-    $valid_entry = 1;
-    $remarks .= "OK: $courseno can added to database\n";
-
     if ($passing) {
       switch ($subject_elective) {
         case 0:
@@ -432,12 +427,10 @@ foreach ($student_record as $entry) {
         case 3:
           $nstp2_taken++;
           break;
-
         case 5:
           $majors_taken += $units;
           $passed_courses[] = $courseno;
           break;
-
         case 7:
           $ge_units_taken += $units;
           $passed_courses[] = $courseno;
@@ -453,8 +446,9 @@ foreach ($student_record as $entry) {
       }
       $verified_running_total += $enrolled;
       $total_units_taken += $units;
+      $remarks .= "OK: $courseno can added to database\n";
     }
-
+    $valid_entry = 1;
   } else {
     //this should be fine, total_units_taken naman unang chinecheck
     if ($total_units_taken == 0 && !in_array($subject_elective, array(0,1,2,3))) {
@@ -506,6 +500,7 @@ foreach ($student_record as $entry) {
     'valid_term' => $valid_term
   );
 }
+
 //for the case only valid entries with 0 units are checked
 if ($total_units_taken == 0) {
   $payload = array('msg' => "error: total units taken is 0, cannot calculate gwa");
@@ -515,7 +510,7 @@ if ($total_units_taken == 0) {
   goto close;
 }
 
-echo "taken: $total_units_taken; total: $verified_running_total; GWA: " .(float)$verified_running_total / (float)$total_units_taken ."\n";
+//echo "taken: $total_units_taken; total: $verified_running_total; GWA: " .(float)$verified_running_total / (float)$total_units_taken ."\n";
 
 //final additions to the response
 if (
@@ -542,7 +537,6 @@ $response['total_units_taken'] = $total_units_taken;
 //notice: total_units_taken will only contain units from entries that are VALID AND PASSING
 $response['gwa'] = (float)$verified_running_total / (float)$total_units_taken;
 $response['records_remarks'] = $records_remarks;
-
 
 //print_r($response); //uncomment to see a pretty/cleaner version of what the response looks like :>
 echo json_encode($response);
