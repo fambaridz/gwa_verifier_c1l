@@ -48,6 +48,22 @@ function RecordList() {
     return item.lastname + ", " + item.firstname + middlename + suffix;
   }
 
+  function classifyGWA(gwa, status) {
+    if(status == "SATISFACTORY") {
+      if(gwa >= 1 && gwa <= 1.2) {
+        return "Summa Cum Laude";
+      }else if(gwa >= 1.21 && gwa <= 1.45) {
+        return "Magna Cum Laude";
+      }else if(gwa >= 1.45 && gwa <= 1.75) {
+        return "Cum Laude";
+      }else{
+        return "-";
+      }
+    }else{
+      return "-";
+    }
+  }
+
   const redirectToRecordDetails = (selectedId) => {
     navigate("/records/" + getStudentNumber(selectedId));
   };
@@ -80,6 +96,7 @@ function RecordList() {
     { field: "degreeProgram", headerName: "Degree Program", minWidth: 70, flex: 1 },
     { field: "gwa", headerName: "GWA", minWidth: 80, flex: 1 },
     { field: "status", headerName: "Status", minWidth: 120, flex: 1 },
+    { field: "classification", headerName: "Classification", minWidth: 120, flex: 1},
     {
       field: "action",
       type: "actions",
@@ -117,6 +134,7 @@ function RecordList() {
       degreeProgram: item.degree_program,
       gwa: parseFloat(item.gwa),
       status: item.status,
+      classification: classifyGWA(item.gwa, item.status)
     });
   });
 

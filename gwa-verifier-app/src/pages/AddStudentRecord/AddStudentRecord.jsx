@@ -171,6 +171,10 @@ function AddStudentRecord() {
       return;
     }
     updateTerms(newPage);
+    // move the comments from the page
+    const updateComment = [...comments];
+    updateComment[page] = updateComment[page+1];
+    setComment(updateComment); 
   }
   function handleGradeRecordChange({ uid, columnId, value }) {
     const record = gradeRecords[uid];
@@ -468,6 +472,32 @@ function AddStudentRecord() {
       console.log(error);
       setSaving(false);
     }
+
+    // save comments (if any)
+    if(comments[page] && comments[page].trim()!==""){
+      try{
+        const payload = {
+          email,
+          studno,
+          comment: comments[page].trim()
+        };
+        console.log(payload);
+        const res = await fetch(`${BACKEND_URI}/add-edit-record-api/addComment.php`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+  
+        if (!res.ok) {
+          const error = res.status;
+          throw new Error(error);
+        }
+      }catch(error){}
+    }
+
+
     enqueueSnackbar(`Student successfully saved.`, {
       variant: "success",
     });

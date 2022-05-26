@@ -46,8 +46,10 @@ function StudentRecordForm({
   terms,
   table = <p>Table goes here</p>,
   extraFeaturesEnabled = true,
-
-  updateComment = () => {},
+  handleComment = () => {},
+  error,
+  comment,
+  index, 
 }) {
   function handleChange(event) {
     setTerm(event.target.value);
@@ -74,7 +76,6 @@ function StudentRecordForm({
     studNo: "",
     recommended: "",
   });
-  const [comment, setComment] = useState("");
 
   function handleLocalChanges(e) {
     e.preventDefault();
@@ -283,10 +284,12 @@ function StudentRecordForm({
         <TextField
           multiline
           rows={3}
+          error={error}
+          helperText={error && "Comments are required when saving changes"}
           placeholder="Good job!"
           value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          onBlur={() => updateComment(comment)}
+          onChange={(e) =>  handleComment(e,index)}
+          onBlur={(e) =>  handleComment(e,index)}
           // style={{ width: '100%' }}
         />
         {footer || (
@@ -337,7 +340,5 @@ StudentRecordForm.propTypes = {
   handleEditTerm: PropTypes.func.isRequired,
   handleDeleteTerm: PropTypes.func.isRequired,
   extraFeaturesEnabled: PropTypes.bool,
-
-  updateComment: PropTypes.func,
 };
 export default StudentRecordForm;

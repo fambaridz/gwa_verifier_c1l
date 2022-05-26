@@ -22,8 +22,8 @@ $lst = $data['lst'];    //get list of inputs
 $studno = $data['studno'];  //student number
 
 foreach($lst as $i) {
-  $grade = (int)$i['grade'];
-  $units = (float)$i['units'];
+  $grade = $i['grade'];
+  $units = $i['units'];
   $enrolled = (float)$i['enrolled'];
   $runningtotal = (double)$i['total'];
 
@@ -32,11 +32,6 @@ foreach($lst as $i) {
 
   // run SQL statement
   $result = mysqli_query($con,$sql);
-  if (!$result) {
-    echo "error";
-  } else {
-    echo http_response_code();
-  }
 }
  
 $con->close();
