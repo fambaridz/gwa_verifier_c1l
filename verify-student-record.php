@@ -132,8 +132,8 @@ if(!isset($data->student_record)) {
   echo json_encode($payload);
   goto close;
 }
-$student_record = $data->student_record;    //stores the student's records to be evaluated
 
+$student_record = $data->student_record;                              //stores the student's records to be evaluated
 $degree_id = (int)$student_degree['degree_id'];                      //stores the student's degree id
 $degree_program = $student_degree['degree_nickname'];
 $old_new = $student_degree['old_new'];
@@ -157,11 +157,11 @@ $nstp1_taken = 0;
 $nstp2_taken = 0;
 $total_units_taken = 0;
 
-
 $complete = 0;
 $error = 0;
 
-$calculated_total = 0;  //stores summation of enrolled units; updated for every pass in each entry in the student record
+$calculated_running_total = 0;  //stores summation of enrolled units; updated for every pass in each entry in the student record
+$verified_running_total = 0;    //summation of VALID enrolled units, only added if entry is valid
 /**
  * $response will contain all relevant details about the student's degree
  * and the validity of a student record and the fields inside a student_record
@@ -191,8 +191,7 @@ $passed_courses = array();
 $passing_grade = array('1.00', '1.25', '1.50', '1.75', '2.00', '2.25', '2.5', '2.75', '3.0');
 $non_passing_grade = array('4.00', '5.00', 'INC', 'DRP', 'DFG');
 
-function is_subject($con, $degree_id, $course, &$expected_units, &$subject_elective)
-{
+function is_subject($con, $degree_id, $course, &$expected_units, &$subject_elective){
   $sql = "SELECT course_number, number_units, required_choice
             FROM subjects
             WHERE degree_id = $degree_id AND course_number = '$course'";
@@ -219,8 +218,7 @@ function is_subject($con, $degree_id, $course, &$expected_units, &$subject_elect
   }
   return 0;
 }
-function is_elective($con, $course, &$expected_units, &$subject_elective)
-{
+function is_elective($con, $course, &$expected_units, &$subject_elective){
   $sql = "SELECT course_number, number_units, general_or_free
             FROM electives
             WHERE course_number = '$course'";
@@ -245,7 +243,6 @@ function is_elective($con, $course, &$expected_units, &$subject_elective)
 foreach ($student_record as $entry) {
 
   init: //intializations needed for verification
-
   $courseno = $entry->courseno;   //fields from entry
   $grade = $entry->grade;
   $units = $entry->units;
@@ -254,7 +251,7 @@ foreach ($student_record as $entry) {
   $term = $entry->term;
 
   $valid_entry = 0;  //to know if this entry has valid values and format, and can be safely added to the database
-
+  
   $subject_elective = NULL;
   /**
    * $subject_elective cases:
@@ -296,7 +293,7 @@ foreach ($student_record as $entry) {
      * WILL be updated/removed once all electives are added in the database
      */
     $subject_elective = 8;
-    $expected_units = $entry->units;
+    $expected_units = 3;  //need confirmation if 3
   }
 
   validity:  //program section where format and values are verified
@@ -323,9 +320,9 @@ foreach ($student_record as $entry) {
     $valid_enrolled = 1;
   else $error = 1;
 
-  $calculated_total += $calculated_enrolled;
+  $calculated_running_total += $calculated_enrolled;
   //running total: 
-  if ($calculated_total == (float)$total && preg_match("/\b^[0-9]+(\.[0-9]{1,2}){0,1}$/", $total))
+  if ($calculated_running_total == (float)$total && preg_match("/\b^[0-9]+(\.[0-9]{1,2}){0,1}$/", $total))
     $valid_total = 1;
   else $error = 1;
 
@@ -393,7 +390,7 @@ foreach ($student_record as $entry) {
         }
         break;
       case 5:   //check if majors units have exceeded
-        if (($majors_taken + $units) > (float)$major_units_required) {
+        if ($majors_taken + $units > (float)$major_units_required) {
           $remarks .= "Exceed: $courseno cannot added to database, will exceed major units required\n - major units taken: $major_taken\n - major units required: $major_required";
           $exceed = 1;
           $error = 1;
@@ -401,7 +398,7 @@ foreach ($student_record as $entry) {
         }
         break;
       case 7:   //check if ge units have exceeded
-        if (($ge_units_taken + $units) > (float)$ge_units_required) {
+        if ($ge_units_taken + $units > (float)$ge_units_required) {
           $remarks .= "Exceed: $courseno cannot added to database, will exceed ge units required\n - ge units taken: $ge_units_taken\n - ge units required: $ge_units_required";
           $exceed = 1;
           $error = 1;
@@ -409,7 +406,7 @@ foreach ($student_record as $entry) {
         }
         break;
       case 8:   //check if elective units have exceeded
-        if (($elective_units_taken + $units) > (float)$elective_units_required) {
+        if ($elective_units_taken + $units > (float)$elective_units_required) {
           $remarks .= "Exceed: $courseno cannot added to database, will exceed elective units required\n - elective units taken: $elective_units_taken\n - elective units required: $elective_units_required";
           $exceed = 1;
           $error = 1;
@@ -454,6 +451,7 @@ foreach ($student_record as $entry) {
           $passed_courses[] = $courseno;
           break;
       }
+      $verified_running_total += $enrolled;
       $total_units_taken += $units;
     }
 
@@ -468,7 +466,7 @@ foreach ($student_record as $entry) {
       if (!$valid_enrolled)
         $msg .= " enrolled: $enrolled; expected: $calculated_enrolled;";
       if (!$valid_total)
-        $msg .= " running total: $total; expected: $calculated_total;";
+        $msg .= " running total: $total; expected: $calculated_running_total;";
       if (!$valid_term)
         $msg .= " term: $term; unexpected value/format;";
       $msg .= " continuing verification will result in total units taken of 0. notice: total units taken will only start adding if (1) entry has valid formatting (2) the entry has a passing grade (3) the entry has non-zero units";
@@ -488,7 +486,7 @@ foreach ($student_record as $entry) {
     if (!$valid_enrolled)
       $remarks .= "- enrolled, $enrolled; expected: $calculated_enrolled;\n";
     if (!$valid_total)
-      $remarks .= "- running total, $total; expected: $calculated_total\n";
+      $remarks .= "- running total, $total; expected: $calculated_running_total\n";
     if (!$valid_term)
       $remarks .= "- term, $term; unexpected value/format\n";
   }
@@ -517,8 +515,11 @@ if ($total_units_taken == 0) {
   goto close;
 }
 
+echo "taken: $total_units_taken; total: $verified_running_total; GWA: " .(float)$verified_running_total / (float)$total_units_taken ."\n";
+
 //final additions to the response
 if (
+  $total_units_taken == $recommended_required &&
   $major_units_taken == $major_units_required &&
   $ge_units_taken == $ge_units_required &&
   $elective_units_taken == $elective_units_required &&
@@ -539,7 +540,7 @@ $response['nstp1_taken'] = $nstp1_taken;
 $response['nstp2_taken'] = $nstp2_taken;
 $response['total_units_taken'] = $total_units_taken;
 //notice: total_units_taken will only contain units from entries that are VALID AND PASSING
-$response['gwa'] = (float)$calculated_total / (float)$total_units_taken;
+$response['gwa'] = (float)$verified_running_total / (float)$total_units_taken;
 $response['records_remarks'] = $records_remarks;
 
 
