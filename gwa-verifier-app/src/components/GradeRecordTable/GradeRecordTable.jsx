@@ -17,9 +17,14 @@ const defaultColumn = {
   Cell: EditableCell,
 };
 
-function GradeRecordTable({ data, handleDelete = () => {}, handleUpdate }) {
-  const columns = useMemo(
-    () => [
+function GradeRecordTable({
+  data,
+  handleDelete = () => {},
+  handleUpdate,
+  enabledExtraFeature = true,
+}) {
+  const columns = useMemo(() => {
+    const headers = [
       {
         Header: "Course No.",
         accessor: "courseno", // accessor is the "key" in the data
@@ -40,7 +45,9 @@ function GradeRecordTable({ data, handleDelete = () => {}, handleUpdate }) {
         Header: "Running Total",
         accessor: "running_total",
       },
-      {
+    ];
+    if (enabledExtraFeature)
+      headers.push({
         Header: "Action",
         accessor: "action",
         Cell: (props) => {
@@ -55,10 +62,9 @@ function GradeRecordTable({ data, handleDelete = () => {}, handleUpdate }) {
             </IconButton>
           );
         },
-      },
-    ],
-    [data]
-  );
+      });
+    return headers;
+  }, [data]);
 
   const tableInstance = useTable({
     columns,
@@ -109,6 +115,7 @@ GradeRecordTable.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object),
   handleDelete: PropTypes.func,
   handleUpdate: PropTypes.func,
+  enabledExtraFeature: PropTypes.bool,
 };
 
 export default GradeRecordTable;

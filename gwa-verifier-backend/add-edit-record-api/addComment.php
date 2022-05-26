@@ -31,6 +31,7 @@ $result = mysqli_query($con,$sql);
 
 // die if SQL statement failed
 if (!$result) {
+  http_response_code(404);
   echo "error";
 } else {
   echo http_response_code();
