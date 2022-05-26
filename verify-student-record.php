@@ -519,6 +519,7 @@ if ($total_units_taken == 0) {
 
 //final additions to the response
 if (
+  $total_units_taken == $recommended_required &&
   $major_units_taken == $major_units_required &&
   $ge_units_taken == $ge_units_required &&
   $elective_units_taken == $elective_units_required &&
