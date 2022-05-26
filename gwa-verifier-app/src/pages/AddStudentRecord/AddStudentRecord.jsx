@@ -23,6 +23,7 @@ import ForceSaveDialog from "Components/ForceSaveDialog";
 import ParsingModal from "Components/ParsingModal";
 import { useDialog } from "../../hooks";
 import { BACKEND_URI } from "../../constants.js";
+import { Verifiers } from "./helpers.js";
 import Cookies from "universal-cookie";
 
 // const BACKEND_URI = "http://localhost/gwa-verifier-backend";
@@ -68,7 +69,7 @@ function AddStudentRecord() {
 
   //  get user's email from cookies
   const cookie = new Cookies();
-  const email = cookie.get("email")
+  const email = cookie.get("email");
 
   async function handleChange(files) {
     if (!files.length) return;
@@ -104,11 +105,11 @@ function AddStudentRecord() {
     setStudentRecords({ ...studentRecords, [uuid]: { ...copy } });
   }
 
-  function handleCommentChange(e, index){
+  function handleCommentChange(e, index) {
     e.preventDefault();
     const updateComment = [...comments];
     updateComment[index] = e.target.value;
-    setComment(updateComment); 
+    setComment(updateComment);
   }
 
   function getField(name) {
@@ -192,105 +193,14 @@ function AddStudentRecord() {
     return records;
   }
 
-  function verifyStudentRecords({ studno, gradeRecordsReady, recommended }) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const payload2 = {
-          studno: Number.parseInt(studno),
-          student_record: gradeRecordsReady.map((record) => ({
-            ...record,
-            course_number: record.courseno,
-            running_total: record.total,
-          })),
-        };
-
-        console.log(JSON.stringify(payload2));
-
-        const _res = await fetch(
-          `${BACKEND_URI}/add-edit-record-api/verify-student-record.php`,
-
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload2),
-          }
-        );
-
-        const data = await _res.json();
-        if (!data) throw new Error("Cannot parse json data");
-
-        const { error, records_remarks } = data;
-
-        if (!error) {
-          enqueueSnackbar("Student records are valid. You can now save it", {
-            variant: "success",
-          });
-          resolve();
-          return;
-        }
-
-        // compose error message
-        const [studentInfoErrors, studentRecordErrors] = getErrorMessages({
-          ...data,
-          recommended: parseInt(recommended),
-        });
-
-        reject([studentInfoErrors, studentRecordErrors]);
-
-        console.table(records_remarks);
-      } catch (error) {
-        console.log(error);
-        reject(error);
-      }
-    });
-  }
-
-  function locallyVerifyStudent({ studno, recommended }) {
-    if (
-      !validators.studentNoRegex.test(studno) ||
-      !validators.recommendedUnitsRegex.test(recommended)
-    ) {
-      return false;
-    }
-    return true;
-  }
-
-  function locallyVerifyGradeRecords({ uid }) {
-    return new Promise((resolve, reject) => {
-      const gradeRecordsReady = Object.keys(gradeRecords)
-        .filter((grUid) => gradeRecords[grUid].srUid === uid)
-        .map((grUid) => {
-          let record = { ...gradeRecords[grUid] };
-          const { grade, units, term, running_total } = record;
-
-          if (
-            !validators.gradeRegex.test(grade) ||
-            !validators.termRegex.test(term) ||
-            !validators.unitsRegex.test(units) ||
-            !validators.defaultRegex.test(running_total)
-          ) {
-            reject();
-          }
-          Object.assign(record, {
-            total: record.running_total,
-          });
-          delete record["running_total"];
-          return record;
-        });
-      resolve(gradeRecordsReady);
-    });
-  }
-
   async function saveOne() {
     // save the data w/ respect to the current page
-
+    const verifiers = new Verifiers();
     console.log("SAVING?");
     const uid = srUidPageMap[page];
 
     const studentRecord = studentRecords[uid];
-    let { studNo: studno, recommended } = studentRecord;
+    let { studNo: studno, recommended, degree } = studentRecord;
     // input validation for student info
 
     if (
@@ -309,7 +219,10 @@ function AddStudentRecord() {
 
     // verify student records / grade records locally
     try {
-      gradeRecordsReady = await locallyVerifyGradeRecords({ uid });
+      gradeRecordsReady = await verifiers.locallyVerifyGradeRecords({
+        uid,
+        gradeRecords,
+      });
     } catch (error) {
       console.warn(error);
       setSaving(false);
@@ -323,36 +236,38 @@ function AddStudentRecord() {
     }
 
     // addComment POST request
-    if(comments[page] && comments[page].trim()!==""){
-      try{
-  
+    if (comments[page] && comments[page].trim() !== "") {
+      try {
         const payload = {
           email,
           studno,
-          comment: comments[page].trim()
+          comment: comments[page].trim(),
         };
         console.log(payload);
-        const res = await fetch(`${BACKEND_URI}/add-edit-record-api/addComment.php`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
-  
+        const res = await fetch(
+          `${BACKEND_URI}/add-edit-record-api/addComment.php`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          }
+        );
+
         if (!res.ok) {
           const error = res.status;
           throw new Error(error);
         }
-  
-      }catch(error){}
+      } catch (error) {}
     }
 
     // verify if student records are valid by sending a request to the backend
     try {
-      await verifyStudentRecords({
+      await verifiers.verifyStudentRecords({
         studno,
         uid,
+        degree,
         gradeRecordsReady,
         recommended,
       });
@@ -365,6 +280,14 @@ function AddStudentRecord() {
         enqueueSnackbar("Errors in student records. Please see message", {
           variant: "error",
         });
+      } else {
+        // assume that the error is plaintext
+        enqueueSnackbar(
+          error.message || "Invalid records, please check logs.",
+          {
+            variant: "error",
+          }
+        );
       }
       setSaving(false);
       return;
@@ -461,7 +384,10 @@ function AddStudentRecord() {
 
     // verify student records / grade records locally
     try {
-      gradeRecordsReady = await locallyVerifyGradeRecords({ uid });
+      gradeRecordsReady = await verifiers.locallyVerifyGradeRecords({
+        uid,
+        gradeRecords,
+      });
     } catch (error) {
       console.warn(error);
       enqueueSnackbar(
@@ -513,8 +439,6 @@ function AddStudentRecord() {
       setSaving(false);
       return;
     }
-
-    
 
     // save grade records
     try {
@@ -694,8 +618,8 @@ function AddStudentRecord() {
           // }}
           handleEditTerm={toggleDialog}
           handleDeleteTerm={toggleDeleteDialog}
-          handleComment = {handleCommentChange}
-          comment={comments[page]||""}
+          handleComment={handleCommentChange}
+          comment={comments[page] || ""}
           index={page}
           table={
             <>
@@ -773,64 +697,3 @@ function AddStudentRecord() {
 }
 
 export default AddStudentRecord;
-
-function getErrorMessages(data) {
-  const {
-    hk11_required,
-    hk11_taken,
-    hk1213_required,
-    hk1213_taken,
-    nstp1_required,
-    nstp1_taken,
-    nstp2_required,
-    nstp2_taken,
-    recommended_required,
-    recommended,
-    major_units_required,
-    major_units_taken,
-    ge_units_required,
-    ge_units_taken,
-    elective_units_required,
-    elective_units_taken,
-  } = data;
-
-  const studentRecordErrors = [];
-  const studentInfoErrors = [];
-
-  if (hk11_required !== hk11_taken)
-    studentRecordErrors.push(
-      `HK11 is not enough. Currently taken is ${hk11_taken} but required is ${hk11_required}`
-    );
-  if (hk1213_required !== hk1213_taken)
-    studentRecordErrors.push(
-      `HK12 and HK13 is not enough. Currently taken is ${hk1213_taken} but required is ${hk1213_required}`
-    );
-
-  if (nstp1_required !== nstp1_taken)
-    studentRecordErrors.push(
-      `NSTP 1 is not enough. Currently taken is ${nstp1_taken} but required is ${nstp1_required}`
-    );
-  if (nstp2_required !== nstp2_taken)
-    studentRecordErrors.push(
-      `NSTP 2 is not enough. Currently taken is ${nstp2_taken} but required is ${nstp2_required}`
-    );
-
-  if (recommended < recommended_required)
-    studentInfoErrors.push(
-      `Provided recommended units (${recommended}) is less than actual recommended units: ${recommended_required}`
-    );
-  if (major_units_taken < major_units_required)
-    studentRecordErrors.push(
-      `Major units taken (${major_units_taken}) is less than major units required: ${major_units_required}`
-    );
-  if (ge_units_taken < ge_units_required)
-    studentRecordErrors.push(
-      `GE units taken (${ge_units_taken}) is less than GE units required: (${ge_units_required})`
-    );
-  if (elective_units_taken < elective_units_required)
-    studentRecordErrors.push(
-      `Elective units taken  (${elective_units_taken}) is less than elective units required (${elective_units_required})`
-    );
-
-  return [studentInfoErrors, studentRecordErrors];
-}
