@@ -6,9 +6,15 @@ import { useNavigate } from "react-router-dom";
 import DeleteRecordDialog from "Components/DeleteRecordDialog";
 import { useDialog } from "../../hooks";
 import { BACKEND_URI } from "../../constants.js";
+import Cookies from "universal-cookie";
 
 function RecordList() {
   let navigate = useNavigate();
+
+  //  get user's email from cookies
+  const cookie = new Cookies();
+  const email = cookie.get("email")
+
   const refreshPage = () => {
     navigate(0);
   };
@@ -140,7 +146,10 @@ function RecordList() {
   });
 
   const handleDeleteRecord = () => {
-    const record = { target: studno };
+    const record = {
+      target: studno,
+      email: email
+    };
 
     const deleteRecord = async () => {
       const res = await fetch(`${BACKEND_URI}/record-list-api/studentList.php`, {
