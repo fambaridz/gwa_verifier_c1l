@@ -378,6 +378,7 @@ function AddStudentRecord() {
       // creating student record info is working
       const payload = {
         ...studentRecord,
+        email,
         studno,
         status: "UNCHECKED",
       };
@@ -413,6 +414,7 @@ function AddStudentRecord() {
     try {
       const payload = {
         studno,
+        email,
         lst: gradeRecordsReady,
       };
 
@@ -483,6 +485,7 @@ function AddStudentRecord() {
       const payload = {
         ...studentRecord,
         studno,
+        email,
         status: "INCOMPLETE",
         rec_units: 0,
         cred_units: 0,
@@ -524,6 +527,7 @@ function AddStudentRecord() {
     try {
       const payload = {
         studno,
+        email,
         lst: gradeRecordsReady,
       };
 
