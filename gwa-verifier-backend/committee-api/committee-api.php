@@ -34,6 +34,7 @@ For front-end requests:
 
 //connect to database
 require_once('db-connect.php'); 
+include '../activity-log-api/activity_log.php';
 
 //retrieve what method was called
 $method = $_SERVER['REQUEST_METHOD'];
@@ -119,7 +120,7 @@ if($verified){
 
                 //save result
                 $result = mysqli_query($conn,$sql);
-              
+                insertActivitylog($committee->session_email, "Added committee account: ".$committee->email, 0, $conn);
             } else {
                 echo $committee->email . "already exists";
                 mysqli_free_result($result);
@@ -169,6 +170,7 @@ if($verified){
                                                     suffix = '$committee->suffix' WHERE email = '$committee->email'";
                     $result = mysqli_query($conn,$sql);
                 }
+                insertActivitylog($committee->session_email, "Edited committee account: ".$committee->email, 0, $conn);
 
             } else {
                 //else, exit
@@ -188,6 +190,7 @@ if($verified){
             if(mysqli_num_rows($result)==1){
                 $sql = "DELETE from committee WHERE email = '$committee->email'";
                 $result = mysqli_query($conn,$sql);
+                insertActivitylog($committee->session_email, "Deleted committee account: ".$committee->email, 0, $conn);
             } else {
                 //else, exit
                 echo $committee->email . "does not exist.";

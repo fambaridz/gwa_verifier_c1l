@@ -21,6 +21,8 @@ $con = mysqli_connect($host, $user, $password, $dbname);
 // gets request method from header
 $method = $_SERVER['REQUEST_METHOD'];
 
+include '../activity-log-api/activity_log.php';
+
 if(!$con) {
     die("Connection failed: " . mysqli_connect_error()); 
 }
@@ -55,7 +57,11 @@ else if ($method == 'POST') {
     // accesses value json object 'target' property for deletion
     $sql = "DELETE FROM `student` WHERE student_number = '{$target->target}'";
     // query
+
+    
     $result = mysqli_query($con, $sql);
+
+    insertActivitylog($target->email, "Deleted student record with ", $target->target, $con);
 
     // resource not found if query returns empty
     if(!$result) {
