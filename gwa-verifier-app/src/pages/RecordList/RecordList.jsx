@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Box, Button, Toolbar, Typography } from "@mui/material";
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { Add, Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import DeleteRecordDialog from "Components/DeleteRecordDialog";
@@ -22,6 +22,7 @@ function RecordList() {
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
+        <GridToolbarColumnsButton />
         <GridToolbarExport />
       </GridToolbarContainer>
     )
