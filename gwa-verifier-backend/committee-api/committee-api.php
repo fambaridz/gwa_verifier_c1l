@@ -110,7 +110,7 @@ if($verified){
                 $encrypted_password = hash('sha256',$committee->password);
                 //sql query 
                 $sql = "INSERT INTO committee VALUES (  '$committee->email', 
-                                                        '$_COOKIE[$cookie_email]', 
+                                                        '$committee->session_email', 
                                                         '$encrypted_password', 
                                                         '$committee->lastname', 
                                                         '$committee->firstname', 
