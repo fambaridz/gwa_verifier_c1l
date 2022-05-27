@@ -51,11 +51,11 @@ function RecordList() {
   function classifyGWA(gwa, status) {
     if(status == "SATISFACTORY") {
       if(gwa >= 1 && gwa <= 1.2) {
-        return "Summa Cum Laude";
+        return "SUMMA CUM LAUDE";
       }else if(gwa >= 1.21 && gwa <= 1.45) {
-        return "Magna Cum Laude";
+        return "MAGNA CUM LAUDE";
       }else if(gwa >= 1.45 && gwa <= 1.75) {
-        return "Cum Laude";
+        return "CUM LAUDE";
       }else{
         return "-";
       }
