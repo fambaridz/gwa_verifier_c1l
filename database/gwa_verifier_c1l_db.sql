@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 25, 2022 at 10:19 AM
+-- Generation Time: May 26, 2022 at 01:09 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -66,15 +66,16 @@ INSERT INTO `committee` (`email`, `account_made_by`, `password`, `lastname`, `fi
 CREATE TABLE `committee_student` (
   `committee_email` varchar(50) NOT NULL,
   `student_number` int(20) NOT NULL,
-  `comments` text NOT NULL
+  `comments` text NOT NULL,
+  `comment_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `committee_student`
 --
 
-INSERT INTO `committee_student` (`committee_email`, `student_number`, `comments`) VALUES
-('hello@gmail.com', 201901234, 'lorem ipsum');
+INSERT INTO `committee_student` (`committee_email`, `student_number`, `comments`, `comment_id`) VALUES
+('hello@gmail.com', 201901234, 'lorem ipsum', 0);
 
 -- --------------------------------------------------------
 
@@ -2239,7 +2240,7 @@ ALTER TABLE `committee`
 -- Indexes for table `committee_student`
 --
 ALTER TABLE `committee_student`
-  ADD PRIMARY KEY (`committee_email`,`student_number`);
+  ADD PRIMARY KEY (`comment_id`);
 
 --
 -- Indexes for table `degree_curriculums`
