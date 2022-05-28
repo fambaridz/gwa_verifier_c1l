@@ -26,6 +26,8 @@ import StudentStatus from "Components/StudentStatus";
 import SummativeTable from "Components/SummativeTable";
 import { useDialog } from "../../hooks";
 import { BACKEND_URI } from "../../constants.js";
+import Cookies from "universal-cookie";
+
 
 function RecordList() {
   let navigate = useNavigate();
@@ -49,6 +51,10 @@ function RecordList() {
     alertSeverity: '',
     isAlert: false,
   });
+
+  //  get user's email from cookies
+  const cookie = new Cookies();
+  const email = cookie.get("email")
 
   function redirectToEditStudentRecords() {
     navigate("/records/" + studno + "/edit");
@@ -77,6 +83,7 @@ function RecordList() {
       student_number: details.student_number,
       prevStatus: details.status,
       newStatus: newStatus,
+      email: email
     };
 
     console.log(statusChange);
@@ -144,6 +151,7 @@ function RecordList() {
     const record = {
       action: "delete-record",
       student_number: studno,
+      email: email
     };
 
     const deleteRecord = async () => {
