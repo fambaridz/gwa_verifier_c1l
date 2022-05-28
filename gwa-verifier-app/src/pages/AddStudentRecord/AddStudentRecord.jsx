@@ -23,7 +23,7 @@ import ForceSaveDialog from "Components/ForceSaveDialog";
 import ParsingModal from "Components/ParsingModal";
 import { useDialog } from "../../hooks";
 import { BACKEND_URI } from "../../constants.js";
-import { Verifiers } from "./helpers.js";
+import { Verifiers, StudentHandler, CommentHandler } from "./helpers.js";
 import Cookies from "universal-cookie";
 
 // const BACKEND_URI = "http://localhost/gwa-verifier-backend";
@@ -200,6 +200,9 @@ function AddStudentRecord() {
   async function saveOne() {
     // save the data w/ respect to the current page
     const verifiers = new Verifiers();
+    const studentHandler = new StudentHandler();
+    const commentHandler = new CommentHandler();
+
     console.log("SAVING?");
     const uid = srUidPageMap[page];
 
@@ -272,31 +275,12 @@ function AddStudentRecord() {
 
     try {
       // creating student record info is working
-      const payload = {
-        ...studentRecord,
-        email: email,
+      await studentHandler.saveInfo({
+        studentRecord,
+        email,
         studno,
         status: "UNCHECKED",
-      };
-      console.table(payload);
-      let res = await fetch(
-        `${BACKEND_URI}/add-edit-record-api/add-student.php`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      if (!res.ok) {
-        console.table(res);
-        const data = await res.json();
-        const { msg } = data;
-        throw new Error(msg);
-      }
-
+      });
       // ready the data
     } catch (error) {
       console.warn(error);
@@ -308,29 +292,11 @@ function AddStudentRecord() {
 
     // save grade records
     try {
-      const payload = {
+      await studentHandler.saveGradeRecords({
         studno,
-        email: email,
+        email,
         lst: gradeRecordsReady,
-      };
-
-      console.log(JSON.stringify(payload));
-
-      const res = await fetch(
-        `${BACKEND_URI}/add-edit-record-api/addStudentRecord.php`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      if (!res.ok) {
-        const error = res.status;
-        throw new Error(error);
-      }
+      });
     } catch (error) {
       console.log(error);
       setSaving(false);
@@ -343,23 +309,7 @@ function AddStudentRecord() {
     // addComment POST request
     if (comments[page] && comments[page].trim() !== "") {
       try {
-        const payload = {
-          email,
-          studno,
-          comment: comments[page].trim(),
-        };
-        console.log(payload);
-        const res = await fetch(
-          `${BACKEND_URI}/add-edit-record-api/addComment.php`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-          }
-        );
-
+        await commentHandler.save(email, studno, comments[page].trim());
         if (!res.ok) {
           const error = res.status;
           throw new Error(error);
@@ -372,14 +322,16 @@ function AddStudentRecord() {
 
   async function forceSave() {
     // save the data w/ respect to the current page
-
+    const verifiers = new Verifiers();
+    const studentHandler = new StudentHandler();
+    const commentHandler = new CommentHandler();
     const uid = srUidPageMap[page];
 
     const studentRecord = studentRecords[uid];
     let { studNo: studno, recommended } = studentRecord;
     // input validation for student info
 
-    if (!locallyVerifyStudent({ studno, recommended })) {
+    if (!verifiers.locallyVerifyStudent({ studno, recommended })) {
       enqueueSnackbar("Cannot save all students, some still have errors", {
         variant: "error",
       });
@@ -410,34 +362,12 @@ function AddStudentRecord() {
 
     try {
       // creating student record info is working
-      const payload = {
-        ...studentRecord,
+      await studentHandler.saveInfo({
+        studentRecord,
         studno,
         email: email,
         status: "INCOMPLETE",
-        rec_units: 0,
-        cred_units: 0,
-        gwa: 0,
-      };
-      console.table(payload);
-      let res = await fetch(
-        `${BACKEND_URI}/add-edit-record-api/add-student.php`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      if (!res.ok) {
-        console.table(res);
-        const data = await res.json();
-        const { msg } = data;
-        const error = res.status;
-        throw new Error(msg);
-      }
+      });
 
       // ready the data
     } catch (error) {
@@ -451,58 +381,26 @@ function AddStudentRecord() {
 
     // save grade records
     try {
-      const payload = {
+      // creating student record info is working
+      await studentHandler.saveGradeRecords({
         studno,
-        email: email,
+        email,
         lst: gradeRecordsReady,
-      };
+      });
 
-      console.log(JSON.stringify(payload));
-
-      const res = await fetch(
-        `${BACKEND_URI}/add-edit-record-api/addStudentRecord.php`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      if (!res.ok) {
-        const error = res.status;
-        throw new Error(error);
-      }
+      // ready the data
     } catch (error) {
-      console.log(error);
-      setSaving(false);
+      console.warn(error);
+      enqueueSnackbar(`Error in saving record: ${error}`, {
+        variant: "error",
+      });
+      return;
     }
 
     // save comments (if any)
     if (comments[page] && comments[page].trim() !== "") {
       try {
-        const payload = {
-          email,
-          studno,
-          comment: comments[page].trim(),
-        };
-        console.log(payload);
-        const res = await fetch(
-          `${BACKEND_URI}/add-edit-record-api/addComment.php`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(payload),
-          }
-        );
-
-        if (!res.ok) {
-          const error = res.status;
-          throw new Error(error);
-        }
+        await commentHandler.save(email, studno, comments[page].trim());
       } catch (error) {}
     }
 
@@ -511,6 +409,7 @@ function AddStudentRecord() {
     });
     setSaving(false);
     setShowForceSave(false);
+    popStack();
   }
 
   function addRow() {

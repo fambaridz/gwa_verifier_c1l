@@ -178,3 +178,122 @@ export class Verifiers {
     });
   }
 }
+
+export class StudentHandler {
+  /**
+   *
+   * @param {Object} kwargs
+   * @param {Object} kwargs.studentRecord
+   * @param {string} kwargs.email
+   * @param {number} kwargs.studno
+   * @param {string} kwargs.status
+   * @param {number} kwargs.rec_units
+   * @param {number} kwargs.cred_units
+   * @param {number} kwargs.gwa
+   */
+  async saveInfo(kwargs) {
+    const {
+      studentRecord,
+      email,
+      studno,
+      status = "UNCHECKED",
+      rec_units = 0,
+      cred_units = 0,
+      gwa = 0,
+    } = kwargs;
+    const payload = {
+      ...studentRecord,
+      email,
+      studno,
+      status,
+      rec_units,
+      cred_units,
+      gwa,
+    };
+    console.table(payload);
+    let res = await fetch(
+      `${BACKEND_URI}/add-edit-record-api/add-student.php`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    if (!res.ok) {
+      console.table(res);
+      const data = await res.json();
+      const { msg } = data;
+      throw new Error(msg);
+    }
+  }
+  /**
+   *
+   * @param {Object} kwargs
+   * @param {number} kwargs.studno
+   * @param {string} kwargs.email
+   * @param {[Object]} kwargs.lst
+   */
+  async saveGradeRecords(kwargs) {
+    const { studno, email, lst } = kwargs;
+    const payload = {
+      studno,
+      email,
+      lst,
+    };
+
+    console.log(JSON.stringify(payload));
+
+    const res = await fetch(
+      `${BACKEND_URI}/add-edit-record-api/addStudentRecord.php`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    if (!res.ok) {
+      const error = res.status;
+      throw new Error(error);
+    }
+  }
+}
+
+export class CommentHandler {
+  /**
+   *
+   * @param {Object} kwargs
+   * @param {string} kwargs.email
+   * @param {number} kwargs.studno
+   * @param {string} kwargs.comment
+   */
+  async save(kwargs) {
+    const { email, studno, comment } = kwargs;
+    const payload = {
+      email,
+      studno,
+      comment,
+    };
+    console.log(payload);
+    const res = await fetch(
+      `${BACKEND_URI}/add-edit-record-api/addComment.php`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    if (!res.ok) {
+      const error = res.status;
+      throw new Error(error);
+    }
+  }
+}
