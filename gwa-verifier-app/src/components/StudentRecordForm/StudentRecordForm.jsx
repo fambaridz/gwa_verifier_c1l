@@ -49,7 +49,7 @@ function StudentRecordForm({
   handleComment = () => {},
   error,
   comment,
-  index, 
+  index,
 }) {
   function handleChange(event) {
     setTerm(event.target.value);
@@ -76,6 +76,12 @@ function StudentRecordForm({
     studNo: "",
     recommended: "",
   });
+
+  const [localComment, setLocalComment] = useState("");
+
+  useEffect(() => {
+    setLocalComment(comment);
+  }, [comment]);
 
   function handleLocalChanges(e) {
     e.preventDefault();
@@ -287,9 +293,11 @@ function StudentRecordForm({
           error={error}
           helperText={error && "Comments are required when saving changes"}
           placeholder="Good job!"
-          value={comment}
-          onChange={(e) =>  handleComment(e,index)}
-          onBlur={(e) =>  handleComment(e,index)}
+          value={localComment}
+          // REFACTOR: only update the parent state's `comment` onBlur, to prevent delayed rendering
+          // onChange={(e) => handleComment(e, index)}
+          onChange={(e) => setLocalComment(e.target.value)}
+          onBlur={() => handleComment(localComment, index)}
           // style={{ width: '100%' }}
         />
         {footer || (
