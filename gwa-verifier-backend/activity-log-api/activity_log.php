@@ -44,7 +44,7 @@ function insertActivitylog ($email, $activity, $studno, $con){
 
     // if the activity was not a student record
     if ($studno !=0){
-        $activity_studno = $activity. ' Studdent number: '. (string)$studno;
+        $activity_studno = $activity. ' Student number: '. (string)$studno;
         $sql = "INSERT INTO activity_log (email, date, activity) VALUES('$email', '$date', '$activity_studno')";
         
     } else{
@@ -53,12 +53,12 @@ function insertActivitylog ($email, $activity, $studno, $con){
     // echo $sql;
     $result = mysqli_query($con, $sql);
     
-    if (!$result) {
-        echo "Activity Log unsuccesful";
-    } else {
+    // if (!$result) {
+    //     echo "Activity Log unsuccesful";
+    // } else {
         
-    echo http_response_code();      //returns 200 if insertion is successful
-    }
+    // echo http_response_code();      //returns 200 if insertion is successful
+    // }
 }
 
 // get activity log

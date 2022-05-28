@@ -2,6 +2,7 @@
 header("Access-Control-Allow-Origin: *"); //add this CORS header to enable any domain to send HTTP requests to these endpoints:
 header("Access-Control-Allow-Headers: *");
 header("Access-Control-Allow-Methods: *");
+include '../activity-log-api/activity_log.php';
 
 $host = "localhost";
 $user = "root";
@@ -65,6 +66,8 @@ if (!check_studno_if_exist($studno, $con)) {
 
     // run SQL statement
     $result = mysqli_query($con, $sql);
+
+    insertActivityLog($data['email'], "Added student", $studno, $con);
 
     if (!$result) {
       echo "error";

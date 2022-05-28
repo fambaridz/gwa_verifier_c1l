@@ -1,14 +1,20 @@
 import * as React from "react";
 import { Box, Button, Toolbar, Typography } from "@mui/material";
-import { DataGrid, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
+import { DataGrid, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
 import { Add, Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import DeleteRecordDialog from "Components/DeleteRecordDialog";
 import { useDialog } from "../../hooks";
 import { BACKEND_URI } from "../../constants.js";
+import Cookies from "universal-cookie";
 
 function RecordList() {
   let navigate = useNavigate();
+
+  //  get user's email from cookies
+  const cookie = new Cookies();
+  const email = cookie.get("email")
+
   const refreshPage = () => {
     navigate(0);
   };
@@ -22,6 +28,7 @@ function RecordList() {
   function CustomToolbar() {
     return (
       <GridToolbarContainer>
+        <GridToolbarColumnsButton />
         <GridToolbarExport />
       </GridToolbarContainer>
     )
@@ -51,11 +58,11 @@ function RecordList() {
   function classifyGWA(gwa, status) {
     if(status == "SATISFACTORY") {
       if(gwa >= 1 && gwa <= 1.2) {
-        return "Summa Cum Laude";
+        return "SUMMA CUM LAUDE";
       }else if(gwa >= 1.21 && gwa <= 1.45) {
-        return "Magna Cum Laude";
+        return "MAGNA CUM LAUDE";
       }else if(gwa >= 1.45 && gwa <= 1.75) {
-        return "Cum Laude";
+        return "CUM LAUDE";
       }else{
         return "-";
       }
@@ -139,7 +146,10 @@ function RecordList() {
   });
 
   const handleDeleteRecord = () => {
-    const record = { target: studno };
+    const record = {
+      target: studno,
+      email: email
+    };
 
     const deleteRecord = async () => {
       const res = await fetch(`${BACKEND_URI}/record-list-api/studentList.php`, {

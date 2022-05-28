@@ -5,7 +5,7 @@ header("Access-Control-Allow-Methods: *");
 
 //Connects to database
 include_once 'database_login.php';
-
+include '../activity-log-api/activity_log.php';
 $data = json_decode(file_get_contents('php://input'));
 
 //if input fields is empty
@@ -49,6 +49,9 @@ if (!isset($data->Email) || !isset($data->Password)){
                 } else {
                     $superuser_flag = False;
                 }
+
+                insertActivitylog($data->Email, "Logged in", 0, $conn);
+
                 $object = array("success"=>True, "firstname"=>$row['firstname'], "middlename"=>$row['middlename'], "lastname"=>$row['lastname'], "suffix"=>$row['suffix'], "superuser"=>$superuser_flag);
                 $json_object = json_encode($object);
                 echo $json_object;

@@ -9,8 +9,13 @@ import {
   Button
  } from "@mui/material";
 
+import Cookies from "universal-cookie";
 import { ThemeProvider } from "@mui/private-theming";
 import { BACKEND_URI } from "../../constants.js";
+
+//  get user's email from cookies
+const cookie = new Cookies();
+const email = cookie.get("email")
 
 const style = {
 	position: 'absolute',
@@ -29,7 +34,10 @@ function DeleteCommitteeForm(props) {
 
 		async function handleSubmit(event) {
 		  event.preventDefault();
-		  const credentials = {email: props.email}
+		  const credentials = {
+			  email: props.email,
+			  session_email: email
+			}
 		  fetch(
 			`${BACKEND_URI}/committee-api/committee-api.php`,
 			  {
