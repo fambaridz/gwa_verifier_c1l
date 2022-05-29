@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 29, 2022 at 11:48 AM
+-- Generation Time: May 29, 2022 at 09:16 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -56,7 +56,7 @@ CREATE TABLE `committee` (
 
 INSERT INTO `committee` (`email`, `account_made_by`, `password`, `lastname`, `firstname`, `middlename`, `suffix`) VALUES
 ('another@another.com', '', 'ae448ac86c4e8e4dec645729708ef41873ae79c6dff84eff73360989487f08e5', 'another', 'another', 'another', ''),
-('CMSC128@CD1L.com', NULL, '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'verifier', 'gwa', 'g', ''),
+('CMSC128@C1L.com', NULL, '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'verifier', 'gwa', 'g', ''),
 ('hello@hello.com', '', '99a53666f2d325f8af69b42f31b103f036c471719f4d5fb8ba847d4e9b592c2d', 'hello', 'hello', 'hello', ''),
 ('hello@world.com', '', 'e0cb05d98fc5f38266f3ea8376d84c61a8c16050240e439e7ae96f12e2cb30a4', 'world', 'hell', 'o', '');
 
@@ -250,7 +250,6 @@ CREATE TABLE `student` (
 --
 
 INSERT INTO `student` (`student_number`, `lastname`, `firstname`, `middlename`, `suffix`, `degree_program`, `recommended_number_units`, `credited_units`, `gwa`, `status`) VALUES
-(201501234, 'MAKILING', 'MARIA', NULL, NULL, 'BACA', 144, 146, 1.74486, 'UNVERIFIED'),
 (201889821, 'Clara', 'Maria', '', '', 'BAPHLO', 0, 0, 0, 'UNCHECKED'),
 (207176487, 'SALAZAR', 'IAN', '', '', 'BSCS', 1, 1, 1.5, '-');
 
@@ -673,6 +672,43 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Undergraduate Thesis', 6, 'SOC 200', '', 6),
 ('Statistics for Social Sciences', 6, 'STAT 166', '', 3),
 ('Science, Technology, and Society', 6, 'STS 1', '', 3),
+('Matrices and Applications', 7, 'AMAT 105', '', 3),
+('Mathematical Modeling', 7, 'AMAT 110', '', 3),
+('Introduction to Mathematical Optimization', 7, 'AMAT 112', '', 3),
+('Fundamentals of Mathematical Computing', 7, 'AMAT 152', '', 3),
+('Theory of Interest', 7, 'AMAT 170', '', 3),
+('Finite Mathematics', 7, 'AMAT 19', '', 3),
+('Practicum', 7, 'AMAT 198', '', 3),
+('Undergraduate Seminar', 7, 'AMAT 199', '', 1),
+('Critical Perspectives in the Arts', 7, 'ARTS 1', '', 3),
+('Investigative Biology Laboratory', 7, 'BIO 11.1', '', 2),
+('University Chemistry', 7, 'CHEM 18', '', 3),
+('University Chemistry Laboratory', 7, 'CHEM 18.1', '', 2),
+('Workplace Communication', 7, 'COMA 150', '', 3),
+('Critical Perspectives in Communication', 7, 'COMM 10', '', 3),
+('Ethics and Moral Reasoning', 7, 'ETHICS 1', '', 3),
+('Philippine History', 7, 'HIST 1', '', 3),
+('Wellness and Basic Injury Management', 7, 'HK 11', '', 0),
+('Human Kinetics Activities', 7, 'HK 12', '', 0),
+('Advanced Human Kinetics Activities', 7, 'HK 13', '', 0),
+('Kasaysayan ng Pilipinas', 7, 'KAS 1', '', 3),
+('Logic and Set Theory', 7, 'MATH 101', '', 3),
+('Ordinary Differential Equations', 7, 'MATH 151', '', 3),
+('Advanced Calculus I', 7, 'MATH 155', '', 3),
+('Numerical Analysis I', 7, 'MATH 174', '', 3),
+('Numerical Analysis II', 7, 'MATH 175', '', 3),
+('Introduction to Probability Theory', 7, 'MATH 181', '', 3),
+('Research Methods in Mathematics', 7, 'MATH 195', '', 3),
+('Mathematical Analysis I', 7, 'MATH 36', '', 5),
+('Mathematical Analysis II', 7, 'MATH 37', '', 3),
+('Mathematical Analysis III', 7, 'MATH 38', '', 5),
+('National Service Training Program I', 7, 'NSTP 1', '', 0),
+('National Service Training Program', 7, 'NSTP 2', '', 0),
+('Elements of Physics', 7, 'PHYS 51', '', 4),
+('Elements of Physics Laboratory', 7, 'PHYS 51.1', '', 1),
+('The Life and Works of Jose Rizal', 7, 'PI 10', '', 3),
+('Statistical Methods', 7, 'STAT 101', '', 3),
+('Science, Technology, and Society', 7, 'STS 1', '', 3),
 ('Programming in Physics', 8, 'APHY 10.1', '', 1),
 ('Physic of Scientific Instruments', 8, 'APHY 101', '', 3),
 ('Physics of Electronic Devices', 8, 'APHY 102', '', 3),
@@ -1439,7 +1475,8 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('General Physics I', 36, 'PHYS 3', '', 3),
 ('The Life and Works of Jose Rizal', 36, 'PI 100', '', 3),
 ('Elementary Statistics', 36, 'STAT 1', '', 3),
-('Intermediate Zoology', 36, 'ZOO 3', '', 3),
+('Intermediate Zoology', 36, 'ZOO 3', '', 3);
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
 ('Cytology', 37, 'BIO 102', 'Required', 3),
 ('Developmental Cell Biology', 37, 'BIO 121', 'Required', 3),
 ('Advanced Genetics I', 37, 'BIO 130a', 'Other', 3),
@@ -1475,8 +1512,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Introduction to Ecological Agriculture', 38, 'AGRI 121', 'Other', 3),
 ('Advanced Genetics II', 38, 'BIO 130b', 'Other', 3),
 ('Plant Ecology', 38, 'BIO 150', 'Required', 3),
-('Environmental Management', 38, 'BIO 151', 'Required', 3);
-INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Environmental Management', 38, 'BIO 151', 'Required', 3),
 ('Cave Ecology', 38, 'BIO 154', 'Other', 3),
 ('Biology of Pollution', 38, 'BIO 155', 'Required', 3),
 ('Conservation Biology in the Tropics', 38, 'BIO 159', 'Other', 3),
