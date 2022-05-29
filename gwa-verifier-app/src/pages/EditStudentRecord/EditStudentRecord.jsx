@@ -32,6 +32,8 @@ function EditStudentRecord() {
   const [studentInfoErrors, setStudentInfoErrors] = useState([]);
   const [studentRecordErrors, setStudentRecordErrors] = useState([]);
 
+  const [recordsToDelete, setRecordsToDelete] = useState([]);
+
   const [showForceSave, setShowForceSave] = useState(false);
 
   function handleGradeRecordChange({ uid, columnId, value }) {
@@ -63,12 +65,6 @@ function EditStudentRecord() {
     return records;
   }, [gradeRecords, term]);
 
-  function getField(name) {
-    const res = studentRecord[name];
-    if (!res) return "";
-    return res;
-  }
-
   function handleCommentChange(newComment) {
     setComment(newComment);
   }
@@ -97,6 +93,10 @@ function EditStudentRecord() {
   function deleteRow(uid) {
     const gradeRecordCopy = { ...gradeRecords };
     if (!gradeRecordCopy[uid]) return;
+    // if the uid is an ID from the database
+    if (validators.idRegex.test(uid)) {
+      setRecordsToDelete([...recordsToDelete, uid]);
+    }
     delete gradeRecordCopy[uid];
     setGradeRecords(gradeRecordCopy);
   }
@@ -291,17 +291,27 @@ function EditStudentRecord() {
       return;
     }
 
+    // delete records to be deleted
+
+    try {
+      if (recordsToDelete.length > 0)
+        await recordHandler.deleteGradeRecords(recordsToDelete);
+    } catch (error) {
+      console.warn(error);
+      console.warn("Cannot delete records");
+    }
+
     // save grade records
     try {
       // creating student record info is working
 
       const recordsToSave = [];
       const recordsToUpdate = [];
-      const idRegex = /^\d+$/;
+
       gradeRecordsReady.forEach((record) => {
         const { id, total, courseno, ...rest } = record;
 
-        if (idRegex.test(id)) {
+        if (validators.idRegex.test(id)) {
           recordsToUpdate.push({
             ...rest,
             course_number: courseno,
@@ -457,6 +467,7 @@ function EditStudentRecord() {
                   <GradeRecordTable
                     data={convertedGrades}
                     handleUpdate={handleGradeRecordChange}
+                    handleDelete={deleteRow}
                   />
                 </>
               }

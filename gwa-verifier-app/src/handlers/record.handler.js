@@ -114,4 +114,31 @@ export default class RecordHandler {
       throw new Error(msg);
     }
   }
+
+  /**
+   *
+   * @param {Array<string | number>} ids IDs of records to delete
+   */
+  async deleteGradeRecords(ids) {
+    const payload = {
+      ids,
+    };
+
+    const res = await fetch(
+      `${BACKEND_URI}/add-edit-record-api/delete-record.php`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+    if (!res.ok) {
+      console.table(res);
+      const data = await res.json();
+      const { msg } = data;
+      throw new Error(msg);
+    }
+  }
 }
