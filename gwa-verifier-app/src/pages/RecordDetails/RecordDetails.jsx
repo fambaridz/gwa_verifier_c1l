@@ -17,7 +17,11 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { DataGrid, GridActionsCellItem, gridColumnsTotalWidthSelector } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridActionsCellItem,
+  gridColumnsTotalWidthSelector,
+} from "@mui/x-data-grid";
 import { Add, Search, Delete } from "@mui/icons-material";
 import CommitteeComments from "Components/CommitteeComments";
 import RecordDetailTable from "Components/RecordDetailTable";
@@ -28,8 +32,7 @@ import { useDialog } from "../../hooks";
 import { BACKEND_URI } from "../../constants.js";
 import Cookies from "universal-cookie";
 
-
-function RecordList() {
+function RecordDetails() {
   let navigate = useNavigate();
   const studno = useParams().id;
   let textStatus = "SATISFACTORY";
@@ -47,14 +50,14 @@ function RecordList() {
   const [currentTerm, setCurrenTerm] = useState("");
 
   const [values, setValues] = React.useState({
-    alertMessage: '',
-    alertSeverity: '',
+    alertMessage: "",
+    alertSeverity: "",
     isAlert: false,
   });
 
   //  get user's email from cookies
   const cookie = new Cookies();
-  const email = cookie.get("email")
+  const email = cookie.get("email");
 
   function redirectToEditStudentRecords() {
     navigate("/records/" + studno + "/edit");
@@ -83,7 +86,7 @@ function RecordList() {
       student_number: details.student_number,
       prevStatus: details.status,
       newStatus: newStatus,
-      email: email
+      email: email,
     };
 
     console.log(statusChange);
@@ -151,7 +154,7 @@ function RecordList() {
     const record = {
       action: "delete-record",
       student_number: studno,
-      email: email
+      email: email,
     };
 
     const deleteRecord = async () => {
@@ -251,19 +254,17 @@ function RecordList() {
   }, []);
 
   // if student record was deleted
-  if(isDeleted){
-    return(
-        <Navigate to="/records"/>
-    )
+  if (isDeleted) {
+    return <Navigate to="/records" />;
   }
 
   // if details not yet fetched
-  if(details==null){
-    return(<></>)
+  if (details == null) {
+    return <></>;
   }
 
   function isIncomplete(student) {
-    return student.status === "INCOMPLETE"
+    return student.status === "INCOMPLETE";
   }
 
   return (
@@ -356,7 +357,7 @@ function RecordList() {
               id="select"
               value={currentTerm}
               label="Semester"
-              onChange={e => setCurrenTerm(e.target.value)}
+              onChange={(e) => setCurrenTerm(e.target.value)}
             >
               {terms.map((term, idx) => (
                 <MenuItem value={term} key={idx}>
@@ -378,7 +379,7 @@ function RecordList() {
         <SummativeTable
           term={currentTerm}
           student_number={studno}
-          all_courses = {courses}
+          all_courses={courses}
           sem_courses={
             courses && currentTerm !== "All"
               ? courses.filter((course) => course.term === currentTerm)
@@ -426,4 +427,4 @@ function RecordList() {
   );
 }
 
-export default RecordList;
+export default RecordDetails;
