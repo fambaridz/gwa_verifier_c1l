@@ -29,8 +29,9 @@ import DeleteRecordDialog from "Components/DeleteRecordDialog";
 import StudentStatus from "Components/StudentStatus";
 import SummativeTable from "Components/SummativeTable";
 import { useDialog } from "../../hooks";
+import { useCookies } from "react-cookie";
 import { BACKEND_URI } from "../../constants.js";
-import Cookies from "universal-cookie";
+// import Cookies from "universal-cookie";
 
 function RecordDetails() {
   let navigate = useNavigate();
@@ -38,6 +39,7 @@ function RecordDetails() {
   let textStatus = "SATISFACTORY";
   const prevStatus = "UNSATISFACTORY";
   // const prevStatus = useParams().status;
+  const [cookies] = useCookies();
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [comments, setComments] = React.useState(null);
   const [courses, setCourses] = React.useState(null);
@@ -56,8 +58,9 @@ function RecordDetails() {
   });
 
   //  get user's email from cookies
-  const cookie = new Cookies();
-  const email = cookie.get("email");
+  // const cookie = new Cookies();
+
+  const email = cookies.email;
 
   function redirectToEditStudentRecords() {
     navigate("/records/" + studno + "/edit");

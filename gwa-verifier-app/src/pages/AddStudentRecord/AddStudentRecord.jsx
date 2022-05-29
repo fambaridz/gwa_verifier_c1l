@@ -24,8 +24,8 @@ import ParsingModal from "Components/ParsingModal";
 import { useDialog } from "../../hooks";
 import { StudentHandler, CommentHandler, RecordHandler } from "../../handlers";
 import { Verifiers } from "../../utils/verifiers.js";
-import Cookies from "universal-cookie";
-
+// import Cookies from "universal-cookie";
+import { useCookies } from "react-cookie";
 // const BACKEND_URI = "http://localhost/gwa-verifier-backend";
 
 const acceptedFiles = ["text/csv"];
@@ -67,9 +67,10 @@ function AddStudentRecord() {
 
   const [showForceSave, setShowForceSave] = useState(false);
 
-  //  get user's email from cookies
-  const cookie = new Cookies();
-  const email = cookie.get("email");
+  //  get user's email: cookies.email from cookies
+  // const cookie = new Cookies();
+  // const email: cookies.email = cookie.get("email: cookies.email");
+  const [cookies] = useCookies();
 
   async function handleChange(files) {
     if (!files.length) return;
@@ -305,7 +306,7 @@ function AddStudentRecord() {
       // creating student record info is working
       await studentHandler.saveInfo({
         studentRecord,
-        email,
+        email: cookies.email,
         studno,
         status: "UNCHECKED",
       });
@@ -322,7 +323,7 @@ function AddStudentRecord() {
     try {
       await recordHandler.saveGradeRecords({
         studno,
-        email,
+        email: cookies.email,
         lst: gradeRecordsReady,
       });
     } catch (error) {
@@ -338,7 +339,7 @@ function AddStudentRecord() {
     if (comments[page] && comments[page].trim() !== "") {
       try {
         await commentHandler.save({
-          email,
+          email: cookies.email,
           studno,
           comment: comments[page].trim(),
         });
@@ -398,7 +399,7 @@ function AddStudentRecord() {
       await studentHandler.saveInfo({
         studentRecord,
         studno,
-        email: email,
+        email: cookies.email,
         status: "INCOMPLETE",
       });
 
@@ -417,7 +418,7 @@ function AddStudentRecord() {
       // creating student record info is working
       await recordHandler.saveGradeRecords({
         studno,
-        email,
+        email: cookies.email,
         lst: gradeRecordsReady,
       });
 
@@ -434,7 +435,7 @@ function AddStudentRecord() {
     if (comments[page] && comments[page].trim() !== "") {
       try {
         await commentHandler.save({
-          email,
+          email: cookies.email,
           studno,
           comment: comments[page].trim(),
         });

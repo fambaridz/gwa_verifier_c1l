@@ -17,7 +17,7 @@ import LoginPage from "Pages/LogIn";
 import EditStudentRecordPage from "Pages/EditStudentRecord";
 import AddStudentRecordPage from "Pages/AddStudentRecord";
 import { SnackbarProvider } from "notistack";
-
+import { CookiesProvider } from "react-cookie";
 import PrivateRoute from "./PrivateRoute.jsx";
 // example usage of cookies
 import Cookies from "universal-cookie";
@@ -60,63 +60,65 @@ function App() {
     console.log(cookies.getAll());
   }, []);
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <SnackbarProvider maxSnack={3}>
-        <Router>
-          {/* <List>
+    <CookiesProvider>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <SnackbarProvider maxSnack={3}>
+          <Router>
+            {/* <List>
             {routes.map((route, idx) => (
               <ListItem key={idx}>
                 <Link to={route.to}>{route.name}</Link>
               </ListItem>
             ))}
           </List> */}
-          <Routes>
-            <Route
-              path="/records"
-              element={
-                <PrivateRoute>
-                  <RecordListPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/records/:id"
-              element={
-                <PrivateRoute>
-                  <RecordDetailsPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/manage-committee"
-              element={
-                <PrivateRoute>
-                  <ManageCommitteeAccountsPage />
-                </PrivateRoute>
-              }
-            />
-            <Route path="/" element={<LoginPage />} />
-            <Route
-              path="/records/add"
-              element={
-                <PrivateRoute>
-                  <AddStudentRecordPage />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/records/:id/edit"
-              element={
-                <PrivateRoute>
-                  <EditStudentRecordPage />
-                </PrivateRoute>
-              }
-            />
-          </Routes>
-        </Router>
-      </SnackbarProvider>
-    </ThemeProvider>
+            <Routes>
+              <Route
+                path="/records"
+                element={
+                  <PrivateRoute>
+                    <RecordListPage />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/records/:id"
+                element={
+                  <PrivateRoute>
+                    <RecordDetailsPage />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/manage-committee"
+                element={
+                  <PrivateRoute>
+                    <ManageCommitteeAccountsPage />
+                  </PrivateRoute>
+                }
+              />
+              <Route path="/" element={<LoginPage />} />
+              <Route
+                path="/records/add"
+                element={
+                  <PrivateRoute>
+                    <AddStudentRecordPage />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/records/:id/edit"
+                element={
+                  <PrivateRoute>
+                    <EditStudentRecordPage />
+                  </PrivateRoute>
+                }
+              />
+            </Routes>
+          </Router>
+        </SnackbarProvider>
+      </ThemeProvider>
+    </CookiesProvider>
   );
 }
 

@@ -1,19 +1,26 @@
 import * as React from "react";
 import { Box, Button, Toolbar, Typography } from "@mui/material";
-import { DataGrid, GridToolbarColumnsButton, GridToolbarContainer, GridToolbarExport } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridToolbarColumnsButton,
+  GridToolbarContainer,
+  GridToolbarExport,
+} from "@mui/x-data-grid";
 import { Add, Delete } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import DeleteRecordDialog from "Components/DeleteRecordDialog";
 import { useDialog } from "../../hooks";
 import { BACKEND_URI } from "../../constants.js";
-import Cookies from "universal-cookie";
+// import Cookies from "universal-cookie";
+import { useCookies } from "react-cookie";
 
 function RecordList() {
   let navigate = useNavigate();
 
   //  get user's email from cookies
-  const cookie = new Cookies();
-  const email = cookie.get("email")
+  // const cookie = new Cookies();
+  const [cookies] = useCookies();
+  const email = cookies.email;
 
   const refreshPage = () => {
     navigate(0);
@@ -31,7 +38,7 @@ function RecordList() {
         <GridToolbarColumnsButton />
         <GridToolbarExport />
       </GridToolbarContainer>
-    )
+    );
   }
 
   function redirectToAddStudentRecords() {
@@ -56,17 +63,17 @@ function RecordList() {
   }
 
   function classifyGWA(gwa, status) {
-    if(status == "SATISFACTORY") {
-      if(gwa >= 1 && gwa <= 1.2) {
+    if (status == "SATISFACTORY") {
+      if (gwa >= 1 && gwa <= 1.2) {
         return "SUMMA CUM LAUDE";
-      }else if(gwa >= 1.21 && gwa <= 1.45) {
+      } else if (gwa >= 1.21 && gwa <= 1.45) {
         return "MAGNA CUM LAUDE";
-      }else if(gwa >= 1.45 && gwa <= 1.75) {
+      } else if (gwa >= 1.45 && gwa <= 1.75) {
         return "CUM LAUDE";
-      }else{
+      } else {
         return "-";
       }
-    }else{
+    } else {
       return "-";
     }
   }
@@ -100,10 +107,20 @@ function RecordList() {
       ),
     },
     { field: "studno", headerName: "Student Number", minWidth: 130, flex: 1 },
-    { field: "degreeProgram", headerName: "Degree Program", minWidth: 70, flex: 1 },
+    {
+      field: "degreeProgram",
+      headerName: "Degree Program",
+      minWidth: 70,
+      flex: 1,
+    },
     { field: "gwa", headerName: "GWA", minWidth: 80, flex: 1 },
     { field: "status", headerName: "Status", minWidth: 120, flex: 1 },
-    { field: "classification", headerName: "Classification", minWidth: 120, flex: 1},
+    {
+      field: "classification",
+      headerName: "Classification",
+      minWidth: 120,
+      flex: 1,
+    },
     {
       field: "action",
       type: "actions",
@@ -122,9 +139,12 @@ function RecordList() {
 
   React.useEffect(() => {
     const fetchStudents = async () => {
-      const res = await fetch(`${BACKEND_URI}/record-list-api/studentList.php`, {
-        method: "GET",
-      });
+      const res = await fetch(
+        `${BACKEND_URI}/record-list-api/studentList.php`,
+        {
+          method: "GET",
+        }
+      );
 
       const body = await res.json();
       setStudents(body);
@@ -141,24 +161,27 @@ function RecordList() {
       degreeProgram: item.degree_program,
       gwa: parseFloat(item.gwa),
       status: item.status,
-      classification: classifyGWA(item.gwa, item.status)
+      classification: classifyGWA(item.gwa, item.status),
     });
   });
 
   const handleDeleteRecord = () => {
     const record = {
       target: studno,
-      email: email
+      email: email,
     };
 
     const deleteRecord = async () => {
-      const res = await fetch(`${BACKEND_URI}/record-list-api/studentList.php`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(record),
-      });
+      const res = await fetch(
+        `${BACKEND_URI}/record-list-api/studentList.php`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(record),
+        }
+      );
 
       const body = await res.text();
       if (res.ok) {
