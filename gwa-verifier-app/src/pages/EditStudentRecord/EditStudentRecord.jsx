@@ -217,8 +217,8 @@ function EditStudentRecord() {
       try {
         await commentHandler.save({
           email,
-          studno,
-          comment: comments[page].trim(),
+          studno: newStudNo,
+          comment: comment.trim(),
         });
       } catch (error) {}
     }
@@ -352,7 +352,7 @@ function EditStudentRecord() {
       try {
         await commentHandler.save({
           email,
-          newStudNo,
+          studno: newStudNo,
           comment: comment.trim(),
         });
       } catch (error) {}
