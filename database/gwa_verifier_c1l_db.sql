@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 29, 2022 at 09:16 PM
+-- Generation Time: May 29, 2022 at 09:48 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -149,7 +149,7 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 (43, 'BS Biology', 'BSBIO', 'Old', 'Wildlife Biology and Zoology', 0, '', 0, 0, 153),
 (44, 'BS Chemistry', 'BSCHEM', 'Old', '', 0, '', 18, 0, 160),
 (45, 'BS Computer Science', 'BSCS', 'Old', '', 0, '', 18, 0, 141),
-(46, 'BS Mathematics', 'BSMATH', 'Old', '', 0, 'SP', 18, 21, 139),
+(46, 'BS Mathematics', 'BSMATH', 'Old', '', 3, 'SP', 18, 21, 139),
 (47, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', '', 0, '', 18, 0, 0),
 (48, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Mathematics', 0, '', 18, 0, 144),
 (49, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Biology', 0, '', 18, 0, 146),
@@ -160,10 +160,10 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 (54, 'BS Applied Physics', 'BSAPHY', 'Old', 'Computational Physics', 0, '', 0, 0, 0),
 (55, 'BS Applied Physics', 'BSAPHY', 'Old', 'Experimental Physics', 0, '', 0, 0, 0),
 (56, 'BS Applied Physics', 'BSAPHY', 'Old', 'Instrumentation Physics', 0, '', 0, 0, 0),
-(57, 'BS Computer Science', 'BSCS', 'New', '', 0, 'SP', 9, 18, 130),
-(58, 'BS Computer Science', 'BSCS', 'New', '', 0, 'Thesis', 9, 15, 130),
-(59, 'BS Mathematics', 'BSMATH', 'New', '', 0, 'SP', 9, 18, 131),
-(60, 'BS Mathematics', 'BSMATH', 'New', '', 0, 'Thesis', 9, 15, 131),
+(57, 'BS Computer Science', 'BSCS', 'New', '', 3, 'SP', 9, 18, 130),
+(58, 'BS Computer Science', 'BSCS', 'New', '', 6, 'Thesis', 9, 15, 130),
+(59, 'BS Mathematics', 'BSMATH', 'New', '', 3, 'SP', 9, 18, 131),
+(60, 'BS Mathematics', 'BSMATH', 'New', '', 6, 'Thesis', 9, 15, 131),
 (61, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Animal Science', 15, '', 12, 0, 190),
 (62, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Entomology', 15, '', 12, 0, 190),
 (63, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Plant Pathology', 15, '', 12, 0, 190),
@@ -172,13 +172,13 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 (66, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Soil Science', 15, '', 12, 0, 190),
 (67, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Food Science', 15, '', 12, 0, 190),
 (68, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Agricultural Biotechnology', 15, '', 12, 0, 190),
-(69, 'BS Computer Science', 'BSCS', 'Old', '', 0, 'Thesis', 18, 9, 141),
-(70, 'BS Mathematics', 'BSMATH', 'Old', '', 0, 'Thesis', 18, 12, 139),
-(71, 'BS Computer Science', 'BSCS', 'Old', '', 0, 'SP', 18, 12, 141),
-(114, 'BA Philosophy', 'BAPHLO', 'New', '', 0, 'SP', 9, 33, 132),
-(115, 'BA Philosophy', 'BAPHLO', 'New', '', 0, 'Thesis', 9, 33, 132),
-(116, 'BS Applied Mathematics', 'BSAMAT', 'New', '', 0, 'SP', 9, 27, 131),
-(117, 'BS Applied Mathematics', 'BSAMAT', 'New', '', 0, 'Thesis', 9, 24, 131);
+(69, 'BS Computer Science', 'BSCS', 'Old', '', 6, 'Thesis', 18, 9, 141),
+(70, 'BS Mathematics', 'BSMATH', 'Old', '', 6, 'Thesis', 18, 12, 139),
+(71, 'BS Computer Science', 'BSCS', 'Old', '', 3, 'SP', 18, 12, 141),
+(114, 'BA Philosophy', 'BAPHLO', 'New', '', 3, 'SP', 9, 33, 132),
+(115, 'BA Philosophy', 'BAPHLO', 'New', '', 6, 'Thesis', 9, 33, 132),
+(116, 'BS Applied Mathematics', 'BSAMAT', 'New', '', 3, 'SP', 9, 27, 131),
+(117, 'BS Applied Mathematics', 'BSAMAT', 'New', '', 6, 'Thesis', 9, 24, 131);
 
 -- --------------------------------------------------------
 
@@ -250,6 +250,7 @@ CREATE TABLE `student` (
 --
 
 INSERT INTO `student` (`student_number`, `lastname`, `firstname`, `middlename`, `suffix`, `degree_program`, `recommended_number_units`, `credited_units`, `gwa`, `status`) VALUES
+(201878212, 'Hontiveros', 'Risa', '', '', 'BSAMAT', 131, 0, 0, 'UNCHECKED'),
 (201889821, 'Clara', 'Maria', '', '', 'BAPHLO', 0, 0, 0, 'UNCHECKED'),
 (207176487, 'SALAZAR', 'IAN', '', '', 'BSCS', 1, 1, 1.5, '-');
 
@@ -508,7 +509,58 @@ INSERT INTO `student_record` (`id`, `student_number`, `course_number`, `grade`, 
 (319366, 201889821, 'PHLO 160', '1', '3', 3, 255, 'II/21/22'),
 (319367, 201889821, 'PHLO 184', '1.75', '3', 5.25, 260.25, 'II/21/22'),
 (319368, 201889821, 'PHLO 185', '2', '3', 6, 266.25, 'II/21/22'),
-(319369, 201889821, 'PHLO 200', '2.5', '(1)6', 7.5, 273.75, 'II/21/22');
+(319369, 201889821, 'PHLO 200', '2.5', '(1)6', 7.5, 273.75, 'II/21/22'),
+(319370, 201878212, 'AMAT 19', '1.75', '3', 5.25, 5.25, 'I/18/19'),
+(319371, 201878212, 'MATH 36', '1.75', '5', 8.75, 14, 'I/18/19'),
+(319372, 201878212, 'BIO 11.1', '1.75', '2', 3.5, 17.5, 'I/18/19'),
+(319373, 201878212, 'KAS 1', '1.5', '3', 4.5, 22, 'I/18/19'),
+(319374, 201878212, 'ETHICS 1', '1.75', '3', 5.25, 27.25, 'I/18/19'),
+(319375, 201878212, 'HK 11', '1.5', '0', 0, 27.25, 'I/18/19'),
+(319376, 201878212, 'MATH 37', '1', '3', 3, 30.25, 'II/18/19'),
+(319377, 201878212, 'STAT 101', '1.25', '3', 3.75, 34, 'II/18/19'),
+(319378, 201878212, 'CHEM 18', '1', '3', 3, 37, 'II/18/19'),
+(319379, 201878212, 'CHEM 18.1', '1', '2', 2, 39, 'II/18/19'),
+(319380, 201878212, 'ARTS 1', '1.25', '3', 3.75, 42.75, 'II/18/19'),
+(319381, 201878212, 'SOSC 3', '1.75', '3', 5.25, 48, 'II/18/19'),
+(319382, 201878212, 'HK 12', '1.25', '0', 0, 48, 'II/18/19'),
+(319383, 201878212, 'AMAT 110', '1.25', '3', 3.75, 51.75, 'I/19/20'),
+(319384, 201878212, 'MATH 38', '1', '5', 5, 56.75, 'I/19/20'),
+(319385, 201878212, 'MATH 101', '1.75', '3', 5.25, 62, 'I/19/20'),
+(319386, 201878212, 'PHYS 51', '1.5', '4', 6, 68, 'I/19/20'),
+(319387, 201878212, 'PHYS 51.1', '1', '1', 1, 69, 'I/19/20'),
+(319388, 201878212, 'HK 12', '1.25', '0', 0, 69, 'I/19/20'),
+(319389, 201878212, 'NSTP 1', '1.5', '0', 0, 69, 'I/19/20'),
+(319390, 201878212, 'AMAT 105', '1.5', '3', 4.5, 73.5, 'II/19/20'),
+(319391, 201878212, 'AMAT 112', '1.75', '3', 5.25, 78.75, 'II/19/20'),
+(319392, 201878212, 'AMAT 152', '1', '3', 3, 81.75, 'II/19/20'),
+(319393, 201878212, 'AMAT 170', '1.25', '3', 3.75, 85.5, 'II/19/20'),
+(319394, 201878212, 'STS 1', '1.5', '3', 4.5, 90, 'II/19/20'),
+(319395, 201878212, 'SCIENCE 11', '1.75', '3', 5.25, 95.25, 'II/19/20'),
+(319396, 201878212, 'HK 13', '1.25', '0', 0, 95.25, 'II/19/20'),
+(319397, 201878212, 'NSTP 2', '1.75', '0', 0, 95.25, 'II/19/20'),
+(319398, 201878212, 'MATH 151', '1.75', '3', 5.25, 100.5, 'I/20/21'),
+(319399, 201878212, 'MATH 174', '1', '3', 3, 103.5, 'I/20/21'),
+(319400, 201878212, 'MATH 181', '1.75', '3', 5.25, 108.75, 'I/20/21'),
+(319401, 201878212, 'MATH 170', '1', '3', 3, 111.75, 'I/20/21'),
+(319402, 201878212, 'COMM 10', '1.5', '3', 4.5, 116.25, 'I/20/21'),
+(319403, 201878212, 'HUM 3', '1.5', '3', 4.5, 120.75, 'I/20/21'),
+(319404, 201878212, 'MATH 155', '1.5', '3', 4.5, 125.25, 'II/20/21'),
+(319405, 201878212, 'CMSC 23', '1', '3', 3, 128.25, 'II/20/21'),
+(319406, 201878212, 'MATH 175', '1', '3', 3, 131.25, 'II/20/21'),
+(319407, 201878212, 'MATH 195', '1.25', '3', 3.75, 135, 'II/20/21'),
+(319408, 201878212, 'MATH 191', '1.5', '3', 4.5, 139.5, 'II/20/21'),
+(319409, 201878212, 'COMA 150', '1.5', '3', 4.5, 144, 'II/20/21'),
+(319410, 201878212, 'AMAT 198', '1.25', '3', 3.75, 147.75, 'M/20/21'),
+(319411, 201878212, 'AMAT 200', 'S', '0', 0, 147.75, 'I/21/22'),
+(319412, 201878212, 'MATH 133', 'S', '3', 0, 147.75, 'I/21/22'),
+(319413, 201878212, 'PI 10', '1.25', '3', 3.75, 151.5, 'I/21/22'),
+(319414, 201878212, 'CMSC 150', '1.25', '3', 3.75, 155.25, 'I/21/22'),
+(319415, 201878212, 'CMSC 127', '1.5', '3', 4.5, 159.75, 'I/21/22'),
+(319416, 201878212, 'AMAT 200', '1.75', '(1)6', 10.5, 170.25, 'II/21/22'),
+(319417, 201878212, 'AMAT 199', 'S', '1', 0, 170.25, 'II/21/22'),
+(319418, 201878212, 'MATH 166', '1.5', '3', 4.5, 174.75, 'II/21/22'),
+(319419, 201878212, 'BIO 150', '1', '3', 3, 177.75, 'II/21/22'),
+(319420, 201878212, 'SOC 100', '1.75', '3', 5.25, 183, 'II/21/22');
 
 -- --------------------------------------------------------
 
@@ -2389,7 +2441,7 @@ ALTER TABLE `degree_curriculums`
 -- AUTO_INCREMENT for table `student_record`
 --
 ALTER TABLE `student_record`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=319370;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=319421;
 
 --
 -- Constraints for dumped tables
