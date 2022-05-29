@@ -37,14 +37,11 @@ For front-end requests:
           }
         }
 */
-/*
 
-if (version_compare(phpversion(), ))
-function str_contains($haystack, $needle) { //for cases only of php 7 below
+function string_contains($haystack, $needle) { //accomodate php 7 below that can't use str_contains()
   return $needle !== '' && mb_strpos($haystack, $needle) !== false;
 }
 
-*/
 
 header("Access-Control-Allow-Origin: *"); //add this CORS header to enable any domain to send HTTP requests to these endpoints:
 header("Access-Control-Allow-Headers: *");
@@ -151,7 +148,7 @@ function getDegreeIds($degree_nickname, $studno, $student_record, $con, &$genera
   // check if option of a student is thesis or SP
   $options = "Thesis";
   foreach ($student_record as $entry) {
-    if (str_contains($entry->courseno, '190')) {
+    if (string_contains($entry->courseno, '190')) {
       $options = "SP";
       break;
     }
