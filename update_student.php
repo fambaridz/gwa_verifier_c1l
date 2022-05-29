@@ -25,22 +25,26 @@ $DEFAULT_STATUS = 'INCOMPLETE';
 $SUCCESS_RESPONSE = 200;
 
 
-$host = "localhost"; 
-$user = "root"; 
-$password = ""; 
-$dbname = "gwa_verifier_c1l_db"; 
+$host = "localhost";
+$user = "root";
+$password = "";
+$dbname = "gwa_verifier_c1l_db";
 
 //connect to database
-$con = mysqli_connect($host, $user, $password,$dbname);
+$con = mysqli_connect($host, $user, $password, $dbname);
 
 //failed to connect
 if (!$con) {
   die("Connection failed: " . mysqli_connect_error());
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+  header("HTTP/1.1 200 OK");
+  return;
+}
 
 // decode the message body
-$data = json_decode(file_get_contents('php://input'), true);  //json_decode == json_parse
+$data = json_decode(file_get_contents('php://input'), True);  //json_decode == json_parse
 
 // for testing data
 // echo($data);
@@ -60,134 +64,162 @@ $status = isset($data['status']) ? $data['status'] : $DEFAULT_STATUS;
 
 
 // check if the new student number already exists in the database
-function check_studno_if_already_exist($old_stud_no, $new_stud_no, $con){
+// I believe this is redundant code, you already have a function to check if the a student number already exists
+// function check_studno_if_already_exist($old_stud_no, $new_stud_no, $con)
+// {
 
-    // if there's no change with the stud no
-    if ($new_stud_no == $old_stud_no){
-      return FALSE;
-    }
+//   // if there's no change with the stud no
+//   if ($new_stud_no == $old_stud_no) {
+//     return False;
+//   }
 
-    // query
-    $sql = "SELECT student_number FROM student WHERE student_number=$new_stud_no";
-    $result = mysqli_query($con,$sql);
+//   // query
+//   $sql = "SELECT student_number FROM student WHERE student_number=$new_stud_no";
+//   $result = mysqli_query($con, $sql);
 
-    //if existing
-    if(mysqli_num_rows($result)>=1) {
-        return TRUE;
-    }
-    else{
-      return FALSE;
-    }
-}
+//   //if existing
+//   if (mysqli_num_rows($result) >= 1) {
+//     return True;
+//   }
+//   return False;
+// }
 
 // checks if the student data is already in the database
-function check_studno_if_exist($old_stud_no, $con){
+function check_studno_if_exist($stud_no, $con)
+{
 
   // query the student number
-  $sql = "SELECT student_number FROM student WHERE student_number=$old_stud_no";
-  $result = mysqli_query($con,$sql);
+  $sql = "SELECT student_number FROM student WHERE student_number=$stud_no";
+  $result = mysqli_query($con, $sql);
 
-  if(mysqli_num_rows($result)>=1) {
-    return TRUE;
+  if (mysqli_num_rows($result) >= 1) {
+    return True;
   }
-  else{
-    return FALSE;
-  }
+  return False;
 }
 
 
 //checks if degree exists in degree_curriculums table
-function check_degree_if_exist($degree, $con){
+function check_degree_if_exist($degree, $con)
+{
 
-    $sql = "SELECT degree_nickname FROM degree_curriculums WHERE degree_nickname='$degree'";
-    $result = mysqli_query($con,$sql);
+  $sql = "SELECT degree_nickname FROM degree_curriculums WHERE degree_nickname='$degree'";
+  $result = mysqli_query($con, $sql);
 
-    //if existing
-    if(mysqli_num_rows($result)>=1) {
-        return TRUE;
-    }
-    else{
-      return FALSE;
-    }
+  //if existing
+  if (mysqli_num_rows($result) >= 1) {
+    return True;
+  }
+  return False;
 }
 
 // check if there's a comment for a studno
-function check_studno_in_comments($studno, $con){
+function check_studno_in_comments($studno, $con)
+{
 
   $sql = "SELECT * FROM committee_student WHERE student_number='$studno'";
-  $result = mysqli_query($con,$sql);
+  $result = mysqli_query($con, $sql);
 
   //if existing
-  if(mysqli_num_rows($result)>=1) {
-      return TRUE;
+  if (mysqli_num_rows($result) >= 1) {
+    return True;
   }
-  else{
-    return FALSE;
-  }
+  return False;
 }
 
 
 
+// Refactored logic so that the nesting is up to 1-2 levels only
+if (!check_studno_if_exist($old_stud_no, $con)) {
+  http_response_code(404);
+  $data = [
+    "msg" => 'The old student number does not exist in the database'
+  ];
+  echo json_encode($data);
+  return;
+}
 
-if (check_studno_if_exist($old_stud_no, $con)){
-  if(!check_studno_if_already_exist($old_stud_no,$new_stud_no, $con)){
-    if(check_degree_if_exist($degree, $con)){
+if (check_studno_if_exist($new_stud_no, $con)) {
+  http_response_code(409);
+  $data = [
+    "msg" => "The new student number already exists"
+  ];
+  echo json_encode($data);
+  return;
+}
+if (!check_degree_if_exist($degree, $con)) {
+  http_response_code(404);
+  $data = [
+    "msg" => "Degree does not exist"
+  ];
+  echo json_encode($data);
+  return;
+}
 
-        // query for update of the student in the student table
-        $sql = "UPDATE student 
+$sql = "UPDATE student 
                 SET student_number = '$new_stud_no', lastname = '$lName', firstname = '$fName', 
                 middlename = '$mName', suffix = '$suffix', degree_program = '$degree', recommended_number_units	 = '$recommendedUnits', 
                 credited_units = '$creditedUnits', gwa = '$gwa', status = '$status'
                 WHERE student_number = $old_stud_no;
                 ";
 
-        // run SQL statement
-        $result = mysqli_query($con,$sql);
+// run SQL statement
+$result = mysqli_query($con, $sql);
 
-        
-        // cascading of the studno value incase of a change in the current value of studno in student table
-        if ($new_stud_no != $old_stud_no){
-          // query for update of the student number in the student_record
-          $updateStudentNumberInStudRecord = "UPDATE student_record 
+
+// cascading of the studno value incase of a change in the current value of studno in student table
+if ($new_stud_no != $old_stud_no) {
+  // query for update of the student number in the student_record
+  $updateStudentNumberInStudRecord = "UPDATE student_record 
                                   SET student_number = '$new_stud_no'
                                   WHERE student_number = $old_stud_no;
                                   ";
 
-          $updateStudentRecord = mysqli_query($con, $updateStudentNumberInStudRecord);
+  $updateStudentRecord = mysqli_query($con, $updateStudentNumberInStudRecord);
 
-          if (!$updateStudentRecord){
-            echo "Failure to update student number in student record";
-          }
+  if (!$updateStudentRecord) {
+    http_response_code(500);
+    $data = [
+      "msg" => "Server error: failure to update student number in student record"
+    ];
+    echo json_encode($data);
+    // echo "Failure to update student number in student record";
+  }
 
-          // check if there's a comment for this student
-          if (check_studno_in_comments($old_stud_no, $con)){
-            
-            // query for update of the studno in committee_student table
-            $updateStudentNumberInCommmStud = "UPDATE committee_student 
+  // check if there's a comment for this student
+  if (check_studno_in_comments($old_stud_no, $con)) {
+
+    // query for update of the studno in committee_student table
+    $updateStudentNumberInCommmStud = "UPDATE committee_student 
                                               SET student_number = '$new_stud_no'
                                               WHERE student_number = $old_stud_no;
                                               ";
-            $updateCommitteStudent = mysqli_query($con, $updateStudentNumberInCommmStud);
+    $updateCommitteStudent = mysqli_query($con, $updateStudentNumberInCommmStud);
 
-            if (!$updateCommitteStudent){
-              echo "Failure to update student number in committee student table";
-            }
-          }
-        }
-        
-
-        if (!$result) {
-          echo "Update unsuccesful";
-        } else {
-          
-          echo http_response_code();      //returns 200 if insertion is successful
-        }
+    if (!$updateCommitteStudent) {
+      http_response_code(500);
+      // echo "Failure to update student number in committee student table";
+      $data = [
+        "msg" => "Server error: failure to update student number in committee student table"
+      ];
+      echo json_encode($data);
     }
-    else echo "Degree does not exist";
   }
-  else echo "The new student number already exists";
-}else{
-  echo 'Student ID:'. $old_stud_no. ' is not existing the database';
+}
+
+
+if (!$result) {
+  http_response_code(400);
+  $data = [
+    "msg" => "Update unsuccesful"
+  ];
+  echo json_encode($data);
+} else {
+  $data = [
+    "msg" => "Update successful"
+  ];
+  http_response_code();
+  echo json_encode($data);
 }
 
 $con->close();
