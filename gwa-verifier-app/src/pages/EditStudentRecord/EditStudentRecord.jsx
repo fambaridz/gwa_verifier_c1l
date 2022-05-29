@@ -395,7 +395,6 @@ function EditStudentRecord() {
               messages: studentInfoErrors,
             })}
             <StudentRecordForm
-              handleCancel={goBack}
               loading={saving}
               firstName={studentRecord.fname}
               middleName={studentRecord.mname}
@@ -427,7 +426,7 @@ function EditStudentRecord() {
               }
               footer={
                 <StudentFormFooter
-                  popStack={goBack}
+                  popStack={() => navigate(-1)}
                   onSave={safeSave}
                   loading={saving}
                   cb={() => setShowForceSave(true)}
