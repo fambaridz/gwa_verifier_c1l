@@ -8,6 +8,7 @@ $host = "localhost";
 $user = "root"; 
 $password = ""; 
 $dbname = "gwa_verifier_c1l_db";
+include '../activity-log-api/activity_log.php';
  
 $con = mysqli_connect($host, $user, $password,$dbname);
  
@@ -51,6 +52,7 @@ switch ($body->action) {
     break;
   case 'delete-record':
     // deletes a student record
+    insertActivityLog($body->email, "Deleted record ", $body->student_number, $con);
     $sql = "DELETE FROM student_record WHERE student_number = '$body->student_number'; DELETE FROM student WHERE student_number = '$body->student_number'; DELETE FROM committee_student WHERE student_number = '$body->student_number'";
     $result = mysqli_multi_query($con,$sql);
     break;
@@ -91,6 +93,7 @@ if ($body->action == "get-courses" or $body->action == "get-comments" or $body->
   }
   echo ']';
 } elseif ($body->action == "status-change") {
+  insertActivityLog($body->email, "Updated record to ".$body->newStatus, $body->student_number, $con);
   echo json_encode('Successfully updated '.$body->student_number.' student record status to '.$body->newStatus);
 } elseif ($body->action == "delete-record") {
   echo json_encode('Successfully deleted ' . $body->student_number.' student record');
