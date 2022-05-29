@@ -15,6 +15,7 @@ import ForceSaveDialog from "Components/ForceSaveDialog";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { useSnackbar } from "notistack";
+import { v4 as uuidv4 } from "uuid";
 // edit this to create the edit student record page
 function EditStudentRecord() {
   const params = useParams();
@@ -75,6 +76,29 @@ function EditStudentRecord() {
   function goBack() {
     // navigate back to previous page
     navigate(-2);
+  }
+
+  function addRow() {
+    const newRecord = {
+      term,
+      courseno: "",
+      grade: "",
+      units: "",
+      enrolled: "",
+      running_total: "",
+    };
+    const grUid = uuidv4();
+    setGradeRecords({
+      ...gradeRecords,
+      [grUid]: newRecord,
+    });
+  }
+
+  function deleteRow(uid) {
+    const gradeRecordCopy = { ...gradeRecords };
+    if (!gradeRecordCopy[uid]) return;
+    delete gradeRecordCopy[uid];
+    setGradeRecords(gradeRecordCopy);
   }
 
   async function onSave() {
@@ -270,19 +294,48 @@ function EditStudentRecord() {
     // save grade records
     try {
       // creating student record info is working
-      const transformedGradeRecords = gradeRecordsReady.map((record) => {
-        const { total, courseno, ...rest } = record;
-        return {
+
+      const recordsToSave = [];
+      const recordsToUpdate = [];
+      const idRegex = /^\d+$/;
+      gradeRecordsReady.forEach((record) => {
+        const { id, total, courseno, ...rest } = record;
+
+        if (idRegex.test(id)) {
+          recordsToUpdate.push({
+            ...rest,
+            course_number: courseno,
+            running_total: total,
+            student_number: newStudNo,
+          });
+          return;
+        }
+        recordsToSave.push({
           ...rest,
-          course_number: courseno,
-          running_total: total,
-          student_number: newStudNo,
-        };
+          total,
+          courseno,
+        });
       });
+
+      // const transformedGradeRecords = gradeRecordsReady.map((record) => {
+      //   const { total, courseno, ...rest } = record;
+      //   return {
+      //     ...rest,
+      //     course_number: courseno,
+      //     running_total: total,
+      //     student_number: newStudNo,
+      //   };
+      // });
       // console.log(transformedGradeRecords);
+      // update existing records
       await recordHandler.updateGradeRecords({
         studno: newStudNo,
-        lst: transformedGradeRecords,
+        lst: recordsToUpdate,
+      });
+      await recordHandler.saveGradeRecords({
+        studno: newStudNo,
+        email,
+        lst: recordsToSave,
       });
 
       // ready the data
@@ -393,7 +446,8 @@ function EditStudentRecord() {
               terms={terms}
               term={term}
               setTerm={setTerm}
-              extraFeaturesEnabled={false}
+              handleAddRow={addRow}
+              // extraFeaturesEnabled={false}
               table={
                 <>
                   {renderErrors({
