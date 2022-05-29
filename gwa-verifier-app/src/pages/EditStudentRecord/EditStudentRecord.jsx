@@ -411,7 +411,7 @@ function EditStudentRecord() {
               term={term}
               setTerm={setTerm}
               handleAddRow={addRow}
-              // extraFeaturesEnabled={false}
+              extraFeaturesEnabled={false}
               table={
                 <>
                   {renderErrors({

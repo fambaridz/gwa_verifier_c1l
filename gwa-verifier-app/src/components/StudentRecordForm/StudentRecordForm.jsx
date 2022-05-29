@@ -273,17 +273,15 @@ function StudentRecordForm({
         </Stack>
         <Box>
           {table}
-          {extraFeaturesEnabled && (
-            <Button
-              variant="outlined"
-              startIcon={<AddIcon />}
-              color="default"
-              onClick={handleAddRow}
-              fullWidth
-            >
-              Add new row
-            </Button>
-          )}
+          <Button
+            variant="outlined"
+            startIcon={<AddIcon />}
+            color="default"
+            onClick={handleAddRow}
+            fullWidth
+          >
+            Add new row
+          </Button>
         </Box>
         <Typography variant="p">Comments / Justifications</Typography>
         <TextField
