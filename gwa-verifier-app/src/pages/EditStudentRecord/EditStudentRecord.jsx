@@ -74,7 +74,7 @@ function EditStudentRecord() {
 
   function goBack() {
     // navigate back to previous page
-    navigate(-1);
+    navigate(-2);
   }
 
   async function onSave() {
@@ -82,6 +82,7 @@ function EditStudentRecord() {
     const verifiers = new Verifiers();
     const studentHandler = new StudentHandler();
     const commentHandler = new CommentHandler();
+    const recordHandler = new RecordHandler();
 
     console.log("SAVING?");
 
@@ -169,7 +170,7 @@ function EditStudentRecord() {
 
     // save grade records
     try {
-      await studentHandler.saveGradeRecords({
+      await recordHandler.saveGradeRecords({
         studno,
         email,
         lst: gradeRecordsReady,
@@ -205,9 +206,11 @@ function EditStudentRecord() {
     // save the data w/ respect to the current page
     const verifiers = new Verifiers();
     const studentHandler = new StudentHandler();
+    const recordHandler = new RecordHandler();
     const commentHandler = new CommentHandler();
-
-    let { studNo: studno, recommended } = studentRecord;
+    const cookie = new Cookies();
+    const email = cookie.get("email");
+    const { studNo: studno, old_studNo, recommended } = studentRecord;
     // input validation for student info
 
     if (!verifiers.locallyVerifyStudent({ studno, recommended })) {
@@ -217,14 +220,13 @@ function EditStudentRecord() {
       return;
     }
 
-    studno = studno.split("-").join("");
-
+    const newStudNo = studno.split("-").join("");
+    const oldStudNo = old_studNo.split("-").join("");
     let gradeRecordsReady = [];
 
     // verify student records / grade records locally
     try {
       gradeRecordsReady = await verifiers.locallyVerifyGradeRecords({
-        uid,
         gradeRecords,
       });
     } catch (error) {
@@ -241,11 +243,17 @@ function EditStudentRecord() {
 
     try {
       // creating student record info is working
-      await studentHandler.saveInfo({
-        studentRecord,
-        studno,
-        email: email,
-        status: "INCOMPLETE",
+      await studentHandler.updateInfo({
+        studentRecord: {
+          ...studentRecord,
+          old_stud_no: oldStudNo,
+          new_stud_no: newStudNo,
+          status: "INCOMPLETE",
+          credited: 0,
+          gwa: 0,
+        },
+
+        email,
       });
 
       // ready the data
@@ -255,16 +263,26 @@ function EditStudentRecord() {
         variant: "error",
       });
       setSaving(false);
+      setShowForceSave(false);
       return;
     }
 
     // save grade records
     try {
       // creating student record info is working
-      await studentHandler.saveGradeRecords({
-        studno,
-        email,
-        lst: gradeRecordsReady,
+      const transformedGradeRecords = gradeRecordsReady.map((record) => {
+        const { total, courseno, ...rest } = record;
+        return {
+          ...rest,
+          course_number: courseno,
+          running_total: total,
+          student_number: newStudNo,
+        };
+      });
+      // console.log(transformedGradeRecords);
+      await recordHandler.updateGradeRecords({
+        studno: newStudNo,
+        lst: transformedGradeRecords,
       });
 
       // ready the data
@@ -276,12 +294,12 @@ function EditStudentRecord() {
       return;
     }
 
-    // save comments (if any)
+    // // save comments (if any)
     if (comment.trim() !== "") {
       try {
         await commentHandler.save({
           email,
-          studno,
+          newStudNo,
           comment: comment.trim(),
         });
       } catch (error) {}
@@ -292,11 +310,13 @@ function EditStudentRecord() {
     });
     setSaving(false);
     setShowForceSave(false);
+    goBack();
   }
   async function getStudentInfo() {
     const handler = new StudentHandler();
     try {
       const student = await handler.getInfo({ studno });
+
       const { studNo: old_studNo } = student;
       setStudentRecord({
         ...student,
@@ -305,6 +325,8 @@ function EditStudentRecord() {
       setLoaded(true);
     } catch (error) {
       console.warn(error);
+      enqueueSnackbar("Student not found", { variant: "error" });
+      goBack();
     }
   }
 
@@ -324,6 +346,10 @@ function EditStudentRecord() {
         <ul>{listItems}</ul>
       </Alert>
     ) : null;
+  }
+
+  function handleStudentInfoChange({ name, value }) {
+    setStudentRecord({ ...studentRecord, [name]: value });
   }
 
   const { id: studno } = params;
@@ -354,16 +380,14 @@ function EditStudentRecord() {
             <StudentRecordForm
               handleCancel={goBack}
               loading={saving}
-              firstName={getField("fname")}
-              middleName={getField("mname")}
-              lastName={getField("lname")}
-              suffix={getField("suffix")}
-              studNo={getField("studNo")}
-              degree={getField("degree")}
-              recommended={getField("recommended")}
-              handleInputChange={() => {}}
-              handleEditTerm={() => {}}
-              handleDeleteTerm={() => {}}
+              firstName={studentRecord.fname}
+              middleName={studentRecord.mname}
+              lastName={studentRecord.lname}
+              suffix={studentRecord.suffix}
+              studNo={studentRecord.studNo}
+              degree={studentRecord.degree}
+              recommended={studentRecord.recommended}
+              handleInputChange={handleStudentInfoChange}
               handleComment={handleCommentChange}
               comment={comment}
               terms={terms}

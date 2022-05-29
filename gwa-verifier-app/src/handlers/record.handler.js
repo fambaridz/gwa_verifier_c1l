@@ -19,6 +19,13 @@ export default class RecordHandler {
       body: JSON.stringify(course),
     });
 
+    if (!res.ok) {
+      console.table(res);
+      const data = await res.json();
+      const { msg } = data;
+      throw new Error(msg);
+    }
+
     const body = await res.text();
     const parsed = JSON.parse(body);
 
@@ -74,6 +81,37 @@ export default class RecordHandler {
     if (!res.ok) {
       const error = res.status;
       throw new Error(error);
+    }
+  }
+
+  /**
+   *
+   * @param {Object} kwargs
+   * @param {number} kwargs.studno
+   * @param {Array.<{id: number, student_number: number, course_number: string, grade: number | string, units: number | string, enrolled: number | string, runnnig_total: number | string}>} kwargs.list
+   */
+  async updateGradeRecords(kwargs) {
+    const { studno, lst } = kwargs;
+    const payload = {
+      studno,
+      lst,
+    };
+
+    const res = await fetch(
+      `${BACKEND_URI}/add-edit-record-api/edit_student_record.php`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    );
+    if (!res.ok) {
+      console.table(res);
+      const data = await res.json();
+      const { msg } = data;
+      throw new Error(msg);
     }
   }
 }

@@ -112,6 +112,7 @@ export class Verifiers {
             reject();
           }
           Object.assign(record, {
+            id: grUid,
             total: record.running_total,
           });
           delete record["running_total"];

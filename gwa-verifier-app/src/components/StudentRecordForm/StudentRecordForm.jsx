@@ -344,8 +344,8 @@ StudentRecordForm.propTypes = {
   term: PropTypes.string,
   terms: PropTypes.arrayOf(PropTypes.string),
   table: PropTypes.element,
-  handleEditTerm: PropTypes.func.isRequired,
-  handleDeleteTerm: PropTypes.func.isRequired,
+  handleEditTerm: PropTypes.func,
+  handleDeleteTerm: PropTypes.func,
   extraFeaturesEnabled: PropTypes.bool,
 };
 export default StudentRecordForm;
