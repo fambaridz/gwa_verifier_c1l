@@ -4,7 +4,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import StudentRecordForm from "Components/StudentRecordForm/";
 import GradeRecordTable from "Components/GradeRecordTable";
-import { useCookies } from "react-cookie";
 import Box from "@mui/material/Box";
 import StudentFormFooter from "Components/StudentFormFooter";
 import { StudentHandler, RecordHandler, CommentHandler } from "../../handlers";
@@ -16,9 +15,12 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { useSnackbar } from "notistack";
 import { v4 as uuidv4 } from "uuid";
+import { useAuth } from "../../context/AuthContext.jsx";
 // edit this to create the edit student record page
 function EditStudentRecord() {
-  const [cookies] = useCookies();
+  const {
+    user: { email },
+  } = useAuth();
   const params = useParams();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -216,9 +218,6 @@ function EditStudentRecord() {
    * @returns
    */
   async function handleSave({ gradeRecordsReady }) {
-    // const cookie = new Cookies();
-
-    const email = cookies.email;
     const studentHandler = new StudentHandler();
     const recordHandler = new RecordHandler();
     const commentHandler = new CommentHandler();

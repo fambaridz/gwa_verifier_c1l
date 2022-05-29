@@ -12,15 +12,11 @@ import {
 import navbarLogo from "Assets/navbarLogo.png";
 import "./PrivateRoute.css";
 import { ArrowDropDown } from "@mui/icons-material";
-import Cookies from "universal-cookie";
-import { useCookies } from "react-cookie";
+import { useAuth } from "./context/AuthContext.jsx";
 
 function PrivateRoute({ children }) {
-  // const cookie = new Cookies();
-  const [cookies] = useCookies();
-
-  const [userName, setUserName] = React.useState(null);
-  const [isSuperUser, setIsSuperUser] = React.useState(null);
+  const { user } = useAuth();
+  const { firstName, middleName, lastName, suffix } = user;
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -32,28 +28,8 @@ function PrivateRoute({ children }) {
     setAnchorElUser(null);
   };
 
-  React.useEffect(() => {
-    const userName = `${cookies.fname} ${cookies.midname} ${cookies.lname} ${cookies.suffix}`;
-
-    setUserName(userName);
-    setIsSuperUser(cookies.superuser);
-    // setUserName(
-    //   cookie.get('fname').concat(
-    //     ' ',
-    //     cookie.get('midname'),
-    //     ' ',
-    //     cookie.get('lname'),
-    //     ' ',
-    //     cookie.get('suffix')
-    //   )
-    // )
-    // setIsSuperUser(
-    //   cookie.get('superuser')
-    // )
-  }, []);
-
   function Dropdown() {
-    if (isSuperUser == "true") {
+    if (user && user.superUser) {
       return (
         <Menu
           id="menu-appbar"
@@ -123,7 +99,7 @@ function PrivateRoute({ children }) {
               style={{ fontWeight: 800 }}
               component="div"
             >
-              {userName}
+              {`${firstName} ${middleName} ${lastName} ${suffix}`}
             </Typography>
             <div>
               <IconButton

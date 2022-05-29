@@ -15,7 +15,6 @@ import { fromMapToArray } from "../../utils/transformers.js";
 import * as validators from "../../utils/validators.js";
 import GradeRecordTable from "Components/GradeRecordTable";
 import CarouselButtons from "Components/CarouselButtons";
-import AddStudentFormFooter from "Components/AddStudentFormFooter";
 import StudentFormFooter from "Components/StudentFormFooter";
 import EditTermDialog from "Components/EditTermDialog";
 import DeleteTermDialog from "Components/DeleteTermDialog";
@@ -24,15 +23,15 @@ import ParsingModal from "Components/ParsingModal";
 import { useDialog } from "../../hooks";
 import { StudentHandler, CommentHandler, RecordHandler } from "../../handlers";
 import { Verifiers } from "../../utils/verifiers.js";
-// import Cookies from "universal-cookie";
-import { useCookies } from "react-cookie";
-// const BACKEND_URI = "http://localhost/gwa-verifier-backend";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 const acceptedFiles = ["text/csv"];
 
 function AddStudentRecord() {
   const navigate = useNavigate();
-
+  const {
+    user: { email },
+  } = useAuth();
   // for notifications
   const { enqueueSnackbar } = useSnackbar();
   const { open: dialogOpen, toggle: toggleDialog } = useDialog();
@@ -66,11 +65,6 @@ function AddStudentRecord() {
   const [srUidPageMap, setSrUidPageMap] = useState([]);
 
   const [showForceSave, setShowForceSave] = useState(false);
-
-  //  get user's email: cookies.email from cookies
-  // const cookie = new Cookies();
-  // const email: cookies.email = cookie.get("email: cookies.email");
-  const [cookies] = useCookies();
 
   async function handleChange(files) {
     if (!files.length) return;
@@ -306,7 +300,7 @@ function AddStudentRecord() {
       // creating student record info is working
       await studentHandler.saveInfo({
         studentRecord,
-        email: cookies.email,
+        email,
         studno,
         status: "UNCHECKED",
       });
@@ -323,7 +317,7 @@ function AddStudentRecord() {
     try {
       await recordHandler.saveGradeRecords({
         studno,
-        email: cookies.email,
+        email,
         lst: gradeRecordsReady,
       });
     } catch (error) {
@@ -339,7 +333,7 @@ function AddStudentRecord() {
     if (comments[page] && comments[page].trim() !== "") {
       try {
         await commentHandler.save({
-          email: cookies.email,
+          email,
           studno,
           comment: comments[page].trim(),
         });
@@ -399,7 +393,7 @@ function AddStudentRecord() {
       await studentHandler.saveInfo({
         studentRecord,
         studno,
-        email: cookies.email,
+        email,
         status: "INCOMPLETE",
       });
 
@@ -418,7 +412,7 @@ function AddStudentRecord() {
       // creating student record info is working
       await recordHandler.saveGradeRecords({
         studno,
-        email: cookies.email,
+        email,
         lst: gradeRecordsReady,
       });
 
@@ -435,7 +429,7 @@ function AddStudentRecord() {
     if (comments[page] && comments[page].trim() !== "") {
       try {
         await commentHandler.save({
-          email: cookies.email,
+          email,
           studno,
           comment: comments[page].trim(),
         });

@@ -11,16 +11,14 @@ import { useNavigate } from "react-router-dom";
 import DeleteRecordDialog from "Components/DeleteRecordDialog";
 import { useDialog } from "../../hooks";
 import { BACKEND_URI } from "../../constants.js";
-// import Cookies from "universal-cookie";
-import { useCookies } from "react-cookie";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 function RecordList() {
   let navigate = useNavigate();
 
-  //  get user's email from cookies
-  // const cookie = new Cookies();
-  const [cookies] = useCookies();
-  const email = cookies.email;
+  const {
+    user: { email },
+  } = useAuth();
 
   const refreshPage = () => {
     navigate(0);

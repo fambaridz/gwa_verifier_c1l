@@ -23,7 +23,8 @@ import { Link } from "react-router-dom";
 import AddCommitteeForm from "Components/AddCommitteeForm";
 import EditCommitteeForm from "Components/EditCommitteeForm";
 import DeleteCommitteeForm from "Components/DeleteCommitteeForm";
-import { useCookies } from "react-cookie";
+
+import { useAuth } from "../../context/AuthContext.jsx";
 import { BACKEND_URI } from "../../constants.js";
 
 //used gwa_verifier_c1l_db, committee table for testing
@@ -32,8 +33,7 @@ import { BACKEND_URI } from "../../constants.js";
 //Can edit anything but email ~api side problem (might be just dumb and wrong) ~Zenn
 
 function ManageCommitteeAccounts() {
-  // const cookies = new Cookies();
-  const [cookies] = useCookies();
+  const { user } = useAuth();
   const [openAdd, setOpenAdd] = React.useState(false);
 
   function EditCell(props) {
@@ -49,7 +49,7 @@ function ManageCommitteeAccounts() {
           middlename={props.middlename}
           suffix={props.suffix}
           password={props.password}
-          account_made_by={cookies.email}
+          account_made_by={user.email}
         />
         <TableCell>
           <IconButton onClick={() => setOpenEdit(true)}>
@@ -130,7 +130,7 @@ function ManageCommitteeAccounts() {
       <AddCommitteeForm
         open={openAdd}
         data={emailExisting}
-        account_made_by={cookies.email}
+        account_made_by={user.email}
         handleClose={() => setOpenAdd(false)}
       />
       <Box sx={{ mt: 2.5, ml: 3, fontSize: 14 }}>

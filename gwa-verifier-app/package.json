@@ -97,6 +97,7 @@
     "@mui/lab": "^5.0.0-alpha.79",
     "@mui/material": "^5.6.2",
     "@mui/x-data-grid": "^5.9.0",
+    "electron-is-dev": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
     "mui-file-dropzone": "^4.0.1",
     "notistack": "^2.0.4",

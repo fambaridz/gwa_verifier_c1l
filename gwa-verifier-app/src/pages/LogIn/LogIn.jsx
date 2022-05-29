@@ -15,11 +15,10 @@ import logo from "Assets/logo.png";
 import appLogo from "Assets/appLogo.png";
 import "./LogIn.css";
 import { BACKEND_URI } from "../../constants.js";
-import Cookies from "universal-cookie";
-import { useCookies } from "react-cookie";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 function LogIn() {
-  const [, setCookie] = useCookies();
+  const { updateUser } = useAuth();
   const [values, setValues] = React.useState({
     email: "",
     password: "",
@@ -72,20 +71,22 @@ function LogIn() {
             alertMessage: "Failed to log in. Please check your email/password",
           });
         } else {
-          // successful log in. store the user info in cookies
-          // const cookies = new Cookies();
-          setCookie("email", values.email, { path: "/" });
-          setCookie("fname", body.firstname, { path: "/" });
-          setCookie("midname", body.middlename, { path: "/" });
-          setCookie("lname", body.lastname, { path: "/" });
-          setCookie("suffix", body.suffix, { path: "/" });
-          setCookie("superuser", body.superuser, { path: "/" });
-          // console.log(cookies.get("email"));
-          // console.log(cookies.get("fname"));
-          // console.log(cookies.get("midname"));
-          // console.log(cookies.get("lname"));
-          // console.log(cookies.get("suffix"));
-          // console.log(cookies.get("superuser"));
+          const {
+            firstname: firstName,
+            middlename: middleName,
+            lastname: lastName,
+            suffix,
+            superuser: superUser,
+          } = body;
+
+          updateUser({
+            email: values.email,
+            firstName,
+            middleName,
+            lastName,
+            suffix,
+            superUser,
+          });
 
           //show successful login alert
           setValues({
