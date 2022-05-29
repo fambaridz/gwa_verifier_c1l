@@ -101,12 +101,9 @@ function EditStudentRecord() {
     setGradeRecords(gradeRecordCopy);
   }
 
-  async function onSave() {
+  async function safeSave() {
     // save the data w/ respect to the current page
     const verifiers = new Verifiers();
-    const studentHandler = new StudentHandler();
-    const commentHandler = new CommentHandler();
-    const recordHandler = new RecordHandler();
 
     console.log("SAVING?");
 
@@ -173,68 +170,14 @@ function EditStudentRecord() {
       setSaving(false);
       return;
     }
-
-    try {
-      // creating student record info is working
-      await studentHandler.saveInfo({
-        studentRecord,
-        email,
-        studno,
-        status: "UNCHECKED",
-      });
-      // ready the data
-    } catch (error) {
-      console.warn(error);
-      setSaving(false);
-      enqueueSnackbar(`Error in saving record: ${error}`, {
-        variant: "error",
-      });
-      return;
-    }
-
-    // save grade records
-    try {
-      await recordHandler.saveGradeRecords({
-        studno,
-        email,
-        lst: gradeRecordsReady,
-      });
-    } catch (error) {
-      console.log(error);
-      enqueueSnackbar(`Error in saving record: ${error}`, {
-        variant: "error",
-      });
-      setSaving(false);
-      return;
-    }
-    enqueueSnackbar(`Student successfully saved.`, {
-      variant: "success",
-    });
-
-    // Ian moved this code down since the grade records should be verified first before saving the comment
-    // addComment POST request
-    if (comment.trim() !== "") {
-      try {
-        await commentHandler.save({
-          email,
-          studno: newStudNo,
-          comment: comment.trim(),
-        });
-      } catch (error) {}
-    }
-
-    setSaving(false);
+    handleSave({ gradeRecordsReady });
   }
 
   async function forceSave() {
     // save the data w/ respect to the current page
     const verifiers = new Verifiers();
-    const studentHandler = new StudentHandler();
-    const recordHandler = new RecordHandler();
-    const commentHandler = new CommentHandler();
-    const cookie = new Cookies();
-    const email = cookie.get("email");
-    const { studNo: studno, old_studNo, recommended } = studentRecord;
+
+    const { studNo: studno, recommended } = studentRecord;
     // input validation for student info
 
     if (!verifiers.locallyVerifyStudent({ studno, recommended })) {
@@ -244,8 +187,6 @@ function EditStudentRecord() {
       return;
     }
 
-    const newStudNo = studno.split("-").join("");
-    const oldStudNo = old_studNo.split("-").join("");
     let gradeRecordsReady = [];
 
     // verify student records / grade records locally
@@ -263,6 +204,27 @@ function EditStudentRecord() {
       );
       return;
     }
+
+    handleSave({ gradeRecordsReady });
+  }
+
+  /**
+   *
+   * @param {Object} param0
+   * @param {Array<GradeRecord>} param0.gradeRecordsReady
+   * @returns
+   */
+  async function handleSave({ gradeRecordsReady }) {
+    const cookie = new Cookies();
+    const email = cookie.get("email");
+    const studentHandler = new StudentHandler();
+    const recordHandler = new RecordHandler();
+    const commentHandler = new CommentHandler();
+
+    const { studNo: studno, old_studNo } = studentRecord;
+    const newStudNo = studno.split("-").join("");
+    const oldStudNo = old_studNo.split("-").join("");
+
     setSaving(true);
 
     try {
@@ -328,16 +290,6 @@ function EditStudentRecord() {
         });
       });
 
-      // const transformedGradeRecords = gradeRecordsReady.map((record) => {
-      //   const { total, courseno, ...rest } = record;
-      //   return {
-      //     ...rest,
-      //     course_number: courseno,
-      //     running_total: total,
-      //     student_number: newStudNo,
-      //   };
-      // });
-      // console.log(transformedGradeRecords);
       // update existing records
       await recordHandler.updateGradeRecords({
         studno: newStudNo,
@@ -376,6 +328,7 @@ function EditStudentRecord() {
     setShowForceSave(false);
     goBack();
   }
+
   async function getStudentInfo() {
     const handler = new StudentHandler();
     try {
@@ -475,7 +428,7 @@ function EditStudentRecord() {
               footer={
                 <StudentFormFooter
                   popStack={goBack}
-                  onSave={onSave}
+                  onSave={safeSave}
                   loading={saving}
                   cb={() => setShowForceSave(true)}
                 />
