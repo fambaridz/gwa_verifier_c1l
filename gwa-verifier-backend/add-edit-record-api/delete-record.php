@@ -49,7 +49,7 @@ foreach ($ids as $id) {
 if ($hasError) {
     http_response_code(400);
     echo json_encode([
-        "msg" => "Cannot delete record"
+        "msg" => "Cannot delete records"
     ]);
 } else {
     echo json_encode([
