@@ -18,7 +18,14 @@ export default function AuthProvider({ children }) {
   const [user, setUser] = useState(authContextDefaultValues.user);
   useEffect(() => {
     // get info stored in local storage
-    const keys = ["firstName", "middleName", "lastName", "suffix", "superUser"];
+    const keys = [
+      "firstName",
+      "middleName",
+      "lastName",
+      "suffix",
+      "superUser",
+      "email",
+    ];
     const payload = {};
     keys.forEach((key) => {
       const res = localStorage.getItem([key]);
