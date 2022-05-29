@@ -40,8 +40,8 @@ function RecordDetailTable({ courses }) {
                 <TableCell>{row.units}</TableCell>
                 <TableCell>{row.grade}</TableCell>
                 {/* To Follow Computation for next rows */}
-                <TableCell>1.25</TableCell>
-                <TableCell>1.25</TableCell>
+                <TableCell>{row.enrolled}</TableCell>
+                <TableCell>{row.running_total}</TableCell>
               </TableRow>
             ))}
           </TableBody>

@@ -62,7 +62,7 @@ function EditableCell({
         break;
       case "running_total":
       case "enrolled":
-        if (defaultRegex.test(value)) {
+        if (!defaultRegex.test(value)) {
           setHelperText(ERROR_MESSAGES.DEFAULT);
           return;
         }

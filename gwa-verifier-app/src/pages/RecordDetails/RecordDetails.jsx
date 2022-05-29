@@ -17,69 +17,51 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridActionsCellItem,
+  gridColumnsTotalWidthSelector,
+} from "@mui/x-data-grid";
 import { Add, Search, Delete } from "@mui/icons-material";
 import CommitteeComments from "Components/CommitteeComments";
 import RecordDetailTable from "Components/RecordDetailTable";
 import DeleteRecordDialog from "Components/DeleteRecordDialog";
 import StudentStatus from "Components/StudentStatus";
+import SummativeTable from "Components/SummativeTable";
 import { useDialog } from "../../hooks";
 import { BACKEND_URI } from "../../constants.js";
+import Cookies from "universal-cookie";
 
-// Sample Data
-function createData(zero, one, two) {
-  return { zero, one, two };
-}
-
-const rows2 = [
-  createData("Units Toward GPA:", " ", " "),
-  createData("Taken", 15.0, 36.0),
-  createData("Passed", 15.0, 36.0),
-  createData("Units Not for GPA", 3.0, 19.0),
-  createData("GPA Calculations", 3.0, 19.0),
-  createData("Total Grade Points", 15.0, 41.25),
-  createData("/ Units Taken Toward GPA", 15.0, 36.0),
-  createData("= GPA", 1.0, 1.146),
-];
-
-function RecordList() {
+function RecordDetails() {
   let navigate = useNavigate();
   const studno = useParams().id;
-  let textStatus = "SATISFIED";
-  const prevStatus = "UNSATISFIED";
+  let textStatus = "SATISFACTORY";
+  const prevStatus = "UNSATISFACTORY";
   // const prevStatus = useParams().status;
-  const [anchorElUser, setAnchorElUser, semester, setSemester] = useState(null);
-  const [comments, setComments] = useState(null);
-  const [courses, setCourses] = useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [comments, setComments] = React.useState(null);
+  const [courses, setCourses] = React.useState(null);
   const [details, setDetails] = React.useState(null);
   const [name, setName] = React.useState(null);
-  const [isDeleted, setIsDeleted] = useState(false);
+  const [isDeleted, setIsDeleted] = React.useState(false);
   const { open: deleteDialogStatus, toggle: toggleDeleteDialog } = useDialog();
 
   const [terms, setTerms] = useState([]);
   const [currentTerm, setCurrenTerm] = useState("");
 
-  const [values, setValues] = useState({
+  const [values, setValues] = React.useState({
     alertMessage: "",
     alertSeverity: "",
     isAlert: false,
   });
 
+  //  get user's email from cookies
+  const cookie = new Cookies();
+  const email = cookie.get("email");
+
   function redirectToEditStudentRecords() {
-		navigate("/records/" + studno + "/edit");
-	}
-
-  const handleOpenOptionsMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseOptionsMenu = () => {
-    setAnchorElUser(null);
-  };
-
-  const handleChange = (event) => {
-    setSemester(event.target.value);
-  };
+    navigate("/records/" + studno + "/edit");
+  }
 
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -91,24 +73,25 @@ function RecordList() {
     let prevStatus = details.status;
 
     if (e.target.id == 1) {
-      newStatus = "SATISFIED";
+      newStatus = "SATISFACTORY";
     } else if (e.target.id == 2) {
-      newStatus = "UNSATISFIED";
+      newStatus = "UNSATISFACTORY";
     } else if (e.target.id == 3) {
-      newStatus = "UNVERIFIED";
+      newStatus = "UNCHECKED";
     } else if (e.target.id == 4) {
-      newStatus = "DEFICIENT";
+      newStatus = "PENDING";
     }
     const statusChange = {
       action: "status-change",
       student_number: details.student_number,
       prevStatus: details.status,
       newStatus: newStatus,
+      email: email,
     };
 
     console.log(statusChange);
 
-    fetch(`${BACKEND_URI}/details.php`, {
+    fetch(`${BACKEND_URI}/record-details-api/details.php`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -131,37 +114,37 @@ function RecordList() {
             ...values,
             isAlert: true,
             alertSeverity: "success",
-            alertMessage: "Status Changed to SATISFIED",
+            alertMessage: "Status Changed to SATISFACTORY",
           });
           setTimeout(() => {}, 1000);
-          setTimeout(window.location.reload(), 5000)
+          setTimeout(window.location.reload(), 5000);
         } else if (e.target.id == 2) {
           setValues({
             ...values,
             isAlert: true,
             alertSeverity: "success",
-            alertMessage: "Status Changed to UNSATISFIED",
+            alertMessage: "Status Changed to UNSATISFACTORY",
           });
           setTimeout(() => {}, 1000);
-          setTimeout(window.location.reload(), 5000)
+          setTimeout(window.location.reload(), 5000);
         } else if (e.target.id == 3) {
           setValues({
             ...values,
             isAlert: true,
             alertSeverity: "success",
-            alertMessage: "Status Changed to UNVERIFIED",
+            alertMessage: "Status Changed to UNCHECKED",
           });
           setTimeout(() => {}, 1000);
-          setTimeout(window.location.reload(), 5000)
+          setTimeout(window.location.reload(), 5000);
         } else if (e.target.id == 4) {
           setValues({
             ...values,
             isAlert: true,
             alertSeverity: "success",
-            alertMessage: "Status Changed to DEFICIENT",
+            alertMessage: "Status Changed to PENDING",
           });
           setTimeout(() => {}, 1000);
-          setTimeout(window.location.reload(), 5000)
+          setTimeout(window.location.reload(), 5000);
         }
       });
     setAnchorEl(null);
@@ -171,10 +154,11 @@ function RecordList() {
     const record = {
       action: "delete-record",
       student_number: studno,
+      email: email,
     };
 
     const deleteRecord = async () => {
-      const res = await fetch(`${BACKEND_URI}/details.php`, {
+      const res = await fetch(`${BACKEND_URI}/record-details-api/details.php`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -199,7 +183,7 @@ function RecordList() {
     };
 
     const fetchComments = async () => {
-      const res = await fetch(`${BACKEND_URI}/details.php`, {
+      const res = await fetch(`${BACKEND_URI}/record-details-api/details.php`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -213,12 +197,11 @@ function RecordList() {
 
     const course = {
       action: "get-courses",
-      //manual stud no for testing
       student_number: studno,
     };
 
     const fetchCourses = async () => {
-      const res = await fetch(`${BACKEND_URI}/details.php`, {
+      const res = await fetch(`${BACKEND_URI}/record-details-api/details.php`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -245,11 +228,11 @@ function RecordList() {
 
     const stud_details = {
       action: "get-student",
-      student_number: studno
-    }
+      student_number: studno,
+    };
 
     const fetchDetails = async () => {
-      const res = await fetch(`${BACKEND_URI}/details.php`, {
+      const res = await fetch(`${BACKEND_URI}/record-details-api/details.php`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -260,34 +243,37 @@ function RecordList() {
       const body = await res.text();
       const stud = JSON.parse(body)[0];
       setDetails(stud);
-      setName([stud.firstname, stud.middlename, stud.lastname, stud.suffix].join(' '));
-    }
+      setName(
+        [stud.firstname, stud.middlename, stud.lastname, stud.suffix].join(" ")
+      );
+    };
 
     fetchComments().catch(console.error);
     fetchCourses().catch(console.error);
     fetchDetails().catch(console.error);
-    console.log(details);
   }, []);
 
   // if student record was deleted
-  if(isDeleted){
-    return(
-      <Navigate to="/records/"/>
-    )
+  if (isDeleted) {
+    return <Navigate to="/records" />;
   }
 
   // if details not yet fetched
-  if(details==null){
-    return(<></>)
+  if (details == null) {
+    return <></>;
+  }
+
+  function isIncomplete(student) {
+    return student.status === "INCOMPLETE";
   }
 
   return (
     <div>
       <Box sx={{ mt: 2.5, ml: 3, fontSize: 14 }}>
-        	<Link to="/records" className="back-link">
-          		&lt; Back to Student Records
-        	</Link>
-      	</Box>
+        <Link to="/records" className="back-link">
+          &lt; Back to Student Records
+        </Link>
+      </Box>
       <Box sx={{ m: 3.5, flexGrow: 1 }}>
         {/* Toolbars for header */}
         <Toolbar>
@@ -309,6 +295,7 @@ function RecordList() {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
             onClick={handleClick}
+            disabled={isIncomplete(details)}
           >
             Mark As
           </Button>
@@ -322,19 +309,19 @@ function RecordList() {
             }}
           >
             <MenuItem onClick={handleClose} id={1}>
-              Satisfied
+              Satisfactory
             </MenuItem>
             <MenuItem onClick={handleClose} id={2}>
-              Unsatisfied
+              Unsatisfactory
             </MenuItem>
             <MenuItem onClick={handleClose} id={3}>
-              Unverified
+              Unchecked
             </MenuItem>
             <MenuItem onClick={handleClose} id={4}>
-              Deficient
+              Pending
             </MenuItem>
           </Menu>
-        <StudentStatus student={details}/>
+          <StudentStatus student={details} />
         </Toolbar>
         <Toolbar>
           <div>
@@ -372,13 +359,11 @@ function RecordList() {
               label="Semester"
               onChange={(e) => setCurrenTerm(e.target.value)}
             >
-              {terms.map((term) => (
-                <MenuItem value={term}>{term}</MenuItem>
+              {terms.map((term, idx) => (
+                <MenuItem value={term} key={idx}>
+                  {term}
+                </MenuItem>
               ))}
-              {/* <MenuItem value={10}>Semester 1 2020-2021</MenuItem>
-              <MenuItem value={20}>Semester 2 2020-2021</MenuItem>
-              <MenuItem value={30}>Semester 1 2019-2020</MenuItem>
-              <MenuItem value={40}>Semester 2 2019-2020</MenuItem> */}
             </Select>
           </FormControl>
         </Box>
@@ -391,31 +376,16 @@ function RecordList() {
           }
         />
         {/* Table 2 */}
-        <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
-          <Table size="small" aria-label="a dense table">
-            <TableHead>
-              <TableRow>
-                <TableCell></TableCell>
-                <TableCell>From Enrollment</TableCell>
-                <TableCell>Cumulative Total</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows2.map((row) => (
-                <TableRow
-                  key={row.zero}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.zero}
-                  </TableCell>
-                  <TableCell>{row.one}</TableCell>
-                  <TableCell>{row.two}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
+        <SummativeTable
+          term={currentTerm}
+          student_number={studno}
+          all_courses={courses}
+          sem_courses={
+            courses && currentTerm !== "All"
+              ? courses.filter((course) => course.term === currentTerm)
+              : courses
+          }
+        />
         {/* Comments */}
         <CommitteeComments comments={comments} />
         {/* Edit and Delete Buttons */}
@@ -447,7 +417,7 @@ function RecordList() {
         </Box>
         <DeleteRecordDialog
           open={deleteDialogStatus}
-          name={name}
+          name={name || ""}
           studno={studno}
           handleCancel={toggleDeleteDialog}
           handleDelete={handleDeleteRecord}
@@ -457,4 +427,4 @@ function RecordList() {
   );
 }
 
-export default RecordList;
+export default RecordDetails;

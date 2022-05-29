@@ -15,7 +15,11 @@ const createWindow = () => {
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
-    minWidth: 800
+    minWidth: 800,
+    // Uncomment webPreferences to disable devtools (for presenting/demo)    
+    // webPreferences: {
+    //   devTools: false
+    // }
   });
 
   // and load the index.html of the app.

@@ -11,13 +11,20 @@
     display: flex;
     flex: 1;
     height: 100%;
+    justify-content: center;
+    background: rgb(1,68,33);
+    background: linear-gradient(59deg, rgba(1,68,33,1) 0%, rgba(123,17,19,1) 100%);
+}
+
+/* .login-left-caption{
     padding: 20px;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-end;
-    background: rgb(1,68,33);
-    background: linear-gradient(59deg, rgba(1,68,33,1) 0%, rgba(123,17,19,1) 100%);
-}
+    position: absolute;
+    bottom: 0;
+    left: 0;
+} */
 
 .login-right{
     display: flex;
@@ -31,20 +38,26 @@
     background-color: whitesmoke;
 }
 
-.login-welcome{
+/* .login-welcome{
     color: white;
     font-size: 2.5vw;
-}
+} */
 
 
-.login-appname{
+/* .login-appname{
     color: white;
     font-size: 3.25vw;
-}
+} */
 
 .login-logo{
     width: 96px;
     width: 25vh;
+}
+
+.app-logo{
+    /* width: 320px; */
+    width: 100vh;
+    transform: translateX(-3px);
 }
 
 .login-form-label{

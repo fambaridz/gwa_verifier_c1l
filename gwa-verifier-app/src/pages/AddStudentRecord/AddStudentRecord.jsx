@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Container, Box } from "@mui/material";
 
 import { DropzoneArea } from "mui-file-dropzone";
 import StudentRecordForm from "Components/StudentRecordForm";
 import { Link, useNavigate } from "react-router-dom";
-
+import Alert from "@mui/material/Alert";
+import AlertTitle from "@mui/material/AlertTitle";
 import { useSnackbar } from "notistack";
 import { v4 as uuidv4 } from "uuid";
 import "./AddStudentRecord.css";
@@ -15,11 +16,15 @@ import * as validators from "../../utils/validators.js";
 import GradeRecordTable from "Components/GradeRecordTable";
 import CarouselButtons from "Components/CarouselButtons";
 import AddStudentFormFooter from "Components/AddStudentFormFooter";
+import StudentFormFooter from "Components/StudentFormFooter";
 import EditTermDialog from "Components/EditTermDialog";
 import DeleteTermDialog from "Components/DeleteTermDialog";
+import ForceSaveDialog from "Components/ForceSaveDialog";
 import ParsingModal from "Components/ParsingModal";
 import { useDialog } from "../../hooks";
-import { BACKEND_URI } from "../../constants.js";
+import { StudentHandler, CommentHandler, RecordHandler } from "../../handlers";
+import { Verifiers } from "../../utils/verifiers.js";
+import Cookies from "universal-cookie";
 
 // const BACKEND_URI = "http://localhost/gwa-verifier-backend";
 
@@ -42,6 +47,16 @@ function AddStudentRecord() {
   const [terms, setTerms] = useState([]);
   const [srUidTermMap, setSrUidTermMap] = useState({});
   const [parsing, setParsing] = useState(false);
+  const [comments, setComment] = useState([]);
+
+  /**
+   * {
+   *    [uid]: messages[]
+   * }
+   */
+  const [studentInfoErrors, setStudentInfoErrors] = useState({});
+  const [studentRecordErrors, setStudentRecordErrors] = useState({});
+
   /*
   the index represents the page number
   0, 1, 2, ..., pageNum = length - 1 
@@ -49,6 +64,12 @@ function AddStudentRecord() {
    */
   // sruid stands for "Student Record UID"
   const [srUidPageMap, setSrUidPageMap] = useState([]);
+
+  const [showForceSave, setShowForceSave] = useState(false);
+
+  //  get user's email from cookies
+  const cookie = new Cookies();
+  const email = cookie.get("email");
 
   async function handleChange(files) {
     if (!files.length) return;
@@ -74,16 +95,23 @@ function AddStudentRecord() {
     setParsing(false);
   }
 
-  function handleStudentRecordsChange(e, studNo) {
-    e.preventDefault();
-
+  function handleStudentRecordsChange({ name, value }) {
+    const uuid = srUidPageMap[page];
     const copy = {
-      ...studentRecords[studNo],
-      [e.target.name]: e.target.value,
+      ...studentRecords[uuid],
+      [name]: value,
     };
 
-    setStudentRecords({ ...studentRecords, [studNo]: { ...copy } });
+    setStudentRecords({ ...studentRecords, [uuid]: { ...copy } });
   }
+
+  // REFACTOR: changed prop from Event e to a string
+  function handleCommentChange(newComment) {
+    const updateComment = [...comments];
+    updateComment[page] = newComment;
+    setComment(updateComment);
+  }
+
   function getField(name) {
     const uid = srUidPageMap[page];
     if (!uid) return "";
@@ -128,12 +156,25 @@ function AddStudentRecord() {
     // TODO: extract this logic to a separate function and just import it
     const uid = srUidPageMap[page];
     const copyOfStudentRecords = { ...studentRecords };
+
     const copyOfUidPageMap = [...srUidPageMap];
     delete copyOfStudentRecords[uid];
     copyOfUidPageMap.splice(page, 1);
 
     const newLength = Object.keys(studentRecords).length - 1;
     const newPage = page === 0 ? page : page - 1;
+
+    const copyOfGradeRecords = Object.keys(gradeRecords)
+      .filter((grUid) => gradeRecords[grUid].srUid !== uid)
+      .reduce(
+        (curr, key) =>
+          Object.assign(curr, {
+            [key]: gradeRecords[key],
+          }),
+        {}
+      );
+
+    setGradeRecords(copyOfGradeRecords);
 
     setStudentRecords(copyOfStudentRecords);
     setPage(newPage);
@@ -143,6 +184,11 @@ function AddStudentRecord() {
       return;
     }
     updateTerms(newPage);
+    // pop the comment at index `page`
+    const updateComment = [...comments];
+    updateComment.splice(page, 1);
+
+    setComment(updateComment);
   }
   function handleGradeRecordChange({ uid, columnId, value }) {
     const record = gradeRecords[uid];
@@ -153,156 +199,44 @@ function AddStudentRecord() {
     });
     setGradeRecords({ ...gradeRecords, [uid]: record });
   }
-  function presentData() {
-    // const records = gradeRecords.filter(record => record.term === term);
-
-    // get studentUid
+  const presentData = useMemo(() => {
     const srUid = srUidPageMap[page];
 
     const records = fromMapToArray(gradeRecords, "uid").filter(
       (record) => record.term === term && record.srUid === srUid
     );
     return records;
-  }
+  }, [page, srUidPageMap, gradeRecords, term]);
+  // function presentData() {
+  //   // const records = gradeRecords.filter(record => record.term === term);
 
-  async function saveAll() {
-    setSaving(true);
+  //   // get studentUid
+  //   const srUid = srUidPageMap[page];
 
-    // create all student info
-
-    // create paylaod for student records and grade records
-    /**
-     * StudentRecord[]
-     */
-    let studentRecordsCopy = [];
-    /**
-     * [{
-     *  studno: string,
-     *  list: GradeRecord[]
-     * }]
-     */
-    let gradeRecordsCopy = [];
-    for (let srUid of Object.keys(studentRecords)) {
-      let { studNo: studno, ...rest } = studentRecords[srUid];
-      // input validation for studentRecord
-      if (
-        !validators.studentNoRegex.test(studno) ||
-        !validators.recommendedUnitsRegex.test(rest.recommended)
-      ) {
-        setSaving(false);
-
-        enqueueSnackbar("Cannot save all students, some still have errors", {
-          variant: "error",
-        });
-        return;
-      }
-
-      studno = studno.split("-").join("");
-
-      // get all grades for student
-      let grades = [];
-      try {
-        grades = Object.keys(gradeRecords)
-          .filter((grUid) => gradeRecords[grUid].srUid === srUid)
-          .map((grUid) => {
-            let record = { ...gradeRecords[grUid] };
-            const { grade, units, term, running_total } = record;
-
-            if (
-              !validators.gradeRegex.test(grade) ||
-              !validators.termRegex.test(term) ||
-              !validators.unitsRegex.test(units) ||
-              !validators.defaultRegex.test(running_total)
-            ) {
-              setSaving(false);
-              enqueueSnackbar(
-                "Cannot save all student records, some still have errors",
-                {
-                  variant: "error",
-                }
-              );
-              throw new Error();
-            }
-
-            Object.assign(record, {
-              total: record.running_total,
-            });
-            delete record["running_total"];
-            return record;
-          });
-      } catch (error) {
-        console.warn(error);
-        setSaving(false);
-        return;
-      }
-
-      studentRecordsCopy.push({
-        studno,
-        ...rest,
-      });
-      gradeRecordsCopy.push({
-        studno,
-        lst: grades,
-      });
-    }
-
-    let promises;
-
-    try {
-      promises = studentRecordsCopy.map((studentRecord) => {
-        return fetch(`${BACKEND_URI}/addStudent.php`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(studentRecord),
-        });
-      });
-
-      await Promise.all(promises);
-
-      promises = gradeRecordsCopy.map((gradeRecord) => {
-        return fetch(`${BACKEND_URI}/addStudentRecord.php`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(gradeRecord),
-        });
-      });
-
-      await Promise.all(promises);
-      enqueueSnackbar("Student records saved", {
-        variant: "success",
-      });
-    } catch (error) {
-      console.warn(error);
-      enqueueSnackbar("Error in saving student records", {
-        variant: "Error",
-      });
-    }
-
-    // now, for the grade records
-
-    setSaving(false);
-  }
+  //   const records = fromMapToArray(gradeRecords, "uid").filter(
+  //     (record) => record.term === term && record.srUid === srUid
+  //   );
+  //   return records;
+  // }
 
   async function saveOne() {
-    setSaving(true);
-
     // save the data w/ respect to the current page
+    const verifiers = new Verifiers();
+    const studentHandler = new StudentHandler();
+    const recordHandler = new RecordHandler();
+    const commentHandler = new CommentHandler();
 
+    console.log("SAVING?");
     const uid = srUidPageMap[page];
 
     const studentRecord = studentRecords[uid];
-    let { studNo: studno, recommended } = studentRecord;
+    let { studNo: studno, recommended, degree } = studentRecord;
     // input validation for student info
+
     if (
       !validators.studentNoRegex.test(studno) ||
       !validators.recommendedUnitsRegex.test(recommended)
     ) {
-      setSaving(false);
-      console.log(studno, recommended);
       enqueueSnackbar("Cannot save all students, some still have errors", {
         variant: "error",
       });
@@ -312,87 +246,207 @@ function AddStudentRecord() {
     studno = studno.split("-").join("");
 
     let gradeRecordsReady = [];
-    try {
-      gradeRecordsReady = Object.keys(gradeRecords)
-        .filter((grUid) => gradeRecords[grUid].srUid === uid)
-        .map((grUid) => {
-          let record = { ...gradeRecords[grUid] };
-          const { grade, units, term, running_total } = record;
 
-          if (
-            !validators.gradeRegex.test(grade) ||
-            !validators.termRegex.test(term) ||
-            !validators.unitsRegex.test(units) ||
-            !validators.defaultRegex.test(running_total)
-          ) {
-            setSaving(false);
-            enqueueSnackbar(
-              "Cannot save all student records, some still have errors",
-              {
-                variant: "error",
-              }
-            );
-            throw new Error();
-          }
-          Object.assign(record, {
-            total: record.running_total,
-          });
-          delete record["running_total"];
-          return record;
-        });
+    // verify student records / grade records locally
+    try {
+      const gradeRecordsFiltered = Object.keys(gradeRecords)
+        .filter((grUid) => gradeRecords[grUid].srUid === uid)
+        .reduce((cur, key) => {
+          return Object.assign(cur, { [key]: gradeRecords[key] });
+        }, {});
+
+      gradeRecordsReady = await verifiers.locallyVerifyGradeRecords({
+        gradeRecords: gradeRecordsFiltered,
+      });
     } catch (error) {
       console.warn(error);
+      setSaving(false);
+      enqueueSnackbar(
+        "Cannot save all student records, some still have errors",
+        {
+          variant: "error",
+        }
+      );
+      return;
+    }
+
+    // verify if student records are valid by sending a request to the backend
+    try {
+      await verifiers.verifyStudentRecords({
+        studno,
+        uid,
+        degree,
+        gradeRecordsReady,
+        recommended,
+      });
+    } catch (error) {
+      console.warn(error);
+      if (error && error.length) {
+        const [studentInfoErrors, studentRecordErrors] = error;
+        setStudentInfoErrors({ [uid]: studentInfoErrors });
+        setStudentRecordErrors({ [uid]: studentRecordErrors });
+        enqueueSnackbar("Errors in student records. Please see message", {
+          variant: "error",
+        });
+      } else {
+        // assume that the error is plaintext
+        enqueueSnackbar(
+          error.message || "Invalid records, please check logs.",
+          {
+            variant: "error",
+          }
+        );
+      }
+      setSaving(false);
       return;
     }
 
     try {
       // creating student record info is working
-      let res = await fetch(`${BACKEND_URI}/addStudent.php`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...studentRecord, studno }),
+      await studentHandler.saveInfo({
+        studentRecord,
+        email,
+        studno,
+        status: "UNCHECKED",
       });
-      if (!res.ok) {
-        const error = res.status;
-        throw new Error(error);
-      }
-
       // ready the data
     } catch (error) {
       console.warn(error);
-      enqueueSnackbar("Error in saving record", {
+      enqueueSnackbar(`Error in saving record: ${error}`, {
         variant: "error",
       });
       return;
     }
+
+    // save grade records
     try {
-      const payload = {
+      await recordHandler.saveGradeRecords({
         studno,
+        email,
         lst: gradeRecordsReady,
-      };
-
-      // console.log(JSON.stringify(payload));
-
-      const res = await fetch(`${BACKEND_URI}/addStudentRecord.php`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
       });
+    } catch (error) {
+      console.log(error);
+      setSaving(false);
+    }
+    enqueueSnackbar(`Student successfully saved.`, {
+      variant: "success",
+    });
 
-      if (!res.ok) {
-        const error = res.status;
-        throw new Error(error);
-      }
+    // Ian moved this code down since the grade records should be verified first before saving the comment
+    // addComment POST request
+    if (comments[page] && comments[page].trim() !== "") {
+      try {
+        await commentHandler.save({
+          email,
+          studno,
+          comment: comments[page].trim(),
+        });
+      } catch (error) {}
+    }
 
-      enqueueSnackbar("Student record saved", {
-        variant: "success",
-      });
-    } catch (error) {}
     setSaving(false);
+  }
+
+  async function forceSave() {
+    // save the data w/ respect to the current page
+    const verifiers = new Verifiers();
+    const studentHandler = new StudentHandler();
+    const commentHandler = new CommentHandler();
+    const recordHandler = new RecordHandler();
+    const uid = srUidPageMap[page];
+
+    const studentRecord = studentRecords[uid];
+    let { studNo: studno, recommended } = studentRecord;
+    // input validation for student info
+
+    if (!verifiers.locallyVerifyStudent({ studno, recommended })) {
+      enqueueSnackbar("Cannot save all students, some still have errors", {
+        variant: "error",
+      });
+      return;
+    }
+
+    studno = studno.split("-").join("");
+
+    let gradeRecordsReady = [];
+
+    // verify student records / grade records locally
+    try {
+      const gradeRecordsFiltered = Object.keys(gradeRecords)
+        .filter((grUid) => gradeRecords[grUid].srUid === uid)
+        .reduce((cur, key) => {
+          return Object.assign(cur, { [key]: gradeRecords[key] });
+        }, {});
+      gradeRecordsReady = await verifiers.locallyVerifyGradeRecords({
+        gradeRecords: gradeRecordsFiltered,
+      });
+    } catch (error) {
+      console.warn(error);
+      enqueueSnackbar(
+        "Cannot save all student records, some still have errors",
+        {
+          variant: "error",
+        }
+      );
+      return;
+    }
+    setSaving(true);
+
+    try {
+      // creating student record info is working
+      await studentHandler.saveInfo({
+        studentRecord,
+        studno,
+        email: email,
+        status: "INCOMPLETE",
+      });
+
+      // ready the data
+    } catch (error) {
+      console.warn(error);
+      enqueueSnackbar(`Error in saving record: ${error}`, {
+        variant: "error",
+      });
+      setSaving(false);
+      return;
+    }
+
+    // save grade records
+    try {
+      // creating student record info is working
+      await recordHandler.saveGradeRecords({
+        studno,
+        email,
+        lst: gradeRecordsReady,
+      });
+
+      // ready the data
+    } catch (error) {
+      console.warn(error);
+      enqueueSnackbar(`Error in saving record: ${error}`, {
+        variant: "error",
+      });
+      return;
+    }
+
+    // save comments (if any)
+    if (comments[page] && comments[page].trim() !== "") {
+      try {
+        await commentHandler.save({
+          email,
+          studno,
+          comment: comments[page].trim(),
+        });
+      } catch (error) {}
+    }
+
+    enqueueSnackbar(`Student successfully saved.`, {
+      variant: "success",
+    });
+    setSaving(false);
+    setShowForceSave(false);
+    popStack();
   }
 
   function addRow() {
@@ -481,6 +535,21 @@ function AddStudentRecord() {
     toggleDeleteDialog();
   }
 
+  function renderErrors({ title, messages }) {
+    const uid = srUidPageMap[page];
+    const keys = Object.keys(messages);
+    const listItems =
+      keys.length !== 0 && keys.includes(uid)
+        ? messages[uid].map((message, idx) => <li key={idx}>{message}</li>)
+        : null;
+    return listItems && listItems.length > 0 ? (
+      <Alert severity="error">
+        <AlertTitle>{title}</AlertTitle>
+        <ul>{listItems}</ul>
+      </Alert>
+    ) : null;
+  }
+
   function renderStudentRecordForms() {
     return (
       <>
@@ -499,12 +568,16 @@ function AddStudentRecord() {
             nextPage={nextPage}
           />
         </Box>
+        {renderErrors({
+          title: "Error in student information",
+          messages: studentInfoErrors,
+        })}
         <StudentRecordForm
           firstName={getField("fname")}
           middleName={getField("mname")}
           lastName={getField("lname")}
           suffix={getField("suffix")}
-          studentNo={getField("studNo")}
+          studNo={getField("studNo")}
           degree={getField("degree")}
           recommended={getField("recommended")}
           term={term}
@@ -512,31 +585,37 @@ function AddStudentRecord() {
           terms={terms}
           loading={saving}
           handleAddRow={addRow}
-          handleInputChange={(e) => {
-            const uuid = srUidPageMap[page];
-            handleStudentRecordsChange(e, uuid);
-          }}
+          handleInputChange={handleStudentRecordsChange}
           handleEditTerm={toggleDialog}
           handleDeleteTerm={toggleDeleteDialog}
+          handleComment={handleCommentChange}
+          comment={comments[page] || ""}
           table={
-            <GradeRecordTable
-              data={presentData()}
-              handleUpdate={handleGradeRecordChange}
-              handleDelete={deleteRow}
-            />
+            <>
+              {renderErrors({
+                title: "Error in grades",
+                messages: studentRecordErrors,
+              })}
+              <GradeRecordTable
+                data={presentData}
+                handleUpdate={handleGradeRecordChange}
+                handleDelete={deleteRow}
+              />
+            </>
           }
           footer={
-            <AddStudentFormFooter
+            <StudentFormFooter
               popStack={popStack}
-              saveOne={saveOne}
-              saving={saving}
-              saveAll={saveAll}
+              onSave={() => saveOne()}
+              loading={saving}
+              cb={() => setShowForceSave(true)}
             />
           }
         />
       </>
     );
   }
+
   return (
     <>
       <ParsingModal open={parsing} />
@@ -570,6 +649,11 @@ function AddStudentRecord() {
         name={`${getField("lname")} ${getField("fname")}`}
         handleCancel={toggleDeleteDialog}
         handleDelete={deleteTerm}
+      />
+      <ForceSaveDialog
+        open={showForceSave}
+        handleCancel={() => setShowForceSave(false)}
+        onSuccess={forceSave}
       />
     </>
   );

@@ -12,7 +12,10 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import logo from "Assets/logo.png";
+import appLogo from "Assets/appLogo.png";
 import "./LogIn.css";
+import { BACKEND_URI } from "../../constants.js";
+import Cookies from "universal-cookie";
 
 
 function LogIn() {
@@ -52,7 +55,7 @@ function LogIn() {
     }
     console.log(credentials)
     fetch(
-      "http://localhost/gwa-verifier-backend/login.php",
+      `${BACKEND_URI}/login-api/login.php`,
       {
         method: "POST",
         headers: {
@@ -63,7 +66,7 @@ function LogIn() {
       .then(response => response.json())
       .then(body => {
         console.log(body.success)
-        if (body.success=="false") { 
+        if (!body.success) { 
           //show failed login alert
           setValues({...values, 
             isAlert:true, 
@@ -71,6 +74,21 @@ function LogIn() {
             alertMessage:"Failed to log in. Please check your email/password"})
         }
         else {
+          // successful log in. store the user info in cookies
+          const cookies = new Cookies();
+          cookies.set("email",values.email,{path: "/"});
+          cookies.set("fname",body.firstname,{path: "/"});
+          cookies.set("midname",body.middlename,{path: "/"});
+          cookies.set("lname",body.lastname,{path: "/"});
+          cookies.set("suffix",body.suffix,{path: "/"});
+          cookies.set("superuser",body.superuser,{path: "/"});
+          // console.log(cookies.get("email"));
+          // console.log(cookies.get("fname"));
+          // console.log(cookies.get("midname"));
+          // console.log(cookies.get("lname"));
+          // console.log(cookies.get("suffix"));
+          // console.log(cookies.get("superuser"));
+
           //show successful login alert
           setValues({...values, 
             isAlert:true, 
@@ -119,8 +137,11 @@ function LogIn() {
   return (
     <div className="login-container">
       <div className="login-left">
-        <Typography variant="" className="login-welcome">WELCOME TO</Typography>
-        <Typography variant="" className="login-appname">GWA Verifier</Typography>
+        <img src={appLogo} className="app-logo"/>
+        {/* <div className="login-left-caption">
+          <Typography variant="" className="login-welcome">WELCOME TO</Typography><br />
+          <Typography variant="" className="login-appname">GWA Verifier</Typography>
+        </div> */}
       </div>
       <div className="login-right">
         <img src={logo} className="login-logo"/>

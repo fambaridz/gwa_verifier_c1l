@@ -21,13 +21,13 @@ function AddStudentFormFooter({
       </Button>
 
       <SplitButton
-        label="Save one"
+        label="Verify & Save"
         onClick={saveOne}
         loading={saving}
         loadingText="Saving..."
         menuItems={[
           {
-            value: "Save all",
+            value: "Verify & Save all",
             cb: saveAll,
           },
         ]}
