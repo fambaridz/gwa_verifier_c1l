@@ -186,7 +186,10 @@ function getDegreeIds($degree_nickname, $studno, $student_record, $con, &$genera
   if (!count($degree_id_results)) {
     //set the specialization as general
     return $general_degree_id;
+  }else if (count($degree_id_results) == 1) {
+    return $degree_id_results[0];
   }
+
 
   //for every subject in student record
   foreach ($student_record as $subj) {
