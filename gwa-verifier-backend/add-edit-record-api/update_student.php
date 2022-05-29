@@ -139,7 +139,7 @@ if (!check_studno_if_exist($old_stud_no, $con)) {
   return;
 }
 
-if (check_studno_if_exist($new_stud_no, $con)) {
+if ($old_stud_no != $new_stud_no && check_studno_if_exist($new_stud_no, $con)) {
   http_response_code(409);
   $data = [
     "msg" => "The new student number already exists"
