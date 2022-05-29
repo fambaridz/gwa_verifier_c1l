@@ -411,7 +411,6 @@ foreach ($student_record as $entry) {
   }
   if ((int)$expected_units == 6 && strcmp($units,'0') == 0 && in_array($grade, array('S', 'U'))) {
     $valid_units = 1;
-    $units = 6;
   }
   else if ($units == $expected_units) $valid_units = 1;
   else $error = 1;
