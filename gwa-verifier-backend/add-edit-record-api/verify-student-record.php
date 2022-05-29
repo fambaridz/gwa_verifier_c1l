@@ -405,7 +405,11 @@ foreach ($student_record as $entry) {
 
   valid_format_values:  //program section where format and values are verified
   units:
-  if ((int)$expected_units == 6 && strcmp($units,'(1)6') == 0) {
+  if ((int)$expected_units == 6 && strcmp($units,'(1)6') ==  0 && !in_array($grade, array('S', 'U'))) {
+    $valid_units = 1;
+    $units = 6;
+  }
+  if ((int)$expected_units == 6 && strcmp($units,'0') == 0 && in_array($grade, array('S', 'U'))) {
     $valid_units = 1;
     $units = 6;
   }
