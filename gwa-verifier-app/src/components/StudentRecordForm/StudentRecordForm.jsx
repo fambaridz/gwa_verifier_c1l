@@ -49,7 +49,6 @@ function StudentRecordForm({
   handleComment = () => {},
   error,
   comment,
-  index,
 }) {
   function handleChange(event) {
     setTerm(event.target.value);
@@ -297,7 +296,7 @@ function StudentRecordForm({
           // REFACTOR: only update the parent state's `comment` onBlur, to prevent delayed rendering
           // onChange={(e) => handleComment(e, index)}
           onChange={(e) => setLocalComment(e.target.value)}
-          onBlur={() => handleComment(localComment, index)}
+          onBlur={() => handleComment(localComment)}
           // style={{ width: '100%' }}
         />
         {footer || (
