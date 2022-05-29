@@ -314,6 +314,7 @@ function EditStudentRecord() {
         if (validators.idRegex.test(id)) {
           recordsToUpdate.push({
             ...rest,
+            id,
             course_number: courseno,
             running_total: total,
             student_number: newStudNo,
