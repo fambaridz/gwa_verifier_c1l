@@ -26,7 +26,9 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "gwa_verifier_app"
+            "name": "gwa_verifier_app",
+            "certificateFile": "./cert.pfx",
+            "certificatePassword": "this-is-a-secret"
           }
         },
         {
@@ -37,10 +39,6 @@
         },
         {
           "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
           "config": {}
         }
       ],
