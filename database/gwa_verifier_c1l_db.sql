@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 26, 2022 at 01:09 PM
+-- Generation Time: May 29, 2022 at 10:29 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -55,7 +55,10 @@ CREATE TABLE `committee` (
 --
 
 INSERT INTO `committee` (`email`, `account_made_by`, `password`, `lastname`, `firstname`, `middlename`, `suffix`) VALUES
-('CMSC128@CD1L.com', NULL, '123456', 'verifier', 'gwa', 'g', '');
+('another@another.com', '', 'ae448ac86c4e8e4dec645729708ef41873ae79c6dff84eff73360989487f08e5', 'another', 'another', 'another', ''),
+('CMSC128@CD1L.com', NULL, '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'verifier', 'gwa', 'g', ''),
+('hello@hello.com', '', '99a53666f2d325f8af69b42f31b103f036c471719f4d5fb8ba847d4e9b592c2d', 'hello', 'hello', 'hello', ''),
+('hello@world.com', '', 'e0cb05d98fc5f38266f3ea8376d84c61a8c16050240e439e7ae96f12e2cb30a4', 'world', 'hell', 'o', '');
 
 -- --------------------------------------------------------
 
@@ -75,7 +78,7 @@ CREATE TABLE `committee_student` (
 --
 
 INSERT INTO `committee_student` (`committee_email`, `student_number`, `comments`, `comment_id`) VALUES
-('hello@gmail.com', 201901234, 'lorem ipsum', 0);
+('hello@gmail.com', 201901234, 'lorem ipsum', 1);
 
 -- --------------------------------------------------------
 
@@ -105,9 +108,9 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 (2, 'BA Communication Arts', 'BACA', 'New', 'Speech Communication', 21, '', 9, 18, 145),
 (3, 'BA Communication Arts', 'BACA', 'New', 'Writing', 21, '', 9, 18, 145),
 (4, 'BA Communication Arts', 'BACA', 'New', 'Theater Arts', 21, '', 9, 18, 145),
-(5, 'BA Philosophy', 'BAPHLO', 'New', '', 0, '', 0, 0, 132),
+(5, 'BA Philosophy', 'BAPHLO', 'New', '', 0, '', 9, 0, 132),
 (6, 'BA Sociology', 'BASOCIO', 'New', '', 0, '', 9, 21, 136),
-(7, 'BS Applied Mathematics', 'BSAMAT', 'New', '', 0, '', 0, 0, 131),
+(7, 'BS Applied Mathematics', 'BSAMAT', 'New', '', 0, '', 9, 0, 131),
 (8, 'BS Applied Physics', 'BSAPHY', 'New', '', 0, '', 9, 21, 143),
 (9, 'BS Biology', 'BSBIO', 'New', '', 24, '', 9, 9, 143),
 (10, 'BS Biology', 'BSBIO', 'New', 'Cell and Molecular Biology', 24, '', 9, 9, 143),
@@ -121,20 +124,20 @@ INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`,
 (18, 'BS Chemistry', 'BSCHEM', 'New', '', 0, '', 9, 9, 142),
 (19, 'BS Computer Science', 'BSCS', 'New', '', 0, '', 9, 0, 130),
 (20, 'BS Mathematics', 'BSMATH', 'New', '', 0, '', 9, 0, 131),
-(21, 'BS Mathematics & Science Teaching', 'BSMST', 'New', '', 0, '', 0, 0, 0),
+(21, 'BS Mathematics & Science Teaching', 'BSMST', 'New', '', 0, '', 9, 0, 0),
 (22, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Biology', 0, '', 9, 0, 141),
 (23, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Chemistry', 0, '', 9, 0, 140),
 (24, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Mathematics', 0, '', 9, 0, 142),
 (25, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Physics', 0, '', 9, 0, 140),
 (26, 'BS Statistics', 'BSSTAT', 'New', '', 0, '', 9, 9, 143),
 (27, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', '', 0, '', 12, 0, 190),
-(28, 'BA Communication Arts', 'BACA', 'Old', '', 0, '', 0, 24, 141),
-(29, 'BA Communication Arts', 'BACA', 'Old', 'Speech Communication', 0, '', 0, 0, 141),
-(30, 'BA Communication Arts', 'BACA', 'Old', 'Writing', 0, '', 0, 0, 141),
-(31, 'BA Communication Arts', 'BACA', 'Old', 'Theater Arts', 0, '', 0, 0, 141),
+(28, 'BA Communication Arts', 'BACA', 'Old', '', 0, '', 9, 24, 141),
+(29, 'BA Communication Arts', 'BACA', 'Old', 'Speech Communication', 0, '', 9, 0, 141),
+(30, 'BA Communication Arts', 'BACA', 'Old', 'Writing', 0, '', 9, 0, 141),
+(31, 'BA Communication Arts', 'BACA', 'Old', 'Theater Arts', 0, '', 9, 0, 141),
 (32, 'BA Philosophy', 'BAPHLO', 'Old', '', 0, '', 0, 0, 0),
 (33, 'BA Sociology', 'BASOCIO', 'Old', '', 0, '', 0, 0, 0),
-(34, 'BS Applied Mathematics', 'BSAMAT', 'Old', '', 0, '', 0, 0, 145),
+(34, 'BS Applied Mathematics', 'BSAMAT', 'Old', '', 0, '', 33, 0, 145),
 (35, 'BS Applied Physics', 'BSAPHY', 'Old', '', 0, '', 27, 9, 0),
 (36, 'BS Biology', 'BSBIO', 'Old', '', 0, '', 0, 0, 153),
 (37, 'BS Biology', 'BSBIO', 'Old', 'Cell and Molecular Biology', 0, '', 0, 0, 153),
@@ -248,6 +251,7 @@ CREATE TABLE `student` (
 
 INSERT INTO `student` (`student_number`, `lastname`, `firstname`, `middlename`, `suffix`, `degree_program`, `recommended_number_units`, `credited_units`, `gwa`, `status`) VALUES
 (201501234, 'MAKILING', 'MARIA', NULL, NULL, 'BACA', 144, 146, 1.74486, 'UNVERIFIED'),
+(201889821, 'Clara', 'Maria', '', '', 'BAPHLO', 0, 0, 0, 'UNCHECKED'),
 (207176487, 'SALAZAR', 'IAN', '', '', 'BSCS', 1, 1, 1.5, '-');
 
 -- --------------------------------------------------------
@@ -455,7 +459,57 @@ INSERT INTO `student_record` (`id`, `student_number`, `course_number`, `grade`, 
 (223, 207176487, 'SUBJ', '0', '2', 3, 8, 'II/19/20'),
 (224, 207176487, 'SUBJ', '0', '1', 8, 8, 'I/20/21'),
 (225, 207176487, 'SUBJ', '0', '2', 3, 8, 'II/20/21'),
-(226, 207176487, 'SUBJ', '0', '1', 4, 4, 'M/20/21');
+(226, 207176487, 'SUBJ', '0', '1', 4, 4, 'M/20/21'),
+(319320, 201889821, 'ARTS 1', '1.5', '3', 4.5, 4.5, 'I/18/19'),
+(319321, 201889821, 'ETHICS 1', '1.75', '3', 5.25, 9.75, 'I/18/19'),
+(319322, 201889821, 'KAS 1', '2.25', '3', 6.75, 16.5, 'I/18/19'),
+(319323, 201889821, 'STS 1', '1.75', '3', 5.25, 21.75, 'I/18/19'),
+(319324, 201889821, 'PHLO 11', '1', '3', 3, 24.75, 'I/18/19'),
+(319325, 201889821, 'PHLO 12', '1.75', '3', 5.25, 30, 'I/18/19'),
+(319326, 201889821, 'HK 11', '2.5', '0', 0, 24.75, 'I/18/19'),
+(319327, 201889821, 'PI 10', '1.75', '3', 5.25, 30, 'II/18/19'),
+(319328, 201889821, 'POSC 10', '3', '3', 9, 39, 'II/18/19'),
+(319329, 201889821, 'PHLO 150', '1.25', '3', 3.75, 42.75, 'II/18/19'),
+(319330, 201889821, 'PHLO 171', '3', '3', 9, 51.75, 'II/18/19'),
+(319331, 201889821, 'SPEC', '1.5', '3', 4.5, 56.25, 'II/18/19'),
+(319332, 201889821, 'PHILARTS 1', '2.5', '3', 7.5, 63.75, 'II/18/19'),
+(319333, 201889821, 'HK 12', '1.25', '0', 0, 56.25, 'II/18/19'),
+(319334, 201889821, 'COMM 10', '1.75', '3', 5.25, 69, 'I/19/20'),
+(319335, 201889821, 'PHLO 110', '2.5', '3', 7.5, 76.5, 'I/19/20'),
+(319336, 201889821, 'PHLO 112', '3', '3', 9, 85.5, 'I/19/20'),
+(319337, 201889821, 'PHLO 173', '3', '3', 9, 94.5, 'I/19/20'),
+(319338, 201889821, 'CMSC 12', '3', '3', 9, 103.5, 'I/19/20'),
+(319339, 201889821, 'HUM 3', '1.5', '3', 4.5, 108, 'I/19/20'),
+(319340, 201889821, 'HK 12', '1', '0', 0, 108, 'I/19/20'),
+(319341, 201889821, 'NSTP 1', '1.5', '0', 0, 108, 'I/19/20'),
+(319342, 201889821, 'PHLO 111', '2.5', '3', 7.5, 115.5, 'II/19/20'),
+(319343, 201889821, 'PHLO 120', '2.5', '3', 7.5, 123, 'II/19/20'),
+(319344, 201889821, 'SCIENCE 11', '2.75', '3', 8.25, 131.25, 'II/19/20'),
+(319345, 201889821, 'PHLO 195', '3', '3', 9, 140.25, 'II/19/20'),
+(319346, 201889821, 'BIO 150', '3', '3', 9, 149.25, 'II/19/20'),
+(319347, 201889821, 'HK 13', '1.75', '0', 0, 149.25, 'II/19/20'),
+(319348, 201889821, 'NSTP 2', '3', '0', 0, 149.25, 'II/19/20'),
+(319349, 201889821, 'PHLO 174', '3', '3', 9, 158.25, 'I/20/21'),
+(319350, 201889821, 'POSC 181', '1.5', '3', 4.5, 162.75, 'I/20/21'),
+(319351, 201889821, 'PHLO 195', '2.75', '3', 8.25, 171, 'I/20/21'),
+(319352, 201889821, 'PHLO 197', '2.5', '3', 7.5, 178.5, 'I/20/21'),
+(319353, 201889821, 'BIO 120', '1', '3', 3, 181.5, 'I/20/21'),
+(319354, 201889821, 'PHLO 113', '1', '3', 3, 184.5, 'II/20/21'),
+(319355, 201889821, 'PHLO 182', '1', '3', 3, 187.5, 'II/20/21'),
+(319356, 201889821, 'PHLO 172', '2', '3', 6, 193.5, 'II/20/21'),
+(319357, 201889821, 'PHLO 175', '2.25', '3', 6.75, 200.25, 'II/20/21'),
+(319358, 201889821, 'CMSC 22', '2.25', '3', 6.75, 207, 'II/20/21'),
+(319359, 201889821, 'SOC 130', '1.5', '3', 4.5, 211.5, 'II/20/21'),
+(319360, 201889821, 'PHLO 176', '2.75', '3', 8.25, 219.75, 'I/21/22'),
+(319361, 201889821, 'PHLO 178', '1', '3', 3, 222.75, 'I/21/22'),
+(319362, 201889821, 'PHLO 9', '2', '3', 6, 228.75, 'I/21/22'),
+(319363, 201889821, 'SOC 120', '2', '3', 6, 234.75, 'I/21/22'),
+(319364, 201889821, 'SOC 129', '3', '3', 9, 243.75, 'I/21/22'),
+(319365, 201889821, 'PHLO 200', 'S', '3', 8.25, 252, 'II/21/22'),
+(319366, 201889821, 'PHLO 160', '1', '3', 3, 255, 'II/21/22'),
+(319367, 201889821, 'PHLO 184', '1.75', '3', 5.25, 260.25, 'II/21/22'),
+(319368, 201889821, 'PHLO 185', '2', '3', 6, 266.25, 'II/21/22'),
+(319369, 201889821, 'PHLO 200', '2.5', '(1)6', 7.5, 273.75, 'II/21/22');
 
 -- --------------------------------------------------------
 
@@ -2284,6 +2338,12 @@ ALTER TABLE `activity_log`
   MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
+-- AUTO_INCREMENT for table `committee_student`
+--
+ALTER TABLE `committee_student`
+  MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `degree_curriculums`
 --
 ALTER TABLE `degree_curriculums`
@@ -2293,7 +2353,7 @@ ALTER TABLE `degree_curriculums`
 -- AUTO_INCREMENT for table `student_record`
 --
 ALTER TABLE `student_record`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=319320;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=319370;
 
 --
 -- Constraints for dumped tables
