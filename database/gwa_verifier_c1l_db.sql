@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 29, 2022 at 10:39 AM
+-- Generation Time: May 29, 2022 at 11:28 AM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -20,496 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `gwa_verifier_c1l_db`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `activity_log`
---
-
-CREATE TABLE `activity_log` (
-  `id` int(50) NOT NULL,
-  `email` text NOT NULL,
-  `date` text NOT NULL,
-  `activity` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `committee`
---
-
-CREATE TABLE `committee` (
-  `email` varchar(50) NOT NULL,
-  `account_made_by` varchar(50) DEFAULT NULL,
-  `password` varchar(100) NOT NULL,
-  `lastname` varchar(50) NOT NULL,
-  `firstname` varchar(50) NOT NULL,
-  `middlename` varchar(50) NOT NULL,
-  `suffix` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `committee`
---
-
-INSERT INTO `committee` (`email`, `account_made_by`, `password`, `lastname`, `firstname`, `middlename`, `suffix`) VALUES
-('another@another.com', '', 'ae448ac86c4e8e4dec645729708ef41873ae79c6dff84eff73360989487f08e5', 'another', 'another', 'another', ''),
-('CMSC128@CD1L.com', NULL, '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'verifier', 'gwa', 'g', ''),
-('hello@hello.com', '', '99a53666f2d325f8af69b42f31b103f036c471719f4d5fb8ba847d4e9b592c2d', 'hello', 'hello', 'hello', ''),
-('hello@world.com', '', 'e0cb05d98fc5f38266f3ea8376d84c61a8c16050240e439e7ae96f12e2cb30a4', 'world', 'hell', 'o', '');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `committee_student`
---
-
-CREATE TABLE `committee_student` (
-  `committee_email` varchar(50) NOT NULL,
-  `student_number` int(20) NOT NULL,
-  `comments` text NOT NULL,
-  `comment_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `committee_student`
---
-
-INSERT INTO `committee_student` (`committee_email`, `student_number`, `comments`, `comment_id`) VALUES
-('hello@gmail.com', 201901234, 'lorem ipsum', 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `degree_curriculums`
---
-
-CREATE TABLE `degree_curriculums` (
-  `degree_id` int(50) NOT NULL,
-  `degree_name` varchar(50) NOT NULL,
-  `degree_nickname` varchar(30) NOT NULL,
-  `old_new` varchar(20) NOT NULL,
-  `major` varchar(30) NOT NULL,
-  `major_units` int(20) NOT NULL,
-  `options` varchar(50) NOT NULL,
-  `ge_electives_units` int(20) NOT NULL,
-  `electives_units` int(20) NOT NULL,
-  `recommended_units` int(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `degree_curriculums`
---
-
-INSERT INTO `degree_curriculums` (`degree_id`, `degree_name`, `degree_nickname`, `old_new`, `major`, `major_units`, `options`, `ge_electives_units`, `electives_units`, `recommended_units`) VALUES
-(1, 'BA Communication Arts', 'BACA', 'New', '', 21, '', 9, 18, 145),
-(2, 'BA Communication Arts', 'BACA', 'New', 'Speech Communication', 21, '', 9, 18, 145),
-(3, 'BA Communication Arts', 'BACA', 'New', 'Writing', 21, '', 9, 18, 145),
-(4, 'BA Communication Arts', 'BACA', 'New', 'Theater Arts', 21, '', 9, 18, 145),
-(5, 'BA Philosophy', 'BAPHLO', 'New', '', 0, '', 9, 0, 132),
-(6, 'BA Sociology', 'BASOCIO', 'New', '', 0, '', 9, 21, 136),
-(7, 'BS Applied Mathematics', 'BSAMAT', 'New', '', 0, '', 9, 0, 131),
-(8, 'BS Applied Physics', 'BSAPHY', 'New', '', 0, '', 9, 21, 143),
-(9, 'BS Biology', 'BSBIO', 'New', '', 24, '', 9, 9, 143),
-(10, 'BS Biology', 'BSBIO', 'New', 'Cell and Molecular Biology', 24, '', 9, 9, 143),
-(11, 'BS Biology', 'BSBIO', 'New', 'Ecology', 24, '', 9, 9, 143),
-(12, 'BS Biology', 'BSBIO', 'New', 'Genetics', 24, '', 9, 9, 143),
-(13, 'BS Biology', 'BSBIO', 'New', 'Microbiology', 24, '', 9, 9, 143),
-(14, 'BS Biology', 'BSBIO', 'New', 'Plant Biology', 24, '', 9, 9, 143),
-(15, 'BS Biology', 'BSBIO', 'New', 'Systematics', 24, '', 9, 9, 143),
-(16, 'BS Biology', 'BSBIO', 'New', 'Wildlife Biology', 24, '', 9, 9, 143),
-(17, 'BS Biology', 'BSBIO', 'New', 'Zoology', 24, '', 9, 9, 143),
-(18, 'BS Chemistry', 'BSCHEM', 'New', '', 0, '', 9, 9, 142),
-(19, 'BS Computer Science', 'BSCS', 'New', '', 0, '', 9, 0, 130),
-(20, 'BS Mathematics', 'BSMATH', 'New', '', 0, '', 9, 0, 131),
-(21, 'BS Mathematics & Science Teaching', 'BSMST', 'New', '', 0, '', 9, 0, 0),
-(22, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Biology', 0, '', 9, 0, 141),
-(23, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Chemistry', 0, '', 9, 0, 140),
-(24, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Mathematics', 0, '', 9, 0, 142),
-(25, 'BS Mathematics & Science Teaching', 'BSMST', 'New', 'Physics', 0, '', 9, 0, 140),
-(26, 'BS Statistics', 'BSSTAT', 'New', '', 0, '', 9, 9, 143),
-(27, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', '', 0, '', 12, 0, 190),
-(28, 'BA Communication Arts', 'BACA', 'Old', '', 0, '', 9, 24, 141),
-(29, 'BA Communication Arts', 'BACA', 'Old', 'Speech Communication', 0, '', 9, 0, 141),
-(30, 'BA Communication Arts', 'BACA', 'Old', 'Writing', 0, '', 9, 0, 141),
-(31, 'BA Communication Arts', 'BACA', 'Old', 'Theater Arts', 0, '', 9, 0, 141),
-(32, 'BA Philosophy', 'BAPHLO', 'Old', '', 0, '', 0, 0, 0),
-(33, 'BA Sociology', 'BASOCIO', 'Old', '', 0, '', 0, 0, 0),
-(34, 'BS Applied Mathematics', 'BSAMAT', 'Old', '', 0, '', 33, 0, 145),
-(35, 'BS Applied Physics', 'BSAPHY', 'Old', '', 0, '', 27, 9, 0),
-(36, 'BS Biology', 'BSBIO', 'Old', '', 0, '', 0, 0, 153),
-(37, 'BS Biology', 'BSBIO', 'Old', 'Cell and Molecular Biology', 0, '', 0, 0, 153),
-(38, 'BS Biology', 'BSBIO', 'Old', 'Ecology', 0, '', 0, 0, 153),
-(39, 'BS Biology', 'BSBIO', 'Old', 'Genetics', 0, '', 0, 0, 153),
-(40, 'BS Biology', 'BSBIO', 'Old', 'Microbiology', 0, '', 0, 0, 153),
-(41, 'BS Biology', 'BSBIO', 'Old', 'Plant Biology', 0, '', 0, 0, 153),
-(42, 'BS Biology', 'BSBIO', 'Old', 'Systematics', 0, '', 0, 0, 153),
-(43, 'BS Biology', 'BSBIO', 'Old', 'Wildlife Biology and Zoology', 0, '', 0, 0, 153),
-(44, 'BS Chemistry', 'BSCHEM', 'Old', '', 0, '', 18, 0, 160),
-(45, 'BS Computer Science', 'BSCS', 'Old', '', 0, '', 18, 0, 141),
-(46, 'BS Mathematics', 'BSMATH', 'Old', '', 0, 'SP', 18, 21, 139),
-(47, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', '', 0, '', 18, 0, 0),
-(48, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Mathematics', 0, '', 18, 0, 144),
-(49, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Biology', 0, '', 18, 0, 146),
-(50, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Chemistry', 0, '', 18, 0, 145),
-(51, 'BS Mathematics and Science Teaching', 'BSMST', 'Old', 'Physics', 0, '', 18, 0, 141),
-(52, 'BS Statistics', 'BSSTAT', 'Old', '', 0, '', 18, 0, 143),
-(53, 'BS Agricultural Chemistry', 'BSAGCHEM', 'Old', '', 0, '', 18, 0, 194),
-(54, 'BS Applied Physics', 'BSAPHY', 'Old', 'Computational Physics', 0, '', 0, 0, 0),
-(55, 'BS Applied Physics', 'BSAPHY', 'Old', 'Experimental Physics', 0, '', 0, 0, 0),
-(56, 'BS Applied Physics', 'BSAPHY', 'Old', 'Instrumentation Physics', 0, '', 0, 0, 0),
-(57, 'BS Computer Science', 'BSCS', 'New', '', 0, 'SP', 9, 18, 130),
-(58, 'BS Computer Science', 'BSCS', 'New', '', 0, 'Thesis', 9, 15, 130),
-(59, 'BS Mathematics', 'BSMATH', 'New', '', 0, 'SP', 9, 18, 131),
-(60, 'BS Mathematics', 'BSMATH', 'New', '', 0, 'Thesis', 9, 15, 131),
-(61, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Animal Science', 15, '', 12, 0, 190),
-(62, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Entomology', 15, '', 12, 0, 190),
-(63, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Plant Pathology', 15, '', 12, 0, 190),
-(64, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Weed Science', 15, '', 12, 0, 190),
-(65, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Plant Physiology', 15, '', 12, 0, 190),
-(66, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Soil Science', 15, '', 12, 0, 190),
-(67, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Food Science', 15, '', 12, 0, 190),
-(68, 'BS Agricultural Chemistry', 'BSAGCHEM', 'New', 'Agricultural Biotechnology', 15, '', 12, 0, 190),
-(69, 'BS Computer Science', 'BSCS', 'Old', '', 0, 'Thesis', 18, 9, 141),
-(70, 'BS Mathematics', 'BSMATH', 'Old', '', 0, 'Thesis', 18, 12, 139),
-(71, 'BS Computer Science', 'BSCS', 'Old', '', 0, 'SP', 18, 12, 141),
-(114, 'BA Philosophy', 'BAPHLO', 'New', '', 0, 'SP', 9, 33, 132),
-(115, 'BA Philosophy', 'BAPHLO', 'New', '', 0, 'Thesis', 9, 33, 132),
-(116, 'BS Applied Mathematics', 'BSAMAT', 'New', '', 0, 'SP', 9, 27, 131),
-(117, 'BS Applied Mathematics', 'BSAMAT', 'New', '', 0, 'Thesis', 9, 24, 131);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `electives`
---
-
-CREATE TABLE `electives` (
-  `course_number` varchar(50) NOT NULL,
-  `course_name` varchar(80) NOT NULL,
-  `general_or_free` varchar(50) NOT NULL,
-  `number_units` int(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `electives`
---
-
-INSERT INTO `electives` (`course_number`, `course_name`, `general_or_free`, `number_units`) VALUES
-('FRCH 10', 'Elementary French I', 'Free', 3),
-('FRCH 11', 'Elementary French II', 'Free', 3),
-('HIST 110', 'The Philippine Presidency', 'Free', 3),
-('HIST 140', 'Philippine Revolutionary Tradition', 'Free', 3),
-('HIST 150', 'Modern Nationalism and Imperialism', 'Free', 3),
-('HIST 151', 'American Colonialism and Imperialism in the Philippines', 'Free', 3),
-('HUM 3', 'Reading Film, TV, and Internet', 'general', 3),
-('JAP 10', 'Elementary Japanese I', 'Free', 3),
-('JAP 11', 'Elementary Japanese II', 'Free', 3),
-('KAS 4', 'Ang Kababaihan sa Kasaysayan ng Pilipinas', 'general', 3),
-('MATH 10', 'Mathematics, Culture, and Society', 'general', 3),
-('PHILARTS 1', 'Philippine Arts and Culture', 'general', 3),
-('PHLO 1', 'Understanding Philosophy', 'general', 3),
-('POSC 112', 'Politics of Development', 'Free', 3),
-('POSC 14', 'Philippine Politics and Governance', 'Free', 3),
-('POSC 141', 'Political Ideologies', 'Free', 3),
-('POSC 161', 'Political Parties and Interest Groups', 'Free', 3),
-('POSC 165', 'Contemporary Philippine Politics', 'Free', 3),
-('POSC 180', 'Global Politics', 'Free', 3),
-('PS 21', 'Wika, Panitikan at Kultura sa ilalim ng Batas Militar sa Pilipinas', 'general', 3),
-('SAS 1', 'Self and Society', 'general', 3),
-('SCIENCE 10', 'Probing the Physical World', 'general', 3),
-('SCIENCE 11', 'Living Systems: Concepts and Dynamics', 'general', 3),
-('SOSC 3', 'Exploring Gender and Sexuality', 'general', 3),
-('SPAN 10', 'Elementary Spanish I', 'Free', 3),
-('SPAN 11', 'Elementary Spanish II', 'Free', 3),
-('WIKA 1', 'Wika, Kultura at Lipunan', 'general', 3);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `student`
---
-
-CREATE TABLE `student` (
-  `student_number` int(20) NOT NULL,
-  `lastname` varchar(50) NOT NULL,
-  `firstname` varchar(50) NOT NULL,
-  `middlename` varchar(50) DEFAULT NULL,
-  `suffix` varchar(10) DEFAULT NULL,
-  `degree_program` varchar(50) NOT NULL,
-  `recommended_number_units` int(20) NOT NULL,
-  `credited_units` int(20) NOT NULL,
-  `gwa` float NOT NULL,
-  `status` varchar(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `student`
---
-
-INSERT INTO `student` (`student_number`, `lastname`, `firstname`, `middlename`, `suffix`, `degree_program`, `recommended_number_units`, `credited_units`, `gwa`, `status`) VALUES
-(201501234, 'MAKILING', 'MARIA', NULL, NULL, 'BACA', 144, 146, 1.74486, 'UNVERIFIED'),
-(201889821, 'Clara', 'Maria', '', '', 'BAPHLO', 0, 0, 0, 'UNCHECKED'),
-(207176487, 'SALAZAR', 'IAN', '', '', 'BSCS', 1, 1, 1.5, '-');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `student_record`
---
-
-CREATE TABLE `student_record` (
-  `id` int(50) NOT NULL,
-  `student_number` int(20) NOT NULL,
-  `course_number` varchar(20) NOT NULL,
-  `grade` varchar(30) NOT NULL,
-  `units` varchar(50) NOT NULL,
-  `enrolled` float NOT NULL,
-  `running_total` double NOT NULL,
-  `term` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `student_record`
---
-
-INSERT INTO `student_record` (`id`, `student_number`, `course_number`, `grade`, `units`, `enrolled`, `running_total`, `term`) VALUES
-(1, 201501234, 'ENG 1(AH)', '2', '3', 6, 6, 'I/15/16'),
-(2, 201501234, 'FIL 20', '2.25', '3', 6.75, 12.75, 'I/15/16'),
-(3, 201501234, 'IT 1(MST)', '2', '3', 6, 18.75, 'I/15/16'),
-(4, 201501234, 'PE 1', '2', '0', 0, 18.75, 'I/15/16'),
-(5, 201501234, 'PHLO1(SSP)', '1.75', '3', 5.25, 24, 'I/15/16'),
-(6, 201501234, 'PSY 1(SSP)', '1.75', '3', 5.25, 29.25, 'I/15/16'),
-(7, 201501234, 'SPCM 1(AH)', '1.75', '3', 5.25, 34.5, 'I/15/16'),
-(8, 201501234, 'ENG 2(AH)', '1.5', '3', 4.5, 39, 'II/15/16'),
-(9, 201501234, 'HUM 1(AH)', '1.5', '3', 4.5, 43.5, 'II/15/16'),
-(10, 201501234, 'HUM 2(AH)', '1.5', '3', 4.5, 48, 'II/15/16'),
-(11, 201501234, 'MATH1(MST)', '2', '3', 6, 54, 'II/15/16'),
-(12, 201501234, 'MATH2(MST)', '2', '3', 6, 60, 'II/15/16'),
-(13, 201501234, 'SOSC1(SSP)', '2.5', '3', 7.5, 67.5, 'II/15/16'),
-(14, 201501234, 'COMA 101', '1.25', '3', 3.75, 71.25, 'I/16/17'),
-(15, 201501234, 'ENG 4', '2', '3', 6, 77.25, 'I/16/17'),
-(16, 201501234, 'JAP 10', '1.75', '3', 5.25, 82.5, 'I/16/17'),
-(17, 201501234, 'MATH 17', '1.75', '5', 8.75, 91.25, 'I/16/17'),
-(18, 201501234, 'NASC3(MST)', '2', '3', 6, 97.25, 'I/16/17'),
-(19, 201501234, 'NSTP 1', '1.75', '0', 0, 97.25, 'I/16/17'),
-(20, 201501234, 'SPCM 102', '1.75', '3', 5.25, 102.5, 'I/16/17'),
-(21, 201501234, 'COMA 104', '1.25', '3', 3.75, 106.25, 'II/16/17'),
-(22, 201501234, 'FIL 21', '2', '3', 6, 112.25, 'II/16/17'),
-(23, 201501234, 'JAP 11', '1.75', '3', 5.25, 117.5, 'II/16/17'),
-(24, 201501234, 'MGT 101', '1.5', '3', 4.5, 122, 'II/16/17'),
-(25, 201501234, 'SOC 130', '2.25', '3', 6.75, 128.75, 'II/16/17'),
-(26, 201501234, 'STAT 1', '1.75', '3', 5.25, 134, 'II/16/17'),
-(27, 201501234, 'ENG 101', '2', '3', 6, 140, 'I/17/18'),
-(28, 201501234, 'COMA 192', '1', '3', 3, 143, 'I/17/18'),
-(30, 201501234, 'HUM 150', '1.75', '3', 5.25, 154.25, 'I/17/18'),
-(31, 201501234, 'PE 2', '5', '0', 0, 154.25, 'I/17/18'),
-(32, 201501234, 'PI 10(SSP)', '2.25', '3', 6.75, 161, 'I/17/18'),
-(33, 201501234, 'THEA 107', '1', '3', 3, 164, 'I/17/18'),
-(34, 201501234, 'ENG 103', '2', '3', 6, 170, 'II/17/18'),
-(35, 201501234, 'ENG 104', '2.25', '3', 6.75, 176.75, 'II/17/18'),
-(36, 201501234, 'HUM 170', '2', '3', 6, 182.75, 'II/17/18'),
-(37, 201501234, 'NSTP 2', '1.25', '0', 0, 182.75, 'II/17/18'),
-(38, 201501234, 'PHLO 184', '2', '3', 6, 188.75, 'II/17/18'),
-(39, 201501234, 'SOC 112', '1.75', '3', 5.25, 194, 'II/17/18'),
-(40, 201501234, 'COMA 193', '1.75', '3', 5.25, 199.25, 'I/18/19'),
-(41, 201501234, 'COMA 200', 'S', '3', 0, 199.25, 'I/18/19'),
-(42, 201501234, 'ENG 5', '1.75', '3', 5.25, 204.5, 'I/18/19'),
-(43, 201501234, 'HK 12', '2.25', '0', 0, 204.5, 'l/18/19'),
-(44, 201501234, 'SPCM 101', '1.5', '3', 4.5, 209, 'l/18/19'),
-(45, 201501234, 'SPCM 104', '2.75', '3', 8.25, 217.25, 'l/18/19'),
-(46, 201501234, 'ENG 156', '1.5', '3', 4.5, 221.75, 'll/18/19'),
-(47, 201501234, 'ENG 155', '1.25', '3', 3.75, 225.5, 'll/18/19'),
-(48, 201501234, 'ENG 102', '1', '3', 3, 228.5, 'll/18/19'),
-(49, 201501234, 'ETHICS 1', '1.75', '3', 5.25, 233.75, 'll/18/19'),
-(50, 201501234, 'STS 1', '1.75', '3', 5.25, 239, 'll/18/19'),
-(51, 201501234, 'COMA 200', 'S', '3', 0, 239, 'l/19/20'),
-(52, 201501234, 'ENG 152', '1.25', '3', 3.75, 242.75, 'l/19/20'),
-(53, 201501234, 'HK 12', '2.75', '0', 0, 242.75, 'l/19/20'),
-(54, 201501234, 'HK 12', '2.25', '0', 0, 242.75, 'l/19/20'),
-(55, 201501234, 'THEA 101', '2', '3', 6, 248.75, 'l/19/20'),
-(56, 201501234, 'COMA 200', '1', '(1)6', 6, 254.75, 'll/19/20'),
-(98, 207176487, 'SUBJ', '0', '2', 5, 4, 'I/18/19'),
-(99, 207176487, 'SUBJ', '0', '2', 7, 6, 'II/18/19'),
-(100, 207176487, 'SUBJ', '0', '1', 4, 6, 'I/19/20'),
-(101, 207176487, 'SUBJ', '0', '2', 8, 6, 'II/19/20'),
-(102, 207176487, 'SUBJ', '0', '1', 7, 4, 'I/20/21'),
-(103, 207176487, 'SUBJ', '0', '1', 3, 8, 'II/20/21'),
-(104, 207176487, 'SUBJ', '0', '1', 6, 5, 'M/20/21'),
-(105, 207176487, 'SUBJ', '0', '2', 3, 6, 'II/21/22'),
-(106, 207176487, 'SUBJ', '0', '2', 5, 6, 'I/21/22'),
-(107, 207176487, 'SUBJ', '0', '2', 5, 6, 'I/18/19'),
-(108, 207176487, 'SUBJ', '0', '2', 6, 6, 'II/18/19'),
-(109, 207176487, 'SUBJ', '0', '1', 5, 4, 'I/19/20'),
-(110, 207176487, 'SUBJ', '0', '2', 4, 8, 'II/19/20'),
-(111, 207176487, 'SUBJ', '0', '1', 7, 6, 'I/20/21'),
-(112, 207176487, 'SUBJ', '0', '1', 5, 5, 'II/20/21'),
-(113, 207176487, 'SUBJ', '0', '2', 7, 8, 'M/20/21'),
-(114, 207176487, 'SUBJ', '0', '1', 7, 3, 'II/21/22'),
-(115, 207176487, 'SUBJ', '0', '2', 7, 3, 'I/21/22'),
-(116, 207176487, 'SUBJ', '0', '2', 3, 3, 'I/18/19'),
-(117, 207176487, 'SUBJ', '0', '1', 3, 6, 'II/18/19'),
-(118, 207176487, 'SUBJ', '0', '1', 6, 4, 'I/19/20'),
-(119, 207176487, 'SUBJ', '0', '1', 8, 7, 'II/19/20'),
-(120, 207176487, 'SUBJ', '0', '2', 4, 4, 'I/20/21'),
-(121, 207176487, 'SUBJ', '0', '1', 3, 7, 'II/20/21'),
-(122, 207176487, 'SUBJ', '0', '2', 7, 3, 'M/20/21'),
-(123, 207176487, 'SUBJ', '0', '1', 6, 7, 'II/21/22'),
-(124, 207176487, 'SUBJ', '0', '1', 5, 8, 'I/21/22'),
-(125, 207176487, 'SUBJ', '0', '2', 7, 7, 'I/18/19'),
-(126, 207176487, 'SUBJ', '0', '1', 7, 6, 'II/18/19'),
-(127, 207176487, 'SUBJ', '0', '2', 4, 5, 'I/19/20'),
-(128, 207176487, 'SUBJ', '0', '1', 8, 7, 'II/19/20'),
-(129, 207176487, 'SUBJ', '0', '1', 5, 4, 'I/20/21'),
-(130, 207176487, 'SUBJ', '0', '1', 7, 5, 'II/20/21'),
-(131, 207176487, 'SUBJ', '0', '2', 5, 8, 'M/20/21'),
-(132, 207176487, 'SUBJ', '0', '1', 5, 8, 'II/21/22'),
-(133, 207176487, 'SUBJ', '0', '1', 3, 6, 'I/21/22'),
-(134, 207176487, 'SUBJ', '0', '2', 4, 3, 'I/18/19'),
-(135, 207176487, 'SUBJ', '0', '2', 8, 7, 'II/18/19'),
-(136, 207176487, 'SUBJ', '0', '1', 4, 5, 'I/19/20'),
-(137, 207176487, 'SUBJ', '0', '2', 3, 8, 'II/19/20'),
-(138, 207176487, 'SUBJ', '0', '1', 8, 8, 'I/20/21'),
-(139, 207176487, 'SUBJ', '0', '2', 3, 8, 'II/20/21'),
-(140, 207176487, 'SUBJ', '0', '1', 4, 4, 'M/20/21'),
-(141, 207176487, 'SUBJ', '0', '2', 5, 4, 'I/18/19'),
-(142, 207176487, 'SUBJ', '0', '2', 7, 6, 'II/18/19'),
-(143, 207176487, 'SUBJ', '0', '1', 4, 6, 'I/19/20'),
-(144, 207176487, 'SUBJ', '0', '2', 8, 6, 'II/19/20'),
-(145, 207176487, 'SUBJ', '0', '1', 7, 4, 'I/20/21'),
-(146, 207176487, 'SUBJ', '0', '1', 3, 8, 'II/20/21'),
-(147, 207176487, 'SUBJ', '0', '1', 6, 5, 'M/20/21'),
-(148, 207176487, 'SUBJ', '0', '2', 3, 6, 'II/21/22'),
-(149, 207176487, 'SUBJ', '0', '2', 5, 6, 'I/21/22'),
-(150, 207176487, 'SUBJ', '0', '2', 5, 6, 'I/18/19'),
-(151, 207176487, 'SUBJ', '0', '2', 6, 6, 'II/18/19'),
-(152, 207176487, 'SUBJ', '0', '1', 5, 4, 'I/19/20'),
-(153, 207176487, 'SUBJ', '0', '2', 4, 8, 'II/19/20'),
-(154, 207176487, 'SUBJ', '0', '1', 7, 6, 'I/20/21'),
-(155, 207176487, 'SUBJ', '0', '1', 5, 5, 'II/20/21'),
-(156, 207176487, 'SUBJ', '0', '2', 7, 8, 'M/20/21'),
-(157, 207176487, 'SUBJ', '0', '1', 7, 3, 'II/21/22'),
-(158, 207176487, 'SUBJ', '0', '2', 7, 3, 'I/21/22'),
-(159, 207176487, 'SUBJ', '0', '2', 3, 3, 'I/18/19'),
-(160, 207176487, 'SUBJ', '0', '1', 3, 6, 'II/18/19'),
-(161, 207176487, 'SUBJ', '0', '1', 6, 4, 'I/19/20'),
-(162, 207176487, 'SUBJ', '0', '1', 8, 7, 'II/19/20'),
-(163, 207176487, 'SUBJ', '0', '2', 4, 4, 'I/20/21'),
-(164, 207176487, 'SUBJ', '0', '1', 3, 7, 'II/20/21'),
-(165, 207176487, 'SUBJ', '0', '2', 7, 3, 'M/20/21'),
-(166, 207176487, 'SUBJ', '0', '1', 6, 7, 'II/21/22'),
-(167, 207176487, 'SUBJ', '0', '1', 5, 8, 'I/21/22'),
-(168, 207176487, 'SUBJ', '0', '2', 7, 7, 'I/18/19'),
-(169, 207176487, 'SUBJ', '0', '1', 7, 6, 'II/18/19'),
-(170, 207176487, 'SUBJ', '0', '2', 4, 5, 'I/19/20'),
-(171, 207176487, 'SUBJ', '0', '1', 8, 7, 'II/19/20'),
-(172, 207176487, 'SUBJ', '0', '1', 5, 4, 'I/20/21'),
-(173, 207176487, 'SUBJ', '0', '1', 7, 5, 'II/20/21'),
-(174, 207176487, 'SUBJ', '0', '2', 5, 8, 'M/20/21'),
-(175, 207176487, 'SUBJ', '0', '1', 5, 8, 'II/21/22'),
-(176, 207176487, 'SUBJ', '0', '1', 3, 6, 'I/21/22'),
-(177, 207176487, 'SUBJ', '0', '2', 4, 3, 'I/18/19'),
-(178, 207176487, 'SUBJ', '0', '2', 8, 7, 'II/18/19'),
-(179, 207176487, 'SUBJ', '0', '1', 4, 5, 'I/19/20'),
-(180, 207176487, 'SUBJ', '0', '2', 3, 8, 'II/19/20'),
-(181, 207176487, 'SUBJ', '0', '1', 8, 8, 'I/20/21'),
-(182, 207176487, 'SUBJ', '0', '2', 3, 8, 'II/20/21'),
-(183, 207176487, 'SUBJ', '0', '1', 4, 4, 'M/20/21'),
-(184, 207176487, 'SUBJ', '0', '2', 5, 4, 'I/18/19'),
-(185, 207176487, 'SUBJ', '0', '2', 7, 6, 'II/18/19'),
-(186, 207176487, 'SUBJ', '0', '1', 4, 6, 'I/19/20'),
-(187, 207176487, 'SUBJ', '0', '2', 8, 6, 'II/19/20'),
-(188, 207176487, 'SUBJ', '0', '1', 7, 4, 'I/20/21'),
-(189, 207176487, 'SUBJ', '0', '1', 3, 8, 'II/20/21'),
-(190, 207176487, 'SUBJ', '0', '1', 6, 5, 'M/20/21'),
-(191, 207176487, 'SUBJ', '0', '2', 3, 6, 'II/21/22'),
-(192, 207176487, 'SUBJ', '0', '2', 5, 6, 'I/21/22'),
-(193, 207176487, 'SUBJ', '0', '2', 5, 6, 'I/18/19'),
-(194, 207176487, 'SUBJ', '0', '2', 6, 6, 'II/18/19'),
-(195, 207176487, 'SUBJ', '0', '1', 5, 4, 'I/19/20'),
-(196, 207176487, 'SUBJ', '0', '2', 4, 8, 'II/19/20'),
-(197, 207176487, 'SUBJ', '0', '1', 7, 6, 'I/20/21'),
-(198, 207176487, 'SUBJ', '0', '1', 5, 5, 'II/20/21'),
-(199, 207176487, 'SUBJ', '0', '2', 7, 8, 'M/20/21'),
-(200, 207176487, 'SUBJ', '0', '1', 7, 3, 'II/21/22'),
-(201, 207176487, 'SUBJ', '0', '2', 7, 3, 'I/21/22'),
-(202, 207176487, 'SUBJ', '0', '2', 3, 3, 'I/18/19'),
-(203, 207176487, 'SUBJ', '0', '1', 3, 6, 'II/18/19'),
-(204, 207176487, 'SUBJ', '0', '1', 6, 4, 'I/19/20'),
-(205, 207176487, 'SUBJ', '0', '1', 8, 7, 'II/19/20'),
-(206, 207176487, 'SUBJ', '0', '2', 4, 4, 'I/20/21'),
-(207, 207176487, 'SUBJ', '0', '1', 3, 7, 'II/20/21'),
-(208, 207176487, 'SUBJ', '0', '2', 7, 3, 'M/20/21'),
-(209, 207176487, 'SUBJ', '0', '1', 6, 7, 'II/21/22'),
-(210, 207176487, 'SUBJ', '0', '1', 5, 8, 'I/21/22'),
-(211, 207176487, 'SUBJ', '0', '2', 7, 7, 'I/18/19'),
-(212, 207176487, 'SUBJ', '0', '1', 7, 6, 'II/18/19'),
-(213, 207176487, 'SUBJ', '0', '2', 4, 5, 'I/19/20'),
-(214, 207176487, 'SUBJ', '0', '1', 8, 7, 'II/19/20'),
-(215, 207176487, 'SUBJ', '0', '1', 5, 4, 'I/20/21'),
-(216, 207176487, 'SUBJ', '0', '1', 7, 5, 'II/20/21'),
-(217, 207176487, 'SUBJ', '0', '2', 5, 8, 'M/20/21'),
-(218, 207176487, 'SUBJ', '0', '1', 5, 8, 'II/21/22'),
-(219, 207176487, 'SUBJ', '0', '1', 3, 6, 'I/21/22'),
-(220, 207176487, 'SUBJ', '0', '2', 4, 3, 'I/18/19'),
-(221, 207176487, 'SUBJ', '0', '2', 8, 7, 'II/18/19'),
-(222, 207176487, 'SUBJ', '0', '1', 4, 5, 'I/19/20'),
-(223, 207176487, 'SUBJ', '0', '2', 3, 8, 'II/19/20'),
-(224, 207176487, 'SUBJ', '0', '1', 8, 8, 'I/20/21'),
-(225, 207176487, 'SUBJ', '0', '2', 3, 8, 'II/20/21'),
-(226, 207176487, 'SUBJ', '0', '1', 4, 4, 'M/20/21'),
-(319320, 201889821, 'ARTS 1', '1.5', '3', 4.5, 4.5, 'I/18/19'),
-(319321, 201889821, 'ETHICS 1', '1.75', '3', 5.25, 9.75, 'I/18/19'),
-(319322, 201889821, 'KAS 1', '2.25', '3', 6.75, 16.5, 'I/18/19'),
-(319323, 201889821, 'STS 1', '1.75', '3', 5.25, 21.75, 'I/18/19'),
-(319324, 201889821, 'PHLO 11', '1', '3', 3, 24.75, 'I/18/19'),
-(319325, 201889821, 'PHLO 12', '1.75', '3', 5.25, 30, 'I/18/19'),
-(319326, 201889821, 'HK 11', '2.5', '0', 0, 24.75, 'I/18/19'),
-(319327, 201889821, 'PI 10', '1.75', '3', 5.25, 30, 'II/18/19'),
-(319328, 201889821, 'POSC 10', '3', '3', 9, 39, 'II/18/19'),
-(319329, 201889821, 'PHLO 150', '1.25', '3', 3.75, 42.75, 'II/18/19'),
-(319330, 201889821, 'PHLO 171', '3', '3', 9, 51.75, 'II/18/19'),
-(319331, 201889821, 'SPEC', '1.5', '3', 4.5, 56.25, 'II/18/19'),
-(319332, 201889821, 'PHILARTS 1', '2.5', '3', 7.5, 63.75, 'II/18/19'),
-(319333, 201889821, 'HK 12', '1.25', '0', 0, 56.25, 'II/18/19'),
-(319334, 201889821, 'COMM 10', '1.75', '3', 5.25, 69, 'I/19/20'),
-(319335, 201889821, 'PHLO 110', '2.5', '3', 7.5, 76.5, 'I/19/20'),
-(319336, 201889821, 'PHLO 112', '3', '3', 9, 85.5, 'I/19/20'),
-(319337, 201889821, 'PHLO 173', '3', '3', 9, 94.5, 'I/19/20'),
-(319338, 201889821, 'CMSC 12', '3', '3', 9, 103.5, 'I/19/20'),
-(319339, 201889821, 'HUM 3', '1.5', '3', 4.5, 108, 'I/19/20'),
-(319340, 201889821, 'HK 12', '1', '0', 0, 108, 'I/19/20'),
-(319341, 201889821, 'NSTP 1', '1.5', '0', 0, 108, 'I/19/20'),
-(319342, 201889821, 'PHLO 111', '2.5', '3', 7.5, 115.5, 'II/19/20'),
-(319343, 201889821, 'PHLO 120', '2.5', '3', 7.5, 123, 'II/19/20'),
-(319344, 201889821, 'SCIENCE 11', '2.75', '3', 8.25, 131.25, 'II/19/20'),
-(319345, 201889821, 'PHLO 195', '3', '3', 9, 140.25, 'II/19/20'),
-(319346, 201889821, 'BIO 150', '3', '3', 9, 149.25, 'II/19/20'),
-(319347, 201889821, 'HK 13', '1.75', '0', 0, 149.25, 'II/19/20'),
-(319348, 201889821, 'NSTP 2', '3', '0', 0, 149.25, 'II/19/20'),
-(319349, 201889821, 'PHLO 174', '3', '3', 9, 158.25, 'I/20/21'),
-(319350, 201889821, 'POSC 181', '1.5', '3', 4.5, 162.75, 'I/20/21'),
-(319351, 201889821, 'PHLO 195', '2.75', '3', 8.25, 171, 'I/20/21'),
-(319352, 201889821, 'PHLO 197', '2.5', '3', 7.5, 178.5, 'I/20/21'),
-(319353, 201889821, 'BIO 120', '1', '3', 3, 181.5, 'I/20/21'),
-(319354, 201889821, 'PHLO 113', '1', '3', 3, 184.5, 'II/20/21'),
-(319355, 201889821, 'PHLO 182', '1', '3', 3, 187.5, 'II/20/21'),
-(319356, 201889821, 'PHLO 172', '2', '3', 6, 193.5, 'II/20/21'),
-(319357, 201889821, 'PHLO 175', '2.25', '3', 6.75, 200.25, 'II/20/21'),
-(319358, 201889821, 'CMSC 22', '2.25', '3', 6.75, 207, 'II/20/21'),
-(319359, 201889821, 'SOC 130', '1.5', '3', 4.5, 211.5, 'II/20/21'),
-(319360, 201889821, 'PHLO 176', '2.75', '3', 8.25, 219.75, 'I/21/22'),
-(319361, 201889821, 'PHLO 178', '1', '3', 3, 222.75, 'I/21/22'),
-(319362, 201889821, 'PHLO 9', '2', '3', 6, 228.75, 'I/21/22'),
-(319363, 201889821, 'SOC 120', '2', '3', 6, 234.75, 'I/21/22'),
-(319364, 201889821, 'SOC 129', '3', '3', 9, 243.75, 'I/21/22'),
-(319365, 201889821, 'PHLO 200', 'S', '3', 8.25, 252, 'II/21/22'),
-(319366, 201889821, 'PHLO 160', '1', '3', 3, 255, 'II/21/22'),
-(319367, 201889821, 'PHLO 184', '1.75', '3', 5.25, 260.25, 'II/21/22'),
-(319368, 201889821, 'PHLO 185', '2', '3', 6, 266.25, 'II/21/22'),
-(319369, 201889821, 'PHLO 200', '2.5', '(1)6', 7.5, 273.75, 'II/21/22');
 
 -- --------------------------------------------------------
 
@@ -540,7 +50,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Introduction to Research', 1, 'COMA 192', '', 3),
 ('Workshop', 1, 'COMA 193', '', 3),
 ('Undergraduate Seminar', 1, 'COMA 199', '', 1),
-('Undergraduate Thesis', 1, 'COMA 200', '', 3),
+('Undergraduate Thesis', 1, 'COMA 200', '', 6),
 ('Practicum', 1, 'COMA 200a', '', 3),
 ('Critical Perspectives in Communication', 1, 'COMM 10', '', 3),
 ('Rereading the Literary Canons', 1, 'ENG 100', '', 3),
@@ -670,7 +180,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Research Methodologies in the Social Sciences Laboratory', 6, 'SOC 195.1', '', 1),
 ('Internship', 6, 'SOC 198', '', 3),
 ('Undergraduate Seminar', 6, 'SOC 199', '', 1),
-('Undergraduate Thesis', 6, 'SOC 200', '', 3),
+('Undergraduate Thesis', 6, 'SOC 200', '', 6),
 ('Statistics for Social Sciences', 6, 'STAT 166', '', 3),
 ('Science, Technology, and Society', 6, 'STS 1', '', 3),
 ('Programming in Physics', 8, 'APHY 10.1', '', 1),
@@ -678,7 +188,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Physics of Electronic Devices', 8, 'APHY 102', '', 3),
 ('Special Topics', 8, 'APHY 191', '', 3),
 ('Undergraduate Seminar', 8, 'APHY 199', '', 1),
-('Undergraduate Thesis', 8, 'APHY 200', '', 3),
+('Undergraduate Thesis', 8, 'APHY 200', '', 6),
 ('Critical Perspective in Arts', 8, 'ARTS 1', '', 3),
 ('University Chemistry', 8, 'CHEM 18', '', 3),
 ('University Chemistry lab', 8, 'CHEM 18.1', '', 2),
@@ -726,7 +236,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Research Methods in the Biological Sciences', 9, 'BIO 195', '', 3),
 ('Practicum', 9, 'BIO 198', '', 3),
 ('Undergraduate Seminar', 9, 'BIO 199', '', 1),
-('Undergraduate Thesis', 9, 'BIO 200', '', 3),
+('Undergraduate Thesis', 9, 'BIO 200', '', 6),
 ('Genetics', 9, 'BIO 30', '', 3),
 ('University Botany', 9, 'BOT 14', '', 3),
 ('Introductory Biochemistry', 9, 'CHEM 160', '', 3),
@@ -1042,7 +552,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Chemical Information, Literature and Communication', 18, 'CHEM 192', '', 3),
 ('Practicum', 18, 'CHEM 198', '', 3),
 ('Undergraduate Seminar', 18, 'CHEM 199', '', 1),
-('Undergraduate Thesis', 18, 'CHEM 200', '', 3),
+('Undergraduate Thesis', 18, 'CHEM 200', '', 6),
 ('Quantitative Inorganic Analysis', 18, 'CHEM 32', '', 3),
 ('Quantitative Inorganic Analysis Laboratory', 18, 'CHEM 32.1', '', 2),
 ('Organic Chemistry I', 18, 'CHEM 43', '', 3),
@@ -1090,7 +600,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Special Problem', 19, 'CMSC 190', '', 3),
 ('Practicum', 19, 'CMSC 198', '', 3),
 ('Undergraduate Seminar', 19, 'CMSC 199', '', 1),
-('Undergraduate Thesis', 19, 'CMSC 200', '', 3),
+('Undergraduate Thesis', 19, 'CMSC 200', '', 6),
 ('Fundamentals of Programming', 19, 'CMSC 21', '', 3),
 ('Object-Oriented Programming', 19, 'CMSC 22', '', 3),
 ('Mobile Computing', 19, 'CMSC 23', '', 3),
@@ -1141,7 +651,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Research Methods in Mathematics', 20, 'MATH 195', '', 3),
 ('Undergraduate Seminar', 20, 'MATH 199', '', 1),
 ('The Landscape of Mathematics', 20, 'MATH 20', '', 3),
-('Undergraduate Thesis', 20, 'MATH 200', '', 3),
+('Undergraduate Thesis', 20, 'MATH 200', '', 6),
 ('Mathematical Analysis I', 20, 'MATH 36', '', 5),
 ('Mathematical Analysis II', 20, 'MATH 37', '', 3),
 ('Mathematical Analysis III', 20, 'MATH 38', '', 5),
@@ -1315,7 +825,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Principles of Public Relations', 28, 'COMA 105', '', 3),
 ('Introduction to Research', 28, 'COMA 192', '', 3),
 ('Workshop in Communication Arts', 28, 'COMA 193', '', 3),
-('Thesis', 28, 'COMA 200', '', 3),
+('Thesis', 28, 'COMA 200', '', 6),
 ('Practicum', 28, 'COMA 200-a', '', 3),
 ('College English', 28, 'ENG 1', '', 3),
 ('English Prose Styles', 28, 'ENG 101', '', 3),
@@ -1387,7 +897,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Physic of Scientific Instruments', 35, 'APHY 101', '', 3),
 ('Practicum', 35, 'APHY 198', '', 3),
 ('Undergraduate Seminar', 35, 'APHY 199', '', 1),
-('Undergraduate Thesis', 35, 'APHY 200', '', 3),
+('Undergraduate Thesis', 35, 'APHY 200', '', 6),
 ('Introduction to Computer Science', 35, 'CMSC 11', '', 3),
 ('College English', 35, 'ENG 1 (AH)', '', 3),
 ('College Writing in English', 35, 'ENG 2 (AH)', '', 3),
@@ -1595,7 +1105,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('General Environmental Chemistry', 44, 'CHEM 180', '', 3),
 ('Chemical Literature', 44, 'CHEM 192', '', 3),
 ('Undergraduate Seminar', 44, 'CHEM 199', '', 2),
-('Undergraduate Thesis', 44, 'CHEM 200', '', 3),
+('Undergraduate Thesis', 44, 'CHEM 200', '', 6),
 ('Quantitative Inorganic Analysis', 44, 'CHEM 32', '', 3),
 ('Quantitative Inorganic Analysis Laboratory', 44, 'CHEM 32.1', '', 2),
 ('Organic Chemistry I', 44, 'CHEM 43', '', 3),
@@ -1643,7 +1153,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Special Problem', 45, 'CMSC 190b', '', 2),
 ('Undergraduate Seminar', 45, 'CMSC 199', '', 1),
 ('Introduction to the Internet', 45, 'CMSC 2', '', 3),
-('Undergraduate Thesis', 45, 'CMSC 200', '', 3),
+('Undergraduate Thesis', 45, 'CMSC 200', '', 6),
 ('Fundamentals of Programming', 45, 'CMSC 21', '', 3),
 ('Object-Oriented Programming', 45, 'CMSC 22', '', 3),
 ('Discrete Mathematical Structures in Computer Science I', 45, 'CMSC 56', '', 3),
@@ -1912,7 +1422,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Science, Technology, and Society', 50, 'STS 1', '', 3),
 ('Farm Management', 51, 'AAE 111', '', 3),
 ('Agricultural Marketing I', 51, 'AAE 120', '', 3),
-('Undergraduate Thesis', 51, 'ACHM 200', '', 3),
+('Undergraduate Thesis', 51, 'ACHM 200', '', 6),
 ('Ethics, Laws and Policies in Agriculture', 51, 'AGRI 171', '', 3),
 ('Colloquium in Agriculture', 51, 'AGRI 199', '', 1),
 ('Introduction to Animal Science', 51, 'AGRI 21', '', 3),
@@ -2202,7 +1712,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Special Problem', 69, 'CMSC 190b', '', 2),
 ('Undergraduate Seminar', 69, 'CMSC 199', '', 1),
 ('Introduction to the Internet', 69, 'CMSC 2', '', 3),
-('Undergraduate Thesis', 69, 'CMSC 200', '', 3),
+('Undergraduate Thesis', 69, 'CMSC 200', '', 6),
 ('Fundamentals of Programming', 69, 'CMSC 21', '', 3),
 ('Object-Oriented Programming', 69, 'CMSC 22', '', 3),
 ('Discrete Mathematical Structures in Computer Science I', 69, 'CMSC 56', '', 3),
@@ -2270,90 +1780,19 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Speech Communication', 70, 'SPCM 1', '', 3),
 ('Elementary Statistics', 70, 'STAT 1', '', 3),
 ('Special Problem', 114, 'PHLO 190', '', 3),
-('Undergraduate Thesis', 115, 'PHLO 200', '', 3),
+('Undergraduate Thesis', 115, 'PHLO 200', '', 6),
 ('Special Problems', 116, 'AMAT 190', '', 3),
-('Undergraduate Thesis', 117, 'AMAT 200', '', 3);
+('Undergraduate Thesis', 117, 'AMAT 200', '', 6);
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `activity_log`
---
-ALTER TABLE `activity_log`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `committee`
---
-ALTER TABLE `committee`
-  ADD PRIMARY KEY (`email`);
-
---
--- Indexes for table `committee_student`
---
-ALTER TABLE `committee_student`
-  ADD PRIMARY KEY (`comment_id`);
-
---
--- Indexes for table `degree_curriculums`
---
-ALTER TABLE `degree_curriculums`
-  ADD PRIMARY KEY (`degree_id`);
-
---
--- Indexes for table `electives`
---
-ALTER TABLE `electives`
-  ADD PRIMARY KEY (`course_number`);
-
---
--- Indexes for table `student`
---
-ALTER TABLE `student`
-  ADD PRIMARY KEY (`student_number`);
-
---
--- Indexes for table `student_record`
---
-ALTER TABLE `student_record`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `student_number` (`student_number`);
-
---
 -- Indexes for table `subjects`
 --
 ALTER TABLE `subjects`
   ADD PRIMARY KEY (`degree_id`,`course_number`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `activity_log`
---
-ALTER TABLE `activity_log`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `committee_student`
---
-ALTER TABLE `committee_student`
-  MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `degree_curriculums`
---
-ALTER TABLE `degree_curriculums`
-  MODIFY `degree_id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=118;
-
---
--- AUTO_INCREMENT for table `student_record`
---
-ALTER TABLE `student_record`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=319370;
 
 --
 -- Constraints for dumped tables
