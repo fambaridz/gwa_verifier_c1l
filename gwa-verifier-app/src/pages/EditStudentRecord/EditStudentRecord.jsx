@@ -215,9 +215,10 @@ function EditStudentRecord() {
    *
    * @param {Object} param0
    * @param {Array<GradeRecord>} param0.gradeRecordsReady
+   * @param {string} param0.status
    * @returns
    */
-  async function handleSave({ gradeRecordsReady }) {
+  async function handleSave({ gradeRecordsReady, status = "INCOMPLETE" }) {
     const studentHandler = new StudentHandler();
     const recordHandler = new RecordHandler();
     const commentHandler = new CommentHandler();
@@ -235,7 +236,7 @@ function EditStudentRecord() {
           ...studentRecord,
           old_stud_no: oldStudNo,
           new_stud_no: newStudNo,
-          status: "INCOMPLETE",
+          status,
           credited: 0,
           gwa: 0,
         },

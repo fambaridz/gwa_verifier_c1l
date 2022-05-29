@@ -214,12 +214,9 @@ function AddStudentRecord() {
   //   return records;
   // }
 
-  async function saveOne() {
+  async function safeSave() {
     // save the data w/ respect to the current page
     const verifiers = new Verifiers();
-    const studentHandler = new StudentHandler();
-    const recordHandler = new RecordHandler();
-    const commentHandler = new CommentHandler();
 
     console.log("SAVING?");
     const uid = srUidPageMap[page];
@@ -296,59 +293,12 @@ function AddStudentRecord() {
       return;
     }
 
-    try {
-      // creating student record info is working
-      await studentHandler.saveInfo({
-        studentRecord,
-        email,
-        studno,
-        status: "UNCHECKED",
-      });
-      // ready the data
-    } catch (error) {
-      console.warn(error);
-      enqueueSnackbar(`Error in saving record: ${error}`, {
-        variant: "error",
-      });
-      return;
-    }
-
-    // save grade records
-    try {
-      await recordHandler.saveGradeRecords({
-        studno,
-        email,
-        lst: gradeRecordsReady,
-      });
-    } catch (error) {
-      console.log(error);
-      setSaving(false);
-    }
-    enqueueSnackbar(`Student successfully saved.`, {
-      variant: "success",
-    });
-
-    // Ian moved this code down since the grade records should be verified first before saving the comment
-    // addComment POST request
-    if (comments[page] && comments[page].trim() !== "") {
-      try {
-        await commentHandler.save({
-          email,
-          studno,
-          comment: comments[page].trim(),
-        });
-      } catch (error) {}
-    }
-
-    setSaving(false);
+    handleSave({ gradeRecordsReady, status: "UNCHECKED" });
   }
 
   async function forceSave() {
     // save the data w/ respect to the current page
     const verifiers = new Verifiers();
-    const studentHandler = new StudentHandler();
-    const commentHandler = new CommentHandler();
-    const recordHandler = new RecordHandler();
     const uid = srUidPageMap[page];
 
     const studentRecord = studentRecords[uid];
@@ -386,6 +336,24 @@ function AddStudentRecord() {
       );
       return;
     }
+    handleSave({ gradeRecordsReady });
+  }
+  /**
+   *
+   * @param {Object} param0
+   * @param {Array<GradeRecord>} param0.gradeRecordsReady
+   * @param {string} param0.status
+   * @returns
+   */
+  async function handleSave({ gradeRecordsReady, status = "INCOMPLETE" }) {
+    const studentHandler = new StudentHandler();
+    const recordHandler = new RecordHandler();
+    const commentHandler = new CommentHandler();
+    const uid = srUidPageMap[page];
+
+    const studentRecord = studentRecords[uid];
+    let { studNo: studno } = studentRecord;
+    studno = studno.split("-").join("");
     setSaving(true);
 
     try {
@@ -394,7 +362,7 @@ function AddStudentRecord() {
         studentRecord,
         studno,
         email,
-        status: "INCOMPLETE",
+        status,
       });
 
       // ready the data
@@ -425,7 +393,7 @@ function AddStudentRecord() {
       return;
     }
 
-    // save comments (if any)
+    // // save comments (if any)
     if (comments[page] && comments[page].trim() !== "") {
       try {
         await commentHandler.save({
@@ -601,7 +569,7 @@ function AddStudentRecord() {
           footer={
             <StudentFormFooter
               popStack={popStack}
-              onSave={() => saveOne()}
+              onSave={() => safeSave()}
               loading={saving}
               cb={() => setShowForceSave(true)}
             />
