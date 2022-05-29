@@ -12,7 +12,7 @@ $dbname = "gwa_verifier_c1l_db";
 //connect to database
 $con = mysqli_connect($host, $user, $password, $dbname);
 
-// for DELETE method
+
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
   header("HTTP/1.1 200 OK");
   return;
