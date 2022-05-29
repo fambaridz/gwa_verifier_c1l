@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Container, Box } from "@mui/material";
 
 import { DropzoneArea } from "mui-file-dropzone";
@@ -22,8 +22,8 @@ import DeleteTermDialog from "Components/DeleteTermDialog";
 import ForceSaveDialog from "Components/ForceSaveDialog";
 import ParsingModal from "Components/ParsingModal";
 import { useDialog } from "../../hooks";
-import { BACKEND_URI } from "../../constants.js";
-import { Verifiers, StudentHandler, CommentHandler } from "./helpers.js";
+import { StudentHandler, CommentHandler, RecordHandler } from "../../handlers";
+import { Verifiers } from "../../utils/verifiers.js";
 import Cookies from "universal-cookie";
 
 // const BACKEND_URI = "http://localhost/gwa-verifier-backend";
@@ -106,9 +106,9 @@ function AddStudentRecord() {
   }
 
   // REFACTOR: changed prop from Event e to a string
-  function handleCommentChange(newComment, index) {
+  function handleCommentChange(newComment) {
     const updateComment = [...comments];
-    updateComment[index] = newComment;
+    updateComment[page] = newComment;
     setComment(updateComment);
   }
 
@@ -156,12 +156,25 @@ function AddStudentRecord() {
     // TODO: extract this logic to a separate function and just import it
     const uid = srUidPageMap[page];
     const copyOfStudentRecords = { ...studentRecords };
+
     const copyOfUidPageMap = [...srUidPageMap];
     delete copyOfStudentRecords[uid];
     copyOfUidPageMap.splice(page, 1);
 
     const newLength = Object.keys(studentRecords).length - 1;
     const newPage = page === 0 ? page : page - 1;
+
+    const copyOfGradeRecords = Object.keys(gradeRecords)
+      .filter((grUid) => gradeRecords[grUid].srUid !== uid)
+      .reduce(
+        (curr, key) =>
+          Object.assign(curr, {
+            [key]: gradeRecords[key],
+          }),
+        {}
+      );
+
+    setGradeRecords(copyOfGradeRecords);
 
     setStudentRecords(copyOfStudentRecords);
     setPage(newPage);
@@ -171,9 +184,10 @@ function AddStudentRecord() {
       return;
     }
     updateTerms(newPage);
-    // move the comments from the page
+    // pop the comment at index `page`
     const updateComment = [...comments];
-    updateComment[page] = updateComment[page + 1];
+    updateComment.splice(page, 1);
+
     setComment(updateComment);
   }
   function handleGradeRecordChange({ uid, columnId, value }) {
@@ -185,22 +199,31 @@ function AddStudentRecord() {
     });
     setGradeRecords({ ...gradeRecords, [uid]: record });
   }
-  function presentData() {
-    // const records = gradeRecords.filter(record => record.term === term);
-
-    // get studentUid
+  const presentData = useMemo(() => {
     const srUid = srUidPageMap[page];
 
     const records = fromMapToArray(gradeRecords, "uid").filter(
       (record) => record.term === term && record.srUid === srUid
     );
     return records;
-  }
+  }, [page, srUidPageMap, gradeRecords, term]);
+  // function presentData() {
+  //   // const records = gradeRecords.filter(record => record.term === term);
+
+  //   // get studentUid
+  //   const srUid = srUidPageMap[page];
+
+  //   const records = fromMapToArray(gradeRecords, "uid").filter(
+  //     (record) => record.term === term && record.srUid === srUid
+  //   );
+  //   return records;
+  // }
 
   async function saveOne() {
     // save the data w/ respect to the current page
     const verifiers = new Verifiers();
     const studentHandler = new StudentHandler();
+    const recordHandler = new RecordHandler();
     const commentHandler = new CommentHandler();
 
     console.log("SAVING?");
@@ -226,9 +249,14 @@ function AddStudentRecord() {
 
     // verify student records / grade records locally
     try {
+      const gradeRecordsFiltered = Object.keys(gradeRecords)
+        .filter((grUid) => gradeRecords[grUid].srUid === uid)
+        .reduce((cur, key) => {
+          return Object.assign(cur, { [key]: gradeRecords[key] });
+        }, {});
+
       gradeRecordsReady = await verifiers.locallyVerifyGradeRecords({
-        uid,
-        gradeRecords,
+        gradeRecords: gradeRecordsFiltered,
       });
     } catch (error) {
       console.warn(error);
@@ -292,7 +320,7 @@ function AddStudentRecord() {
 
     // save grade records
     try {
-      await studentHandler.saveGradeRecords({
+      await recordHandler.saveGradeRecords({
         studno,
         email,
         lst: gradeRecordsReady,
@@ -325,6 +353,7 @@ function AddStudentRecord() {
     const verifiers = new Verifiers();
     const studentHandler = new StudentHandler();
     const commentHandler = new CommentHandler();
+    const recordHandler = new RecordHandler();
     const uid = srUidPageMap[page];
 
     const studentRecord = studentRecords[uid];
@@ -344,9 +373,13 @@ function AddStudentRecord() {
 
     // verify student records / grade records locally
     try {
+      const gradeRecordsFiltered = Object.keys(gradeRecords)
+        .filter((grUid) => gradeRecords[grUid].srUid === uid)
+        .reduce((cur, key) => {
+          return Object.assign(cur, { [key]: gradeRecords[key] });
+        }, {});
       gradeRecordsReady = await verifiers.locallyVerifyGradeRecords({
-        uid,
-        gradeRecords,
+        gradeRecords: gradeRecordsFiltered,
       });
     } catch (error) {
       console.warn(error);
@@ -382,7 +415,7 @@ function AddStudentRecord() {
     // save grade records
     try {
       // creating student record info is working
-      await studentHandler.saveGradeRecords({
+      await recordHandler.saveGradeRecords({
         studno,
         email,
         lst: gradeRecordsReady,
@@ -553,15 +586,10 @@ function AddStudentRecord() {
           loading={saving}
           handleAddRow={addRow}
           handleInputChange={handleStudentRecordsChange}
-          // handleInputChange={(e) => {
-          //   const uuid = srUidPageMap[page];
-          //   handleStudentRecordsChange(e, uuid);
-          // }}
           handleEditTerm={toggleDialog}
           handleDeleteTerm={toggleDeleteDialog}
           handleComment={handleCommentChange}
           comment={comments[page] || ""}
-          index={page}
           table={
             <>
               {renderErrors({
@@ -569,19 +597,13 @@ function AddStudentRecord() {
                 messages: studentRecordErrors,
               })}
               <GradeRecordTable
-                data={presentData()}
+                data={presentData}
                 handleUpdate={handleGradeRecordChange}
                 handleDelete={deleteRow}
               />
             </>
           }
           footer={
-            // <AddStudentFormFooter
-            //   popStack={popStack}
-            //   saveOne={saveOne}
-            //   saving={saving}
-            //   saveAll={saveAll}
-            // />
             <StudentFormFooter
               popStack={popStack}
               onSave={() => saveOne()}
