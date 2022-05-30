@@ -4,7 +4,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
 import StudentRecordForm from "Components/StudentRecordForm/";
 import GradeRecordTable from "Components/GradeRecordTable";
-import Cookies from "universal-cookie";
 import Box from "@mui/material/Box";
 import StudentFormFooter from "Components/StudentFormFooter";
 import { StudentHandler, RecordHandler, CommentHandler } from "../../handlers";
@@ -16,8 +15,12 @@ import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
 import { useSnackbar } from "notistack";
 import { v4 as uuidv4 } from "uuid";
+import { useAuth } from "../../context/AuthContext.jsx";
 // edit this to create the edit student record page
 function EditStudentRecord() {
+  const {
+    user: { email },
+  } = useAuth();
   const params = useParams();
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -49,7 +52,7 @@ function EditStudentRecord() {
     const handler = new RecordHandler();
     try {
       const [newTerms, coursesMap] = await handler.fetchCourses(studno);
-      console.log(coursesMap);
+
       setTerms(newTerms);
       setTerm(newTerms[0]);
       setGradeRecords(coursesMap);
@@ -126,9 +129,17 @@ function EditStudentRecord() {
 
     // verify student records / grade records locally
     try {
+      console.log(
+        "🚀 ~ file: EditStudentRecord.jsx ~ line 135 ~ safeSave ~ gradeRecords",
+        gradeRecords
+      );
       gradeRecordsReady = await verifiers.locallyVerifyGradeRecords({
         gradeRecords,
       });
+      console.log(
+        "🚀 ~ file: EditStudentRecord.jsx ~ line 139 ~ safeSave ~ gradeRecordsReady",
+        gradeRecordsReady
+      );
     } catch (error) {
       console.warn(error);
 
@@ -140,15 +151,19 @@ function EditStudentRecord() {
       );
       return;
     }
+    let gwa = 0;
+    let total_units_taken = 0;
     setSaving(true);
     // verify if student records are valid by sending a request to the backend
     try {
-      await verifiers.verifyStudentRecords({
+      const response = await verifiers.verifyStudentRecords({
         studno,
         degree,
         gradeRecordsReady,
         recommended,
       });
+      gwa = response.gwa;
+      total_units_taken = response.total_units_taken;
     } catch (error) {
       console.warn(error);
       if (error && error.length) {
@@ -170,7 +185,12 @@ function EditStudentRecord() {
       setSaving(false);
       return;
     }
-    handleSave({ gradeRecordsReady });
+    handleSave({
+      gradeRecordsReady,
+      status: "UNCHECKED",
+      gwa,
+      total_units_taken,
+    });
   }
 
   async function forceSave() {
@@ -212,11 +232,18 @@ function EditStudentRecord() {
    *
    * @param {Object} param0
    * @param {Array<GradeRecord>} param0.gradeRecordsReady
+   * @param {string} param0.status
+   * @param {number} gwa
+   * @param {number} total_units_taken
+   * @param {number | string} recommended
    * @returns
    */
-  async function handleSave({ gradeRecordsReady }) {
-    const cookie = new Cookies();
-    const email = cookie.get("email");
+  async function handleSave({
+    gradeRecordsReady,
+    status = "INCOMPLETE",
+    gwa = 0,
+    total_units_taken = 0,
+  }) {
     const studentHandler = new StudentHandler();
     const recordHandler = new RecordHandler();
     const commentHandler = new CommentHandler();
@@ -234,9 +261,9 @@ function EditStudentRecord() {
           ...studentRecord,
           old_stud_no: oldStudNo,
           new_stud_no: newStudNo,
-          status: "INCOMPLETE",
-          credited: 0,
-          gwa: 0,
+          status,
+          gwa,
+          cred_units: total_units_taken,
         },
 
         email,

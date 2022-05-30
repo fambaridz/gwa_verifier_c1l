@@ -53,7 +53,16 @@ switch ($body->action) {
   case 'delete-record':
     // deletes a student record
     insertActivityLog($body->email, "Deleted record ", $body->student_number, $con);
-    $sql = "DELETE FROM student_record WHERE student_number = '$body->student_number'; DELETE FROM student WHERE student_number = '$body->student_number'; DELETE FROM committee_student WHERE student_number = '$body->student_number'";
+    // delete from student record
+    $sql = "DELETE FROM student_record WHERE student_number = $body->student_number";
+    $result = mysqli_multi_query($con,$sql);
+
+    // delete from student table
+    $sql = "DELETE FROM student WHERE student_number = '$body->student_number'";
+    $result = mysqli_multi_query($con,$sql);
+
+    // delete from committe_student
+    $sql = "DELETE FROM committee_student WHERE student_number = '$body->student_number'";
     $result = mysqli_multi_query($con,$sql);
     break;
   case 'status-change':

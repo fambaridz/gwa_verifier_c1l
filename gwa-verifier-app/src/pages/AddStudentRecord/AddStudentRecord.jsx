@@ -15,7 +15,6 @@ import { fromMapToArray } from "../../utils/transformers.js";
 import * as validators from "../../utils/validators.js";
 import GradeRecordTable from "Components/GradeRecordTable";
 import CarouselButtons from "Components/CarouselButtons";
-import AddStudentFormFooter from "Components/AddStudentFormFooter";
 import StudentFormFooter from "Components/StudentFormFooter";
 import EditTermDialog from "Components/EditTermDialog";
 import DeleteTermDialog from "Components/DeleteTermDialog";
@@ -24,15 +23,15 @@ import ParsingModal from "Components/ParsingModal";
 import { useDialog } from "../../hooks";
 import { StudentHandler, CommentHandler, RecordHandler } from "../../handlers";
 import { Verifiers } from "../../utils/verifiers.js";
-import Cookies from "universal-cookie";
-
-// const BACKEND_URI = "http://localhost/gwa-verifier-backend";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 const acceptedFiles = ["text/csv"];
 
 function AddStudentRecord() {
   const navigate = useNavigate();
-
+  const {
+    user: { email },
+  } = useAuth();
   // for notifications
   const { enqueueSnackbar } = useSnackbar();
   const { open: dialogOpen, toggle: toggleDialog } = useDialog();
@@ -66,10 +65,6 @@ function AddStudentRecord() {
   const [srUidPageMap, setSrUidPageMap] = useState([]);
 
   const [showForceSave, setShowForceSave] = useState(false);
-
-  //  get user's email from cookies
-  const cookie = new Cookies();
-  const email = cookie.get("email");
 
   async function handleChange(files) {
     if (!files.length) return;
@@ -219,12 +214,9 @@ function AddStudentRecord() {
   //   return records;
   // }
 
-  async function saveOne() {
+  async function safeSave() {
     // save the data w/ respect to the current page
     const verifiers = new Verifiers();
-    const studentHandler = new StudentHandler();
-    const recordHandler = new RecordHandler();
-    const commentHandler = new CommentHandler();
 
     console.log("SAVING?");
     const uid = srUidPageMap[page];
@@ -269,16 +261,19 @@ function AddStudentRecord() {
       );
       return;
     }
-
+    let gwa = 0;
+    let total_units_taken = 0;
     // verify if student records are valid by sending a request to the backend
     try {
-      await verifiers.verifyStudentRecords({
+      const response = await verifiers.verifyStudentRecords({
         studno,
         uid,
         degree,
         gradeRecordsReady,
         recommended,
       });
+      gwa = response.gwa;
+      total_units_taken = response.total_units_taken;
     } catch (error) {
       console.warn(error);
       if (error && error.length) {
@@ -301,59 +296,17 @@ function AddStudentRecord() {
       return;
     }
 
-    try {
-      // creating student record info is working
-      await studentHandler.saveInfo({
-        studentRecord,
-        email,
-        studno,
-        status: "UNCHECKED",
-      });
-      // ready the data
-    } catch (error) {
-      console.warn(error);
-      enqueueSnackbar(`Error in saving record: ${error}`, {
-        variant: "error",
-      });
-      return;
-    }
-
-    // save grade records
-    try {
-      await recordHandler.saveGradeRecords({
-        studno,
-        email,
-        lst: gradeRecordsReady,
-      });
-    } catch (error) {
-      console.log(error);
-      setSaving(false);
-    }
-    enqueueSnackbar(`Student successfully saved.`, {
-      variant: "success",
+    handleSave({
+      gradeRecordsReady,
+      status: "UNCHECKED",
+      gwa,
+      total_units_taken,
     });
-
-    // Ian moved this code down since the grade records should be verified first before saving the comment
-    // addComment POST request
-    if (comments[page] && comments[page].trim() !== "") {
-      try {
-        await commentHandler.save({
-          email,
-          studno,
-          comment: comments[page].trim(),
-        });
-      } catch (error) {}
-    }
-
-    setSaving(false);
   }
 
   async function forceSave() {
     // save the data w/ respect to the current page
     const verifiers = new Verifiers();
-    const studentHandler = new StudentHandler();
-    const commentHandler = new CommentHandler();
-    const recordHandler = new RecordHandler();
     const uid = srUidPageMap[page];
 
     const studentRecord = studentRecords[uid];
@@ -391,6 +344,32 @@ function AddStudentRecord() {
       );
       return;
     }
+    handleSave({ gradeRecordsReady });
+  }
+  /**
+   *
+   * @param {Object} param0
+   * @param {Array<GradeRecord>} param0.gradeRecordsReady
+   * @param {string} param0.status
+   * @param {number} gwa
+   * @param {number} total_units_taken
+   * @param {number | string} recommended
+   * @returns
+   */
+  async function handleSave({
+    gradeRecordsReady,
+    status = "INCOMPLETE",
+    gwa = 0,
+    total_units_taken = 0,
+  }) {
+    const studentHandler = new StudentHandler();
+    const recordHandler = new RecordHandler();
+    const commentHandler = new CommentHandler();
+    const uid = srUidPageMap[page];
+
+    const studentRecord = studentRecords[uid];
+    let { studNo: studno } = studentRecord;
+    studno = studno.split("-").join("");
     setSaving(true);
 
     try {
@@ -398,8 +377,10 @@ function AddStudentRecord() {
       await studentHandler.saveInfo({
         studentRecord,
         studno,
-        email: email,
-        status: "INCOMPLETE",
+        email,
+        status,
+        gwa,
+        cred_units: total_units_taken,
       });
 
       // ready the data
@@ -430,7 +411,7 @@ function AddStudentRecord() {
       return;
     }
 
-    // save comments (if any)
+    // // save comments (if any)
     if (comments[page] && comments[page].trim() !== "") {
       try {
         await commentHandler.save({
@@ -606,7 +587,7 @@ function AddStudentRecord() {
           footer={
             <StudentFormFooter
               popStack={popStack}
-              onSave={() => saveOne()}
+              onSave={() => safeSave()}
               loading={saving}
               cb={() => setShowForceSave(true)}
             />

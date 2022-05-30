@@ -4,6 +4,7 @@
 --
 -- Host: 127.0.0.1
 -- Generation Time: May 30, 2022 at 06:27 AM
+
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -306,6 +307,14 @@ CREATE TABLE `student` (
   `status` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `student`
+--
+
+INSERT INTO `student` (`student_number`, `lastname`, `firstname`, `middlename`, `suffix`, `degree_program`, `recommended_number_units`, `credited_units`, `gwa`, `status`) VALUES
+(201878212, 'Hontiveros', 'Risa', '', '', 'BSAMAT', 131, 0, 0, 'UNCHECKED'),
+(201889821, 'Clara', 'Maria', '', '', 'BAPHLO', 0, 0, 0, 'UNCHECKED'),
+(207176487, 'SALAZAR', 'IAN', '', '', 'BSCS', 1, 1, 1.5, '-');
 -- --------------------------------------------------------
 
 --

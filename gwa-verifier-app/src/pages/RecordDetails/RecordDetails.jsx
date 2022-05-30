@@ -9,28 +9,19 @@ import {
   Menu,
   MenuItem,
   Select,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
   Toolbar,
   Typography,
 } from "@mui/material";
-import {
-  DataGrid,
-  GridActionsCellItem,
-  gridColumnsTotalWidthSelector,
-} from "@mui/x-data-grid";
-import { Add, Search, Delete } from "@mui/icons-material";
+
+import { Add } from "@mui/icons-material";
 import CommitteeComments from "Components/CommitteeComments";
 import RecordDetailTable from "Components/RecordDetailTable";
 import DeleteRecordDialog from "Components/DeleteRecordDialog";
 import StudentStatus from "Components/StudentStatus";
 import SummativeTable from "Components/SummativeTable";
 import { useDialog } from "../../hooks";
+import { useAuth } from "../../context/AuthContext.jsx";
 import { BACKEND_URI } from "../../constants.js";
-import Cookies from "universal-cookie";
 
 function RecordDetails() {
   let navigate = useNavigate();
@@ -38,6 +29,9 @@ function RecordDetails() {
   let textStatus = "SATISFACTORY";
   const prevStatus = "UNSATISFACTORY";
   // const prevStatus = useParams().status;
+  const {
+    user: { email },
+  } = useAuth();
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [comments, setComments] = React.useState(null);
   const [courses, setCourses] = React.useState(null);
@@ -54,10 +48,6 @@ function RecordDetails() {
     alertSeverity: "",
     isAlert: false,
   });
-
-  //  get user's email from cookies
-  const cookie = new Cookies();
-  const email = cookie.get("email");
 
   function redirectToEditStudentRecords() {
     navigate("/records/" + studno + "/edit");

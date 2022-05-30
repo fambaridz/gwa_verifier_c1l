@@ -11,11 +11,10 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle
+  DialogTitle,
 } from "@mui/material";
 
 import { BACKEND_URI } from "../../constants.js";
-import Cookies from "universal-cookie";
 import validator from "validator";
 
 const style = {
@@ -31,10 +30,9 @@ const style = {
   p: 3,
 };
 
-
 function AddCommitteeForm(props) {
-	const [existingEmails, setexistingEmails] = React.useState(props.data);
-	
+  const [existingEmails, setexistingEmails] = React.useState(props.data);
+
   const [addvalues, setaddvalues] = React.useState({
     email: "",
     lastname: "",
@@ -53,8 +51,7 @@ function AddCommitteeForm(props) {
 
   const isAddFormValid = !(isEmailValid && isPassValid && isPassMatch);
   const handleAddChange = (prop) => (event) => {
-	
-    setaddvalues({ ...addvalues, [prop]: event.target.value });	
+    setaddvalues({ ...addvalues, [prop]: event.target.value });
     if (prop == "email") {
       if (validator.isEmail(event.target.value)) {
         setisEmailValid(true);
@@ -81,9 +78,8 @@ function AddCommitteeForm(props) {
       setisPassMatch(true);
     }
   };
-	
+
   async function handleAddSubmit(event) {
-	  
     event.preventDefault();
     const addAccountInfo = {
       email: addvalues.email,
@@ -94,46 +90,43 @@ function AddCommitteeForm(props) {
       suffix: addvalues.suffix,
       password: addvalues.password,
     };
-	console.log(addAccountInfo);
-	let uniqueEmail = true
+    console.log(addAccountInfo);
+    let uniqueEmail = true;
     if (addvalues.confirmpass === addvalues.password) {
-		for(let i=0; i < existingEmails.length; i++){
-			console.log(existingEmails[i])
-			if(addvalues.email === existingEmails[i]){
-				uniqueEmail = false;
-				break;
-			}
-		}
-		if(uniqueEmail){
-			 fetch(`${BACKEND_URI}/committee-api/committee-api.php`, {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(addAccountInfo),
-				  }).then((body) => {
-					console.log(body);
-					console.log(addAccountInfo);
-					setOpenSuccessDialog(true);
-				  })
-		}else{
-			setOpenExistsDialog(true);
-		}
+      for (let i = 0; i < existingEmails.length; i++) {
+        console.log(existingEmails[i]);
+        if (addvalues.email === existingEmails[i]) {
+          uniqueEmail = false;
+          break;
+        }
+      }
+      if (uniqueEmail) {
+        fetch(`${BACKEND_URI}/committee-api/committee-api.php`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(addAccountInfo),
+        }).then((body) => {
+          console.log(body);
+          console.log(addAccountInfo);
+          setOpenSuccessDialog(true);
+        });
+      } else {
+        setOpenExistsDialog(true);
+      }
     } else {
       setisPassMatch(false);
     }
-	
-	
   }
-  
+
   const [openSuccessDialog, setOpenSuccessDialog] = React.useState(false);
   const [openExistsDialog, setOpenExistsDialog] = React.useState(false);
-	const handleCloseSuccessDialog = () =>{
-		setTimeout(window.location.reload(), 5000);
-	}
-	
-	const handleCloseExistsDialog = () =>{
-		setOpenExistsDialog(false);
-	}
-	
+  const handleCloseSuccessDialog = () => {
+    setTimeout(window.location.reload(), 5000);
+  };
+
+  const handleCloseExistsDialog = () => {
+    setOpenExistsDialog(false);
+  };
 
   return (
     <Modal
@@ -155,7 +148,11 @@ function AddCommitteeForm(props) {
             onBlur={() => setDirtyEmail(true)}
             onChange={handleAddChange("email")}
             placeholder="username@email.com"
-			helperText={ dirtyEmail && isEmailValid === false ? "Username must be in email format" : ""}
+            helperText={
+              dirtyEmail && isEmailValid === false
+                ? "Username must be in email format"
+                : ""
+            }
             fullWidth={true}
             sx={{ my: 1 }}
             label="Username"
@@ -213,7 +210,7 @@ function AddCommitteeForm(props) {
             sx={{ my: 1 }}
             label="Confirm Password"
             variant="outlined"
-			helperText={ isPassMatch === false ? "Passwords not match." : ""}
+            helperText={isPassMatch === false ? "Passwords not match." : ""}
             type="password"
             required={true}
           />
@@ -228,30 +225,22 @@ function AddCommitteeForm(props) {
             Submit
           </Button>
         </form>
-		<Dialog
-		  open={openSuccessDialog}
-		  onClose={handleCloseSuccessDialog}>
-		  <DialogTitle>
-			  {"Successfully added user!"}
-			</DialogTitle>
-			<DialogActions>
-			  <Button onClick={handleCloseSuccessDialog} autoFocus>
-				OK
-			  </Button>
-			</DialogActions>
-      </Dialog>
-			<Dialog
-				  open={openExistsDialog}
-				  onClose={handleCloseExistsDialog}>
-				  <DialogTitle>
-					  {"Email already exists!"}
-					</DialogTitle>
-					<DialogActions>
-					  <Button onClick={handleCloseExistsDialog} autoFocus>
-						OK
-					  </Button>
-					</DialogActions>
-			  </Dialog>
+        <Dialog open={openSuccessDialog} onClose={handleCloseSuccessDialog}>
+          <DialogTitle>{"Successfully added user!"}</DialogTitle>
+          <DialogActions>
+            <Button onClick={handleCloseSuccessDialog} autoFocus>
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog open={openExistsDialog} onClose={handleCloseExistsDialog}>
+          <DialogTitle>{"Email already exists!"}</DialogTitle>
+          <DialogActions>
+            <Button onClick={handleCloseExistsDialog} autoFocus>
+              OK
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     </Modal>
   );

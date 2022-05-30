@@ -1,8 +1,8 @@
 import installExtension, {
   REACT_DEVELOPER_TOOLS,
 } from "electron-devtools-installer";
-const { app, BrowserWindow } = require("electron");
-const path = require("path");
+const { app, BrowserWindow, globalShortcut } = require("electron");
+const isDev = require("electron-is-dev");
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -11,12 +11,22 @@ if (require("electron-squirrel-startup")) {
 }
 
 const createWindow = () => {
+  if (!isDev) {
+    // Prevent user from opening dev tools in production: https://stackoverflow.com/questions/40304833/how-to-make-the-dev-tools-not-show-up-on-screen-by-default-in-electron
+    // Register a shortcut listener for Ctrl + Shift + I
+    globalShortcut.register("Control+Shift+I", () => {
+      // When the user presses Ctrl + Shift + I, this function will get called
+      // You can modify this function to do other things, but if you just want
+      // to disable the shortcut, you can just return false
+      return false;
+    });
+  }
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     minWidth: 800,
-    // Uncomment webPreferences to disable devtools (for presenting/demo)    
+    // Uncomment webPreferences to disable devtools (for presenting/demo)
     // webPreferences: {
     //   devTools: false
     // }
@@ -27,7 +37,7 @@ const createWindow = () => {
 
   // Open the DevTools.
   mainWindow.webContents.on("did-frame-finish-load", () => {
-    mainWindow.webContents.openDevTools();
+    isDev && mainWindow.webContents.openDevTools();
   });
 };
 
