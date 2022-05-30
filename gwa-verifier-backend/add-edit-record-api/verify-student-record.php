@@ -461,11 +461,11 @@ foreach ($student_record as $entry) {
     check_if_exceed:  //has to be numerical passing grade to check if it will exceed
     if (strcmp($grade, 'P') != 0) {
 
-      if (($total_units_taken + (int)$units) > (float)$recommended_required) {
-        $remarks .= "Exceed: $courseno cannot be added to database, will exceed total units required\n - total units taken: $total_units_taken\n - recommended units required: $recommended_required";
-        $error = 1;
-        goto compilation;
-      }
+      // if (($total_units_taken + (int)$units) > (float)$recommended_required) {
+      //   $remarks .= "Exceed: $courseno cannot be added to database, will exceed total units required\n - total units taken: $total_units_taken\n - recommended units required: $recommended_required";
+      //   $error = 1;
+      //   goto compilation;
+      // }
 
       //secondly, check if subject is a majors/ge/elective and check if the taken units won't exceed yet
       switch ($subject_elective) {
