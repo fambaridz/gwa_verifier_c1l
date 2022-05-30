@@ -121,6 +121,17 @@ export class Verifiers {
       resolve(gradeRecordsReady);
     });
   }
+  /**
+   *
+   * @param {{
+   * studno: number,
+   * gradeRecordsReady: Array<GradeRecord>,
+   * recommended: number | string,
+   * degree: string
+   * }} param0
+   *
+   * @returns A promise that resolves when the api returns a reponse
+   */
   verifyStudentRecords({ studno, gradeRecordsReady, recommended, degree }) {
     return new Promise(async (resolve, reject) => {
       try {
@@ -166,7 +177,11 @@ export class Verifiers {
         const { error, records_remarks } = data;
 
         if (!error) {
-          resolve();
+          const { total_units_taken, gwa } = data;
+          resolve({
+            total_units_taken,
+            gwa,
+          });
         }
 
         // compose error message
