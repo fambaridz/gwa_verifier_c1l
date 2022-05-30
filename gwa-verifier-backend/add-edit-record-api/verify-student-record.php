@@ -505,14 +505,14 @@ foreach ($student_record as $entry) {
             goto compilation;
           }
           break;
-        case 5:   //check if majors units have exceeded
-          if ($major_units_taken + (int)$units > (float)$major_units_required) {
-            $remarks .= "Exceed: $courseno cannot added to database, will exceed major units required\n - major units taken: $major_units_taken\n - major units required: $major_units_required";
-            $exceed = 1;
-            $error = 1;
-            goto compilation;
-          }
-          break;
+        // case 5:   //check if majors units have exceeded
+        //   if ($major_units_taken + (int)$units > (float)$major_units_required) {
+        //     $remarks .= "Exceed: $courseno cannot added to database, will exceed major units required\n - major units taken: $major_units_taken\n - major units required: $major_units_required";
+        //     $exceed = 1;
+        //     $error = 1;
+        //     goto compilation;
+        //   }
+        //   break;
         case 6:   //check if ge units have exceeded
           if ($ge_units_taken + (int)$units > (float)$ge_units_required) {
             $remarks .= "Exceed: $courseno cannot added to database, will exceed ge units required\n - ge units taken: $ge_units_taken\n - ge units required: $ge_units_required";
