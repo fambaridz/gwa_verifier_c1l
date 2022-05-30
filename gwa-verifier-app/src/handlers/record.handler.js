@@ -32,6 +32,7 @@ export default class RecordHandler {
     // loop through all courses, get terms
     const _terms = [];
     const coursesMap = {};
+
     parsed.forEach((course) => {
       const { id, term, course_number: courseno, ...rest } = course;
 
@@ -46,6 +47,11 @@ export default class RecordHandler {
         },
       });
     });
+    const coursesCount = Object.keys(coursesMap).length;
+    console.log(
+      "🚀 ~ file: record.handler.js ~ line 51 ~ RecordHandler ~ fetchCourses ~ coursesCount",
+      coursesCount
+    );
 
     return [_terms, coursesMap];
   }

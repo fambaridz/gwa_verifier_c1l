@@ -98,6 +98,7 @@ export class Verifiers {
   locallyVerifyGradeRecords({ gradeRecords }) {
     return new Promise((resolve, reject) => {
       const gradeRecordsReady = Object.keys(gradeRecords)
+
         // .filter((grUid) => gradeRecords[grUid].srUid === uid)
         .map((grUid) => {
           let record = { ...gradeRecords[grUid] };
@@ -118,6 +119,10 @@ export class Verifiers {
           delete record["running_total"];
           return record;
         });
+      console.log(
+        "🚀 ~ file: verifiers.js ~ line 101 ~ Verifiers ~ returnnewPromise ~ gradeRecordsReady",
+        gradeRecordsReady
+      );
       resolve(gradeRecordsReady);
     });
   }
@@ -134,24 +139,37 @@ export class Verifiers {
    */
   verifyStudentRecords({ studno, gradeRecordsReady, recommended, degree }) {
     return new Promise(async (resolve, reject) => {
+      console.log(
+        "🚀 ~ file: verifiers.js ~ line 141 ~ Verifiers ~ verifyStudentRecords ~ gradeRecordsReady",
+        gradeRecordsReady
+      );
       try {
+        const student_record = gradeRecordsReady.map((record) => {
+          const { courseno, total, grade, units, enrolled, term } = record;
+          return {
+            courseno,
+            total,
+            grade,
+            units,
+            enrolled,
+            term,
+          };
+        });
+        console.log(
+          "🚀 ~ file: verifiers.js ~ line 158 ~ Verifiers ~ student_record ~ student_record",
+          student_record
+        );
         const payload2 = {
           studno: Number.parseInt(studno),
           degree,
-          student_record: gradeRecordsReady.map((record) => {
-            const { courseno, total, grade, units, enrolled, term } = record;
-            return {
-              courseno,
-              total,
-              grade,
-              units,
-              enrolled,
-              term,
-            };
-          }),
+          student_record,
         };
 
-        console.log(JSON.stringify(payload2));
+        const stringified = JSON.stringify(payload2);
+        console.log(
+          "🚀 ~ file: verifiers.js ~ line 164 ~ Verifiers ~ returnnewPromise ~ stringified",
+          stringified
+        );
 
         const _res = await fetch(
           `${BACKEND_URI}/add-edit-record-api/verify-student-record.php`,
@@ -192,7 +210,7 @@ export class Verifiers {
 
         reject([studentInfoErrors, studentRecordErrors]);
 
-        console.table(records_remarks);
+        // console.table(records_remarks);
       } catch (error) {
         console.log(error);
         reject(error);
