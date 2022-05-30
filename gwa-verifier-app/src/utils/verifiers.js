@@ -127,11 +127,17 @@ export class Verifiers {
         const payload2 = {
           studno: Number.parseInt(studno),
           degree,
-          student_record: gradeRecordsReady.map((record) => ({
-            ...record,
-            course_number: record.courseno,
-            running_total: record.total,
-          })),
+          student_record: gradeRecordsReady.map((record) => {
+            const { courseno, total, grade, units, enrolled, term } = record;
+            return {
+              courseno,
+              total,
+              grade,
+              units,
+              enrolled,
+              term,
+            };
+          }),
         };
 
         console.log(JSON.stringify(payload2));

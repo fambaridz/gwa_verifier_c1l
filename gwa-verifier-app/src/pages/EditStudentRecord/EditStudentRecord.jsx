@@ -173,7 +173,7 @@ function EditStudentRecord() {
       setSaving(false);
       return;
     }
-    handleSave({ gradeRecordsReady });
+    handleSave({ gradeRecordsReady, status: "UNCHECKED" });
   }
 
   async function forceSave() {
