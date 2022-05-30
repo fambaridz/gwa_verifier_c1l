@@ -52,7 +52,7 @@ function EditStudentRecord() {
     const handler = new RecordHandler();
     try {
       const [newTerms, coursesMap] = await handler.fetchCourses(studno);
-      console.log(coursesMap);
+
       setTerms(newTerms);
       setTerm(newTerms[0]);
       setGradeRecords(coursesMap);
@@ -129,9 +129,17 @@ function EditStudentRecord() {
 
     // verify student records / grade records locally
     try {
+      console.log(
+        "🚀 ~ file: EditStudentRecord.jsx ~ line 135 ~ safeSave ~ gradeRecords",
+        gradeRecords
+      );
       gradeRecordsReady = await verifiers.locallyVerifyGradeRecords({
         gradeRecords,
       });
+      console.log(
+        "🚀 ~ file: EditStudentRecord.jsx ~ line 139 ~ safeSave ~ gradeRecordsReady",
+        gradeRecordsReady
+      );
     } catch (error) {
       console.warn(error);
 
