@@ -70,32 +70,6 @@ functions:
 function categorize($con, $course, $general_degree_id, $specialized_degree_id, &$expected_units, $major_units_required)
 {
 
-  majors: //check specialized degree_id; if major units neeeded for this degree is 0, skip
-  //echo "checking if major\n";
-  // $sql = "SELECT course_number, number_units, required_choice
-  //         FROM subjects
-  //         WHERE degree_id = $specialized_degree_id AND course_number = '$course'";
-
-  // $result = mysqli_query($con, $sql);
-
-  $sql = "SELECT course_number, number_units, required_choice
-          FROM subjects
-          WHERE degree_id = ? AND course_number = ?";
-  $stmt = mysqli_stmt_init($con);
-  mysqli_stmt_prepare($stmt, $sql);
-  mysqli_stmt_bind_param($stmt, "is", $specialized_degree_id, $course);
-  mysqli_execute($stmt);
-  $result = mysqli_stmt_get_result($stmt);
-
-  if (mysqli_num_rows($result) == 1) {
-
-    $result = mysqli_fetch_assoc($result);
-    $expected_units = $result['number_units'];
-    //echo "expected units: $expected_units\n";
-    return 5; //is a major
-  }
-  
-
   non_majors:   //check under general degree
   //echo "checking if non-major\n";
   // $sql = "SELECT course_number, number_units, required_choice
@@ -113,6 +87,30 @@ function categorize($con, $course, $general_degree_id, $specialized_degree_id, &
   mysqli_stmt_bind_param($stmt, "is", $general_degree_id, $course);
   mysqli_execute($stmt);
   $result = mysqli_stmt_get_result($stmt);
+
+  majors: //check specialized degree_id; if major units neeeded for this degree is 0, skip
+  //echo "checking if major\n";
+  // $sql = "SELECT course_number, number_units, required_choice
+  //         FROM subjects
+  //         WHERE degree_id = $specialized_degree_id AND course_number = '$course'";
+
+  // $result = mysqli_query($con, $sql);
+  $sql = "SELECT course_number, number_units, required_choice
+          FROM subjects
+          WHERE degree_id = ? AND course_number = ?";
+  $stmt = mysqli_stmt_init($con);
+  mysqli_stmt_prepare($stmt, $sql);
+  mysqli_stmt_bind_param($stmt, "is", $specialized_degree_id, $course);
+  mysqli_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
+
+  if (mysqli_num_rows($result) == 1) {
+
+    $result = mysqli_fetch_assoc($result);
+    $expected_units = $result['number_units'];
+    //echo "expected units: $expected_units\n";
+    return 5; //is a major
+  }
 
   //print_r(mysqli_fetch_assoc($result));
   if (mysqli_num_rows($result) == 1) {
