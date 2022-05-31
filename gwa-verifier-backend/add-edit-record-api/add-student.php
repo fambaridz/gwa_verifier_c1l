@@ -39,8 +39,16 @@ $status = isset($data['status']) ? $data['status'] : 0;
 // check if student number already exists in the database
 function check_studno_if_exist($studno, $con)
 {
-  $sql = "SELECT student_number FROM student WHERE student_number=$studno";
-  $result = mysqli_query($con, $sql);
+  // $sql = "SELECT student_number FROM student WHERE student_number=$studno";
+  // $result = mysqli_query($con, $sql);
+  $sql = "SELECT student_number FROM student WHERE student_number=?";
+
+  //prepared statements
+  $stmt = mysqli_stmt_init($con);
+  mysqli_stmt_prepare($stmt, $sql);
+  mysqli_stmt_bind_param($stmt, "i", $studno);
+  mysqli_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
 
   //return 1 if existing
   if (mysqli_num_rows($result) >= 1) {
@@ -53,8 +61,16 @@ function check_studno_if_exist($studno, $con)
 //checks if degree exists in degree_curriculums table
 function check_degree_if_exist($degree, $con)
 {
-  $sql = "SELECT degree_nickname FROM degree_curriculums WHERE degree_nickname='$degree'";
-  $result = mysqli_query($con, $sql);
+  // $sql = "SELECT degree_nickname FROM degree_curriculums WHERE degree_nickname='$degree'";
+  // $result = mysqli_query($con, $sql);
+
+  $sql = "SELECT degree_nickname FROM degree_curriculums WHERE degree_nickname='s'";
+  
+  $stmt = mysqli_stmt_init($con);
+  mysqli_stmt_prepare($stmt, $sql);
+  mysqli_stmt_bind_param($stmt, "s", $degree);
+  mysqli_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
 
   //return 1 if existing
   if (mysqli_num_rows($result) >= 1) {
@@ -68,10 +84,17 @@ function check_degree_if_exist($degree, $con)
 if (!check_studno_if_exist($studno, $con)) {
   if (check_degree_if_exist($degree, $con)) {
     //query - insert student no, last name, first name, middle name, suffix, degree, recommended no units, credited units, gwa, status
-    $sql = "INSERT INTO student VALUES ('$studno','$lname','$fname','$mname','$suffix','$degree','$rec_units','$cred_units','$gwa','$status')";
+    //$sql = "INSERT INTO student VALUES ('$studno','$lname','$fname','$mname','$suffix','$degree','$rec_units','$cred_units','$gwa','$status')";
+    $sql = "INSERT INTO student VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+    $stmt = mysqli_stmt_init($con);
+    mysqli_stmt_prepare($stmt, $sql);
+    mysqli_stmt_bind_param($stmt, "isssssiids", $studno , $lname , $fname , $mname , $suffix, $degree, $rec_units, $cred_units, $gwa, $status);
+    mysqli_execute($stmt);
 
     // run SQL statement
-    $result = mysqli_query($con, $sql);
+    //$result = mysqli_query($con, $sql);
+    $result = mysqli_stmt_get_result($stmt);
 
     insertActivityLog($data['email'], "Added student", $studno, $con);
 

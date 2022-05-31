@@ -23,13 +23,25 @@ if (!$con) {
 switch($body->term) {
   case 'all':
     // get grades for all terms
-    $sql = "SELECT units, enrolled FROM student_record WHERE student_number = '$body->student_number'";
-    $result = mysqli_query($con,$sql);
+    // $sql = "SELECT units, enrolled FROM student_record WHERE student_number = '$body->student_number'";
+    // $result = mysqli_query($con,$sql);
+    $sql = "SELECT units, enrolled FROM student_record WHERE student_number = ?";
+    $stmt = mysqli_stmt_init($con);
+    mysqli_stmt_prepare($stmt, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $body->student_number);
+    mysqli_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
     break;
   default:
     // get grades for one term
-    $sql = "SELECT units, enrolled FROM student_record WHERE student_number = '$body->student_number' AND term = '$body->term'";
-    $result = mysqli_query($con,$sql);
+    // $sql = "SELECT units, enrolled FROM student_record WHERE student_number = '$body->student_number' AND term = '$body->term'";
+    // $result = mysqli_query($con,$sql);
+    $sql = "SELECT units, enrolled FROM student_record WHERE student_number = ? AND term = ?";
+    $stmt = mysqli_stmt_init($con);
+    mysqli_stmt_prepare($stmt, $sql);
+    mysqli_stmt_bind_param($stmt, "is", $body->student_number, $body->term);
+    mysqli_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
     break;
 }
  

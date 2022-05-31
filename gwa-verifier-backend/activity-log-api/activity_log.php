@@ -45,13 +45,24 @@ function insertActivitylog ($email, $activity, $studno, $con){
     // if the activity was not a student record
     if ($studno !=0){
         $activity_studno = $activity. ' Student number: '. (string)$studno;
-        $sql = "INSERT INTO activity_log (email, date, activity) VALUES('$email', '$date', '$activity_studno')";
+        //$sql = "INSERT INTO activity_log (email, date, activity) VALUES('$email', '$date', '$activity_studno')";
+        $sql = "INSERT INTO activity_log (email, date, activity) VALUES(?, ?, ?)";
+        $stmt = mysqli_stmt_init($con);
+        mysqli_stmt_prepare($stmt, $sql);
+        mysqli_stmt_bind_param($stmt, "sss", $email, $date, $activity_studno);
+        mysqli_execute($stmt);
         
     } else{
-        $sql = "INSERT INTO activity_log (email, date, activity) VALUES('$email', '$date', '$activity')";
+        //$sql = "INSERT INTO activity_log (email, date, activity) VALUES('$email', '$date', '$activity')";
+        $sql = "INSERT INTO activity_log (email, date, activity) VALUES(?, ?, ?)";
+        $stmt = mysqli_stmt_init($con);
+        mysqli_stmt_prepare($stmt, $sql);
+        mysqli_stmt_bind_param($stmt, "sss", $email, $date, $activity);
+        mysqli_execute($stmt);
     }
     // echo $sql;
-    $result = mysqli_query($con, $sql);
+    //$result = mysqli_query($con, $sql);
+    $result = mysqli_stmt_get_result($stmt);
     
     // if (!$result) {
     //     echo "Activity Log unsuccesful";

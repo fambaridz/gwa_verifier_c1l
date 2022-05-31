@@ -55,11 +55,15 @@ else if ($method == 'POST') {
     $json = file_get_contents('php://input');
     $target = json_decode($json);
     // accesses value json object 'target' property for deletion
-    $sql = "DELETE FROM `student` WHERE student_number = '{$target->target}'";
-    // query
-
-    
-    $result = mysqli_query($con, $sql);
+    // $sql = "DELETE FROM `student` WHERE student_number = '{$target->target}'";
+    // // query
+    // $result = mysqli_query($con, $sql);
+    $sql = "DELETE FROM `student` WHERE student_number = ?";
+    $stmt = mysqli_stmt_init($con);
+    mysqli_stmt_prepare($stmt, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $target->target);
+    mysqli_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 
     insertActivitylog($target->email, "Deleted student record with ", $target->target, $con);
 
@@ -80,8 +84,14 @@ else if ($method == 'POST') {
     }
 
     //Update comments in committee_student
-    $sql = "DELETE FROM `committee_student` WHERE student_number = '{$target->target}'";
-    $result = mysqli_query($con,$sql);
+    // $sql = "DELETE FROM `committee_student` WHERE student_number = '{$target->target}'";
+    // $result = mysqli_query($con,$sql);
+    $sql = "DELETE FROM `committee_student` WHERE student_number = ?";
+    $stmt = mysqli_stmt_init($con);
+    mysqli_stmt_prepare($stmt, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $target->target);
+    mysqli_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 
 
 }

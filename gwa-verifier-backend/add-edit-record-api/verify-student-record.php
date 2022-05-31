@@ -72,11 +72,20 @@ function categorize($con, $course, $general_degree_id, $specialized_degree_id, &
 
   majors: //check specialized degree_id; if major units neeeded for this degree is 0, skip
   //echo "checking if major\n";
+  // $sql = "SELECT course_number, number_units, required_choice
+  //         FROM subjects
+  //         WHERE degree_id = $specialized_degree_id AND course_number = '$course'";
+
+  // $result = mysqli_query($con, $sql);
+
   $sql = "SELECT course_number, number_units, required_choice
           FROM subjects
-          WHERE degree_id = $specialized_degree_id AND course_number = '$course'";
-
-  $result = mysqli_query($con, $sql);
+          WHERE degree_id = ? AND course_number = ?";
+  $stmt = mysqli_stmt_init($con);
+  mysqli_stmt_prepare($stmt, $sql);
+  mysqli_stmt_bind_param($stmt, "is", $specialized_degree_id, $course);
+  mysqli_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
 
   if (mysqli_num_rows($result) == 1) {
 
@@ -89,11 +98,22 @@ function categorize($con, $course, $general_degree_id, $specialized_degree_id, &
 
   non_majors:   //check under general degree
   //echo "checking if non-major\n";
+  // $sql = "SELECT course_number, number_units, required_choice
+  //         FROM subjects
+  //         WHERE degree_id = $general_degree_id AND course_number = '$course'";
+
+  // $result = mysqli_query($con, $sql);
+
   $sql = "SELECT course_number, number_units, required_choice
           FROM subjects
-          WHERE degree_id = $general_degree_id AND course_number = '$course'";
+          WHERE degree_id = ? AND course_number = ?";
+  
+  $stmt = mysqli_stmt_init($con);
+  mysqli_stmt_prepare($stmt, $sql);
+  mysqli_stmt_bind_param($stmt, "is", $general_degree_id, $course);
+  mysqli_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
 
-  $result = mysqli_query($con, $sql);
   //print_r(mysqli_fetch_assoc($result));
   if (mysqli_num_rows($result) == 1) {
 
@@ -111,11 +131,20 @@ function categorize($con, $course, $general_degree_id, $specialized_degree_id, &
 
   electives: //lastly, check if elective
   //echo "checking if elective\n";
+  // $sql = "SELECT course_number, number_units, general_or_free
+  //         FROM electives
+  //         WHERE course_number = '$course'";
+
+  // $result = mysqli_query($con, $sql);
   $sql = "SELECT course_number, number_units, general_or_free
           FROM electives
-          WHERE course_number = '$course'";
-
-  $result = mysqli_query($con, $sql);
+          WHERE course_number = ?";
+  
+  $stmt = mysqli_stmt_init($con);
+  mysqli_stmt_prepare($stmt, $sql);
+  mysqli_stmt_bind_param($stmt, "s", $course);
+  mysqli_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
 
   if (mysqli_num_rows($result) == 1) {
     $result = mysqli_fetch_assoc($result);
@@ -155,8 +184,14 @@ function getDegreeIds($degree_nickname, $studno, $student_record, $con, &$genera
   }
 
   //get the general degree_id, to be used for non-major subjects
-  $sql = "SELECT degree_id FROM degree_curriculums WHERE degree_nickname = '$degree_nickname' AND old_new = '$old_new' AND major = '' AND options = ''";
-  $result = mysqli_query($con, $sql);
+  // $sql = "SELECT degree_id FROM degree_curriculums WHERE degree_nickname = '$degree_nickname' AND old_new = '$old_new' AND major = '' AND options = ''";
+  // $result = mysqli_query($con, $sql);
+  $sql = "SELECT degree_id FROM degree_curriculums WHERE degree_nickname = ? AND old_new = ? AND major = '' AND options = ''";
+  $stmt = mysqli_stmt_init($con);
+  mysqli_stmt_prepare($stmt, $sql);
+  mysqli_stmt_bind_param($stmt, "ss", $degree_nickname, $old_new);
+  mysqli_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
 
   $row = mysqli_fetch_assoc($result);
   //echo $row['degree_id'];
@@ -168,11 +203,22 @@ function getDegreeIds($degree_nickname, $studno, $student_record, $con, &$genera
   $sql = 0;
   // get the major degree_id
   if ($options == "Thesis") {
-    $sql = "SELECT degree_id FROM degree_curriculums WHERE degree_nickname = '$degree_nickname' AND old_new = '$old_new' AND options IN('', 'Thesis') AND degree_id != $general_degree_id ";
+    // $sql = "SELECT degree_id FROM degree_curriculums WHERE degree_nickname = '$degree_nickname' AND old_new = '$old_new' AND options IN('', 'Thesis') AND degree_id != $general_degree_id ";
+    $sql = "SELECT degree_id FROM degree_curriculums WHERE degree_nickname = ? AND old_new = ? AND options IN('', 'Thesis') AND degree_id != ? ";
+    $stmt = mysqli_stmt_init($con);
+    mysqli_stmt_prepare($stmt, $sql);
+    mysqli_stmt_bind_param($stmt, "ssi", $degree_nickname, $old_new, $general_degree_id);
+    mysqli_execute($stmt);
   } else {
-    $sql = "SELECT degree_id FROM degree_curriculums WHERE degree_nickname = '$degree_nickname' AND old_new = '$old_new' AND options = 'SP' AND degree_id != $general_degree_id ";
+    // $sql = "SELECT degree_id FROM degree_curriculums WHERE degree_nickname = '$degree_nickname' AND old_new = '$old_new' AND options = 'SP' AND degree_id != $general_degree_id ";
+    $sql = "SELECT degree_id FROM degree_curriculums WHERE degree_nickname = ? AND old_new = ? AND options = 'SP' AND degree_id != ? ";
+    $stmt = mysqli_stmt_init($con);
+    mysqli_stmt_prepare($stmt, $sql);
+    mysqli_stmt_bind_param($stmt, "ssi", $degree_nickname, $old_new, $general_degree_id);
+    mysqli_execute($stmt);
   }
-  $result = mysqli_query($con, $sql);
+  // $result = mysqli_query($con, $sql);
+  $result = mysqli_stmt_get_result($stmt);
 
   $degree_id_results = array();     //hold the degree_ids
 
@@ -195,8 +241,14 @@ function getDegreeIds($degree_nickname, $studno, $student_record, $con, &$genera
   foreach ($student_record as $subj) {
 
     // get degree_id from subjects
-    $sql = "SELECT degree_id FROM subjects WHERE course_number = '$subj->courseno'";
-    $result = mysqli_query($con, $sql);
+    // $sql = "SELECT degree_id FROM subjects WHERE course_number = '$subj->courseno'";
+    // $result = mysqli_query($con, $sql);
+    $sql = "SELECT degree_id FROM subjects WHERE course_number = ?";
+    $stmt = mysqli_stmt_init($con);
+    mysqli_stmt_prepare($stmt, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $subj->courseno);
+    mysqli_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 
     //for every degree_id from result
     while ($row = mysqli_fetch_assoc($result)) {
@@ -216,8 +268,14 @@ function getDegreeIds($degree_nickname, $studno, $student_record, $con, &$genera
 }
 function getDegree($degree_id, $con)
 {
-  $sql = "SELECT * FROM degree_curriculums WHERE degree_id = $degree_id";
-  $result = mysqli_query($con, $sql);
+  // $sql = "SELECT * FROM degree_curriculums WHERE degree_id = $degree_id";
+  // $result = mysqli_query($con, $sql);
+  $sql = "SELECT * FROM degree_curriculums WHERE degree_id = ?";
+  $stmt = mysqli_stmt_init($con);
+  mysqli_stmt_prepare($stmt, $sql);
+  mysqli_stmt_bind_param($stmt, "i", $degree_id);
+  mysqli_execute($stmt);
+  $result = mysqli_stmt_get_result($stmt);
   return mysqli_fetch_assoc($result);
 }
 
@@ -269,8 +327,15 @@ if (!isset($data->degree)) {
 }
 $degree = $data->degree;
 
-$sql = "SELECT * FROM degree_curriculums WHERE degree_nickname = '$degree'";
-$result = mysqli_query($con, $sql);
+// $sql = "SELECT * FROM degree_curriculums WHERE degree_nickname = '$degree'";
+// $result = mysqli_query($con, $sql);
+$sql = "SELECT * FROM degree_curriculums WHERE degree_nickname = ?";
+$stmt = mysqli_stmt_init($con);
+mysqli_stmt_prepare($stmt, $sql);
+mysqli_stmt_bind_param($stmt, "s", $degree);
+mysqli_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+
 //[2.2] if in the database
 if (mysqli_num_rows($result) == 0) {
   $payload = array('msg' => "error: degree program: '" . $degree . "' does not exist");
@@ -461,11 +526,11 @@ foreach ($student_record as $entry) {
     check_if_exceed:  //has to be numerical passing grade to check if it will exceed
     if (strcmp($grade, 'P') != 0) {
 
-      // if (($total_units_taken + (int)$units) > (float)$recommended_required) {
-      //   $remarks .= "Exceed: $courseno cannot be added to database, will exceed total units required\n - total units taken: $total_units_taken\n - recommended units required: $recommended_required";
-      //   $error = 1;
-      //   goto compilation;
-      // }
+      if (($total_units_taken + (int)$units) > (float)$recommended_required) {
+        $remarks .= "Exceed: $courseno cannot be added to database, will exceed total units required\n - total units taken: $total_units_taken\n - recommended units required: $recommended_required";
+        $error = 1;
+        goto compilation;
+      }
 
       //secondly, check if subject is a majors/ge/elective and check if the taken units won't exceed yet
       switch ($subject_elective) {

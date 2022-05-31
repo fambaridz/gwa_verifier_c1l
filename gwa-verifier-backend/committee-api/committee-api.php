@@ -101,8 +101,14 @@ if($verified){
         case 'POST':
 
             //check first if email already exists in the database
-            $sql = "SELECT email FROM committee where email = '$committee->email' ";
-            $result = mysqli_query($conn,$sql);
+            // $sql = "SELECT email FROM committee where email = '$committee->email' ";
+            // $result = mysqli_query($conn,$sql);
+            $sql = "SELECT email FROM committee where email = ? ";
+            $stmt = mysqli_stmt_init($conn);
+            mysqli_stmt_prepare($stmt, $sql);
+            mysqli_stmt_bind_param($stmt, "s", $committee->email);
+            mysqli_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
 
             //if not, proceed with adding new user to database
             if(mysqli_num_rows($result)==0){     
@@ -110,16 +116,24 @@ if($verified){
                 //Encrypts password into SHA-256 hash.
                 $encrypted_password = hash('sha256',$committee->password);
                 //sql query 
-                $sql = "INSERT INTO committee VALUES (  '$committee->email', 
-                                                        '$committee->session_email', 
-                                                        '$encrypted_password', 
-                                                        '$committee->lastname', 
-                                                        '$committee->firstname', 
-                                                        '$committee->middlename', 
-                                                        '$committee->suffix')";
+                // $sql = "INSERT INTO committee VALUES (  '$committee->email', 
+                //                                         '$committee->session_email', 
+                //                                         '$encrypted_password', 
+                //                                         '$committee->lastname', 
+                //                                         '$committee->firstname', 
+                //                                         '$committee->middlename', 
+                //                                         '$committee->suffix')";
 
-                //save result
-                $result = mysqli_query($conn,$sql);
+                // //save result
+                // $result = mysqli_query($conn,$sql);
+                $sql = "INSERT INTO committee VALUES ( ?, ?, ?, ?, ?, ?, ?)";
+                
+                $stmt = mysqli_stmt_init($conn);
+                mysqli_stmt_prepare($stmt, $sql);
+                mysqli_stmt_bind_param($stmt, "sssssss", $committee->email, $committee->session_email, $encrypted_password, $committee->lastname, $committee->firstname, $committee->middlename, $committee->suffix);
+                mysqli_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
+
                 insertActivitylog($committee->session_email, "Added committee account: ".$committee->email, 0, $conn);
             } else {
                 echo $committee->email . "already exists";
@@ -146,29 +160,56 @@ if($verified){
         case 'PUT':
 
             //check first if email already exists in the database
-            $sql = "SELECT email FROM committee where email = '$committee->email' ";
-            $result = mysqli_query($conn,$sql);
+            // $sql = "SELECT email FROM committee where email = '$committee->email' ";
+            // $result = mysqli_query($conn,$sql);
+            $sql = "SELECT email FROM committee where email = ? ";
+            $stmt = mysqli_stmt_init($conn);
+            mysqli_stmt_prepare($stmt, $sql);
+            mysqli_stmt_bind_param($stmt, "s", $committee->email);
+            mysqli_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
 
             //if so, proceed
             if(mysqli_num_rows($result)==1){
                 //Check if password exists
                 if(isset($committee->password) && $committee->password!=""){
                     $encrypted_password = hash('sha256',$committee->password);
-                    $sql = "UPDATE committee SET    email = '$committee->email',
-                                                    password = '$encrypted_password', 
-                                                    lastname = '$committee->lastname', 
-                                                    firstname = '$committee->firstname', 
-                                                    middlename ='$committee->middlename', 
-                                                    suffix = '$committee->suffix' WHERE email = '$committee->email'";
-                    $result = mysqli_query($conn,$sql);                    
+                    // $sql = "UPDATE committee SET    email = '$committee->email',
+                    //                                 password = '$encrypted_password', 
+                    //                                 lastname = '$committee->lastname', 
+                    //                                 firstname = '$committee->firstname', 
+                    //                                 middlename ='$committee->middlename', 
+                    //                                 suffix = '$committee->suffix' WHERE email = '$committee->email'";
+                    // $result = mysqli_query($conn,$sql);
+                    $sql = "UPDATE committee SET    email = ?,
+                                                    password = ?, 
+                                                    lastname = ?, 
+                                                    firstname = ?, 
+                                                    middlename = ?, 
+                                                    suffix = ? WHERE email = ?";
+                    $stmt = mysqli_stmt_init($conn);
+                    mysqli_stmt_prepare($stmt, $sql);
+                    mysqli_stmt_bind_param($stmt, "sssssss", $committee->email, $encrypted_password, $committee->lastname, $committee->firstname, $committee->middlename, $committee->suffix, $committee->email);
+                    mysqli_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);                    
                 }
                 else{
-                    $sql = "UPDATE committee SET    email = '$committee->email', 
-                                                    lastname = '$committee->lastname', 
-                                                    firstname = '$committee->firstname', 
-                                                    middlename ='$committee->middlename', 
-                                                    suffix = '$committee->suffix' WHERE email = '$committee->email'";
-                    $result = mysqli_query($conn,$sql);
+                    // $sql = "UPDATE committee SET    email = '$committee->email', 
+                    //                                 lastname = '$committee->lastname', 
+                    //                                 firstname = '$committee->firstname', 
+                    //                                 middlename ='$committee->middlename', 
+                    //                                 suffix = '$committee->suffix' WHERE email = '$committee->email'";
+                    // $result = mysqli_query($conn,$sql);
+                    $sql = "UPDATE committee SET    email = ?, 
+                                                    lastname = ?, 
+                                                    firstname = ?, 
+                                                    middlename = ?, 
+                                                    suffix = ? WHERE email = ?";
+                    $stmt = mysqli_stmt_init($conn);
+                    mysqli_stmt_prepare($stmt, $sql);
+                    mysqli_stmt_bind_param($stmt, "ssssss", $committee->email, $committee->lastname, $committee->firstname, $committee->middlename, $committee->suffix, $committee->email);
+                    mysqli_execute($stmt);
+                    $result = mysqli_stmt_get_result($stmt);
                 }
                 insertActivitylog($committee->session_email, "Edited committee account: ".$committee->email, 0, $conn);
 
@@ -183,8 +224,14 @@ if($verified){
         case 'DELETE':
 
             //check first if email already exists in the database
-            $sql = "SELECT email FROM committee where email = '$committee->email' ";
-            $result = mysqli_query($conn,$sql);
+            // $sql = "SELECT email FROM committee where email = '$committee->email' ";
+            // $result = mysqli_query($conn,$sql);
+            $sql = "SELECT email FROM committee where email = ? ";
+            $stmt = mysqli_stmt_init($conn);
+            mysqli_stmt_prepare($stmt, $sql);
+            mysqli_stmt_bind_param($stmt, "s", $committee->email);
+            mysqli_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
 
             //if so, proceed
             if(mysqli_num_rows($result)==1){
