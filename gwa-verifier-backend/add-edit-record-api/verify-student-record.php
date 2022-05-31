@@ -415,8 +415,9 @@ $response = array(
 );
 //print_r($response);
 
-$records_remarks = array();   //will contain all records that have been checked for validation and it's remarks, to be later inserted into $response
-$passed_courses = array();
+$records_remarks = array();   // will contain all records that have been checked for validation and it's remarks, to be later inserted into $response
+$passed_courses = array();    // contains courses that have a passing grade; used to make sure a student doesn't take the same course when it was already taken
+$taken_per_term = array();    // will contain elements of "term" -> array("courseno1", "courseno2", ...); 
 $passing_grade = array('1.00', '1.25', '1.50', '1.75', '2.00', '2.25', '2.5', '2.75', '3.0', 'P');
 $non_passing_grade = array('4.00', '5.00', 'INC', 'DRP', 'DFG', 'U', 'S');
 
@@ -511,27 +512,33 @@ foreach ($student_record as $entry) {
   if (preg_match("/\b(I{1,2}|M)\/[0-9]{2}\/[0-9]{2}$/", $term)) $valid_term = 1;
   else $error = 1;
 
-  insertability: //if everything has been valid thus far
-  if ($valid_grade && $valid_units && $valid_enrolled && $valid_total && $valid_term) {
-
-    check_if_duplicate:
-    //check if this course has already been taken
+  check_if_duplicate: //check if this course has already been passed
     if (in_array($courseno, $passed_courses)) {
-      $remarks .= "Duplicate: $courseno cannot be added to database\n";
+      $remarks .= "Duplicate: $courseno cannot be added to database, student already passed this course\n";
       $duplicate = 1;
       $error = 1;
       goto compilation;
     }
 
+  taken_this_term: //check if this course was already taken this term
+  if (isset($taken_per_term[$term]) && in_array($courseno, $taken_per_term[$term])) {
+    $remarks .= "Duplicate: $courseno was already taken for this term $term\n";
+    $duplicate = 1;
+    $error = 1;
+    goto compilation;
+  }
+  else $taken_per_term[$term][] = $courseno;
+
+  insertability: //if everything has been valid thus far
+  if ($valid_grade && $valid_units && $valid_enrolled && $valid_total && $valid_term) {
+
     check_if_exceed:  //has to be numerical passing grade to check if it will exceed
     if (strcmp($grade, 'P') != 0) {
-
       if (($total_units_taken + (int)$units) > (float)$recommended_required) {
         $remarks .= "Exceed: $courseno cannot be added to database, will exceed total units required\n - total units taken: $total_units_taken\n - recommended units required: $recommended_required";
         $error = 1;
         goto compilation;
       }
-
       //secondly, check if subject is a majors/ge/elective and check if the taken units won't exceed yet
       switch ($subject_elective) {
         case 0:   //check if student already took HK 11
@@ -657,7 +664,8 @@ foreach ($student_record as $entry) {
     }
     $remarks .= "OK: $courseno can added to database\n";
     $valid_entry = 1;
-  } else {
+  } 
+  else {
     //this should be fine, total_units_taken naman unang chinecheck
     if ($total_units_taken == 0 && !in_array($subject_elective, array(0, 1, 2, 3))) {
       $msg = "stopping verification early because of an inconsistency found in $courseno, please make sure the following are correct:";
@@ -691,11 +699,11 @@ foreach ($student_record as $entry) {
       $remarks .= "- running total, $total; expected: $calculated_running_total\n";
     if (!$valid_term)
       $remarks .= "- term, $term; unexpected value/format\n";
-    //echo $remarks;
   }
 
-  //echo "$courseno checked! subject_elective = $subject_elective\n"; //uncomment to see what courses have been checked
+  
   compilation:  //after checking an entire entry, record in an array all details about it's validity and remarks
+  //echo "$courseno checked! subject_elective = $subject_elective\n"; //uncomment to see what courses have been checked
   //echo $remarks."\n";
   $records_remarks[] = array(
     'courseno' => $courseno,
@@ -747,7 +755,9 @@ $response['total_units_taken'] = $total_units_taken;
 //notice: total_units_taken will only contain units from entries that are VALID AND PASSING
 $response['gwa'] = (float)$verified_running_total / (float)$total_units_taken;
 $response['records_remarks'] = $records_remarks;
+$response['courses_taken_per_term'] = $taken_per_term;
 
+//print_r($taken_per_term);
 //print_r($response); //uncomment to see a pretty/cleaner version of what the response looks like :>
 echo json_encode($response);
 
