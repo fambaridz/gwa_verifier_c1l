@@ -107,7 +107,7 @@ if($verified){
             $stmt = mysqli_stmt_init($conn);
             mysqli_stmt_prepare($stmt, $sql);
             mysqli_stmt_bind_param($stmt, "s", $committee->email);
-            mysqli_execute($stmt);
+            mysqli_stmt_execute($stmt);
             $result = mysqli_stmt_get_result($stmt);
 
             //if not, proceed with adding new user to database
@@ -131,7 +131,7 @@ if($verified){
                 $stmt = mysqli_stmt_init($conn);
                 mysqli_stmt_prepare($stmt, $sql);
                 mysqli_stmt_bind_param($stmt, "sssssss", $committee->email, $committee->session_email, $encrypted_password, $committee->lastname, $committee->firstname, $committee->middlename, $committee->suffix);
-                mysqli_execute($stmt);
+                mysqli_stmt_execute($stmt);
                 $result = mysqli_stmt_get_result($stmt);
 
                 insertActivitylog($committee->session_email, "Added committee account: ".$committee->email, 0, $conn);
@@ -166,7 +166,7 @@ if($verified){
             $stmt = mysqli_stmt_init($conn);
             mysqli_stmt_prepare($stmt, $sql);
             mysqli_stmt_bind_param($stmt, "s", $committee->email);
-            mysqli_execute($stmt);
+            mysqli_stmt_execute($stmt);
             $result = mysqli_stmt_get_result($stmt);
 
             //if so, proceed
@@ -190,7 +190,7 @@ if($verified){
                     $stmt = mysqli_stmt_init($conn);
                     mysqli_stmt_prepare($stmt, $sql);
                     mysqli_stmt_bind_param($stmt, "sssssss", $committee->email, $encrypted_password, $committee->lastname, $committee->firstname, $committee->middlename, $committee->suffix, $committee->email);
-                    mysqli_execute($stmt);
+                    mysqli_stmt_execute($stmt);
                     $result = mysqli_stmt_get_result($stmt);                    
                 }
                 else{
@@ -208,7 +208,7 @@ if($verified){
                     $stmt = mysqli_stmt_init($conn);
                     mysqli_stmt_prepare($stmt, $sql);
                     mysqli_stmt_bind_param($stmt, "ssssss", $committee->email, $committee->lastname, $committee->firstname, $committee->middlename, $committee->suffix, $committee->email);
-                    mysqli_execute($stmt);
+                    mysqli_stmt_execute($stmt);
                     $result = mysqli_stmt_get_result($stmt);
                 }
                 insertActivitylog($committee->session_email, "Edited committee account: ".$committee->email, 0, $conn);
@@ -230,13 +230,19 @@ if($verified){
             $stmt = mysqli_stmt_init($conn);
             mysqli_stmt_prepare($stmt, $sql);
             mysqli_stmt_bind_param($stmt, "s", $committee->email);
-            mysqli_execute($stmt);
+            mysqli_stmt_execute($stmt);
             $result = mysqli_stmt_get_result($stmt);
 
             //if so, proceed
             if(mysqli_num_rows($result)==1){
-                $sql = "DELETE from committee WHERE email = '$committee->email'";
-                $result = mysqli_query($conn,$sql);
+                // $sql = "DELETE from committee WHERE email = '$committee->email'";
+                // $result = mysqli_query($conn,$sql);
+                $sql = "DELETE from committee WHERE email = ?";
+                $stmt = mysqli_stmt_init($conn);
+                mysqli_stmt_prepare($stmt, $sql);
+                mysqli_stmt_bind_param($stmt, "s", $committee->email);
+                mysqli_stmt_execute($stmt);
+                $result = mysqli_stmt_get_result($stmt);
                 insertActivitylog($committee->session_email, "Deleted committee account: ".$committee->email, 0, $conn);
             } else {
                 //else, exit

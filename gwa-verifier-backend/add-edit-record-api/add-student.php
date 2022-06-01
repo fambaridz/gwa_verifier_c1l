@@ -47,7 +47,7 @@ function check_studno_if_exist($studno, $con)
   $stmt = mysqli_stmt_init($con);
   mysqli_stmt_prepare($stmt, $sql);
   mysqli_stmt_bind_param($stmt, "i", $studno);
-  mysqli_execute($stmt);
+  mysqli_stmt_execute($stmt);
   $result = mysqli_stmt_get_result($stmt);
 
   //return 1 if existing
@@ -64,12 +64,12 @@ function check_degree_if_exist($degree, $con)
   // $sql = "SELECT degree_nickname FROM degree_curriculums WHERE degree_nickname='$degree'";
   // $result = mysqli_query($con, $sql);
 
-  $sql = "SELECT degree_nickname FROM degree_curriculums WHERE degree_nickname='s'";
+  $sql = "SELECT degree_nickname FROM degree_curriculums WHERE degree_nickname=?";
   
   $stmt = mysqli_stmt_init($con);
   mysqli_stmt_prepare($stmt, $sql);
   mysqli_stmt_bind_param($stmt, "s", $degree);
-  mysqli_execute($stmt);
+  mysqli_stmt_execute($stmt);
   $result = mysqli_stmt_get_result($stmt);
 
   //return 1 if existing
@@ -89,8 +89,8 @@ if (!check_studno_if_exist($studno, $con)) {
 
     $stmt = mysqli_stmt_init($con);
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, "isssssiids", $studno , $lname , $fname , $mname , $suffix, $degree, $rec_units, $cred_units, $gwa, $status);
-    mysqli_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "ssssssssss", $studno , $lname , $fname , $mname , $suffix, $degree, $rec_units, $cred_units, $gwa, $status);
+    mysqli_stmt_execute($stmt);
 
     // run SQL statement
     //$result = mysqli_query($con, $sql);

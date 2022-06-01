@@ -84,8 +84,8 @@ function categorize($con, $course, $general_degree_id, $specialized_degree_id, &
   
   $stmt = mysqli_stmt_init($con);
   mysqli_stmt_prepare($stmt, $sql);
-  mysqli_stmt_bind_param($stmt, "is", $general_degree_id, $course);
-  mysqli_execute($stmt);
+  mysqli_stmt_bind_param($stmt, "ss", $general_degree_id, $course);
+  mysqli_stmt_execute($stmt);
   $result = mysqli_stmt_get_result($stmt);
 
   majors: //check specialized degree_id; if major units neeeded for this degree is 0, skip
@@ -100,8 +100,8 @@ function categorize($con, $course, $general_degree_id, $specialized_degree_id, &
           WHERE degree_id = ? AND course_number = ?";
   $stmt = mysqli_stmt_init($con);
   mysqli_stmt_prepare($stmt, $sql);
-  mysqli_stmt_bind_param($stmt, "is", $specialized_degree_id, $course);
-  mysqli_execute($stmt);
+  mysqli_stmt_bind_param($stmt, "ss", $specialized_degree_id, $course);
+  mysqli_stmt_execute($stmt);
   $result = mysqli_stmt_get_result($stmt);
 
   if (mysqli_num_rows($result) == 1) {
@@ -141,7 +141,7 @@ function categorize($con, $course, $general_degree_id, $specialized_degree_id, &
   $stmt = mysqli_stmt_init($con);
   mysqli_stmt_prepare($stmt, $sql);
   mysqli_stmt_bind_param($stmt, "s", $course);
-  mysqli_execute($stmt);
+  mysqli_stmt_execute($stmt);
   $result = mysqli_stmt_get_result($stmt);
 
   if (mysqli_num_rows($result) == 1) {
@@ -188,7 +188,7 @@ function getDegreeIds($degree_nickname, $studno, $student_record, $con, &$genera
   $stmt = mysqli_stmt_init($con);
   mysqli_stmt_prepare($stmt, $sql);
   mysqli_stmt_bind_param($stmt, "ss", $degree_nickname, $old_new);
-  mysqli_execute($stmt);
+  mysqli_stmt_execute($stmt);
   $result = mysqli_stmt_get_result($stmt);
 
   $row = mysqli_fetch_assoc($result);
@@ -205,15 +205,15 @@ function getDegreeIds($degree_nickname, $studno, $student_record, $con, &$genera
     $sql = "SELECT degree_id FROM degree_curriculums WHERE degree_nickname = ? AND old_new = ? AND options IN('', 'Thesis') AND degree_id != ? ";
     $stmt = mysqli_stmt_init($con);
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, "ssi", $degree_nickname, $old_new, $general_degree_id);
-    mysqli_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "sss", $degree_nickname, $old_new, $general_degree_id);
+    mysqli_stmt_execute($stmt);
   } else {
     // $sql = "SELECT degree_id FROM degree_curriculums WHERE degree_nickname = '$degree_nickname' AND old_new = '$old_new' AND options = 'SP' AND degree_id != $general_degree_id ";
     $sql = "SELECT degree_id FROM degree_curriculums WHERE degree_nickname = ? AND old_new = ? AND options = 'SP' AND degree_id != ? ";
     $stmt = mysqli_stmt_init($con);
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, "ssi", $degree_nickname, $old_new, $general_degree_id);
-    mysqli_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "sss", $degree_nickname, $old_new, $general_degree_id);
+    mysqli_stmt_execute($stmt);
   }
   // $result = mysqli_query($con, $sql);
   $result = mysqli_stmt_get_result($stmt);
@@ -245,7 +245,7 @@ function getDegreeIds($degree_nickname, $studno, $student_record, $con, &$genera
     $stmt = mysqli_stmt_init($con);
     mysqli_stmt_prepare($stmt, $sql);
     mysqli_stmt_bind_param($stmt, "s", $subj->courseno);
-    mysqli_execute($stmt);
+    mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
     //for every degree_id from result
@@ -271,8 +271,8 @@ function getDegree($degree_id, $con)
   $sql = "SELECT * FROM degree_curriculums WHERE degree_id = ?";
   $stmt = mysqli_stmt_init($con);
   mysqli_stmt_prepare($stmt, $sql);
-  mysqli_stmt_bind_param($stmt, "i", $degree_id);
-  mysqli_execute($stmt);
+  mysqli_stmt_bind_param($stmt, "s", $degree_id);
+  mysqli_stmt_execute($stmt);
   $result = mysqli_stmt_get_result($stmt);
   return mysqli_fetch_assoc($result);
 }
@@ -331,7 +331,7 @@ $sql = "SELECT * FROM degree_curriculums WHERE degree_nickname = ?";
 $stmt = mysqli_stmt_init($con);
 mysqli_stmt_prepare($stmt, $sql);
 mysqli_stmt_bind_param($stmt, "s", $degree);
-mysqli_execute($stmt);
+mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
 //[2.2] if in the database

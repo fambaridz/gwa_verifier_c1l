@@ -50,7 +50,7 @@ function insertActivitylog ($email, $activity, $studno, $con){
         $stmt = mysqli_stmt_init($con);
         mysqli_stmt_prepare($stmt, $sql);
         mysqli_stmt_bind_param($stmt, "sss", $email, $date, $activity_studno);
-        mysqli_execute($stmt);
+        mysqli_stmt_execute($stmt);
         
     } else{
         //$sql = "INSERT INTO activity_log (email, date, activity) VALUES('$email', '$date', '$activity')";
@@ -58,7 +58,7 @@ function insertActivitylog ($email, $activity, $studno, $con){
         $stmt = mysqli_stmt_init($con);
         mysqli_stmt_prepare($stmt, $sql);
         mysqli_stmt_bind_param($stmt, "sss", $email, $date, $activity);
-        mysqli_execute($stmt);
+        mysqli_stmt_execute($stmt);
     }
     // echo $sql;
     //$result = mysqli_query($con, $sql);

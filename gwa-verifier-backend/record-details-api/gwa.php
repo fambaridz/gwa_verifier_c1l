@@ -28,8 +28,8 @@ switch($body->term) {
     $sql = "SELECT units, enrolled FROM student_record WHERE student_number = ?";
     $stmt = mysqli_stmt_init($con);
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $body->student_number);
-    mysqli_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "s", $body->student_number);
+    mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     break;
   default:
@@ -39,8 +39,8 @@ switch($body->term) {
     $sql = "SELECT units, enrolled FROM student_record WHERE student_number = ? AND term = ?";
     $stmt = mysqli_stmt_init($con);
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, "is", $body->student_number, $body->term);
-    mysqli_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "ss", $body->student_number, $body->term);
+    mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     break;
 }

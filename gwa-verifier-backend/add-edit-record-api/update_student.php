@@ -96,8 +96,8 @@ function check_studno_if_exist($stud_no, $con)
   $sql = "SELECT student_number FROM student WHERE student_number=?";
   $stmt = mysqli_stmt_init($con);
   mysqli_stmt_prepare($stmt, $sql);
-  mysqli_stmt_bind_param($stmt, "i", $stud_no);
-  mysqli_execute($stmt);
+  mysqli_stmt_bind_param($stmt, "s", $stud_no);
+  mysqli_stmt_execute($stmt);
   $result = mysqli_stmt_get_result($stmt);
 
   if (mysqli_num_rows($result) >= 1) {
@@ -117,7 +117,7 @@ function check_degree_if_exist($degree, $con)
   $stmt = mysqli_stmt_init($con);
   mysqli_stmt_prepare($stmt, $sql);
   mysqli_stmt_bind_param($stmt, "s", $degree);
-  mysqli_execute($stmt);
+  mysqli_stmt_execute($stmt);
   $result = mysqli_stmt_get_result($stmt);
 
   //if existing
@@ -136,8 +136,8 @@ function check_studno_in_comments($studno, $con)
   $sql = "SELECT * FROM committee_student WHERE student_number=?";
   $stmt = mysqli_stmt_init($con);
   mysqli_stmt_prepare($stmt, $sql);
-  mysqli_stmt_bind_param($stmt, "i", $studno);
-  mysqli_execute($stmt);
+  mysqli_stmt_bind_param($stmt, "s", $studno);
+  mysqli_stmt_execute($stmt);
   $result = mysqli_stmt_get_result($stmt);
   
 
@@ -184,16 +184,16 @@ if (!check_degree_if_exist($degree, $con)) {
 //                 WHERE student_number = $old_stud_no;
 //                 ";
 $sql = "UPDATE student 
-                SET student_number = '$new_stud_no', lastname = '$lName', firstname = '$fName', 
-                middlename = '$mName', suffix = '$suffix', degree_program = '$degree', recommended_number_units	 = '$recommendedUnits', 
-                credited_units = '$creditedUnits', gwa = '$gwa', status = '$status'
-                WHERE student_number = $old_stud_no;
+                SET student_number = ?, lastname = '?, firstname = ?, 
+                middlename = ?, suffix = ?, degree_program = ?, recommended_number_units	 = ?, 
+                credited_units = ?, gwa = ?, status = ?
+                WHERE student_number = ?;
                 ";
 
 $stmt = mysqli_stmt_init($con);
 mysqli_stmt_prepare($stmt, $sql);
-mysqli_stmt_bind_param($stmt, "isssssiidsi", $new_stud_no, $lName, $fName, $mName, $suffix, $degree, $recommendedUnits, $creditedUnits, $gwa, $status, $old_stud_no);
-mysqli_execute($stmt);
+mysqli_stmt_bind_param($stmt, "sssssssssss", $new_stud_no, $lName, $fName, $mName, $suffix, $degree, $recommendedUnits, $creditedUnits, $gwa, $status, $old_stud_no);
+mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 
 // run SQL statement
@@ -210,13 +210,13 @@ if ($new_stud_no != $old_stud_no) {
 
   // $updateStudentRecord = mysqli_query($con, $updateStudentNumberInStudRecord);
   $updateStudentNumberInStudRecord = "UPDATE student_record 
-                                   SET student_number = '$new_stud_no'
-                                   WHERE student_number = $old_stud_no;
+                                   SET student_number = ?
+                                   WHERE student_number = ?
                                    ";
   $stmt = mysqli_stmt_init($con);
   mysqli_stmt_prepare($stmt, $updateStudentNumberInStudRecord);
-  mysqli_stmt_bind_param($stmt, "ii", $new_stud_no, $old_stud_no);
-  mysqli_execute($stmt);
+  mysqli_stmt_bind_param($stmt, "ss", $new_stud_no, $old_stud_no);
+  mysqli_stmt_execute($stmt);
   $updateStudentRecord = mysqli_stmt_get_result($stmt);
 
   if (!$updateStudentRecord) {
@@ -238,13 +238,13 @@ if ($new_stud_no != $old_stud_no) {
     //                                           ";
     // $updateCommitteStudent = mysqli_query($con, $updateStudentNumberInCommmStud);
     $updateStudentNumberInCommmStud = "UPDATE committee_student 
-                                              SET student_number = '$new_stud_no'
-                                              WHERE student_number = $old_stud_no;
+                                              SET student_number = ?
+                                              WHERE student_number = ?
                                               ";
     $stmt = mysqli_stmt_init($con);
     mysqli_stmt_prepare($stmt, $updateStudentNumberInCommmStud);
-    mysqli_stmt_bind_param($stmt, "ii", $new_stud_no, $old_stud_no);
-    mysqli_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "ss", $new_stud_no, $old_stud_no);
+    mysqli_stmt_execute($stmt);
     $updateCommitteStudent = mysqli_stmt_get_result($stmt);
 
     if (!$updateCommitteStudent) {

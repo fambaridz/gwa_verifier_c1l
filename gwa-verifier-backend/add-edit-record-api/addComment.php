@@ -32,8 +32,8 @@ $comment = isset($data['comment']) ? $data['comment'] : 0;
 $sql = "INSERT INTO committee_student (committee_email, student_number, comments) VALUES (?, ?, ?)";
 $stmt = mysqli_stmt_init($con);
 mysqli_stmt_prepare($stmt, $sql);
-mysqli_stmt_bind_param($stmt, "sis", $email, $studno, $comment);
-mysqli_execute($stmt);
+mysqli_stmt_bind_param($stmt, "sss", $email, $studno, $comment);
+mysqli_stmt_execute($stmt);
 
 
 if ($studno == 0) die();

@@ -43,8 +43,8 @@ foreach ($ids as $id) {
     $sql = "DELETE FROM student_record WHERE id=?";
     $stmt = mysqli_stmt_init($con);
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $id);
-    mysqli_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "s", $id);
+    mysqli_stmt_execute($stmt);
 
     // run SQL statement
     // $result = mysqli_query($con, $sql);

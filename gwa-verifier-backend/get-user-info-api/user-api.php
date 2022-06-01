@@ -48,7 +48,7 @@ if( array_key_exists("email",$_COOKIE) and isset($_COOKIE["email"]) ){
             $stmt = mysqli_stmt_init($con);
             mysqli_stmt_prepare($stmt, $sql);
             mysqli_stmt_bind_param($stmt, "s", $_COOKIE[$cookie_email]);
-            mysqli_execute($stmt);
+            mysqli_stmt_execute($stmt);
             $result = mysqli_stmt_get_result($stmt);
             
             //Check if user exists

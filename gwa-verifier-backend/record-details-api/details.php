@@ -42,8 +42,8 @@ switch ($body->action) {
     $sql = "SELECT * FROM student WHERE student_number = ?";
     $stmt = mysqli_stmt_init($con);
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $body->student_number);
-    mysqli_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "s", $body->student_number);
+    mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $result2 = True;
     $result3 = True;
@@ -55,8 +55,8 @@ switch ($body->action) {
     $sql = "SELECT id, course_number, grade, units, enrolled, running_total, term FROM student_record WHERE student_number = ?";
     $stmt = mysqli_stmt_init($con);
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $body->student_number);
-    mysqli_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "s", $body->student_number);
+    mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $result2 = True;
     $result3 = True;
@@ -68,8 +68,8 @@ switch ($body->action) {
     $sql = "SELECT committee_email, comments FROM committee_student WHERE student_number = ?";
     $stmt = mysqli_stmt_init($con);
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $body->student_number);
-    mysqli_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "s", $body->student_number);
+    mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $result2 = True;
     $result3 = True;
@@ -82,22 +82,22 @@ switch ($body->action) {
     $sql = "DELETE FROM student_record WHERE student_number = ?";
     $stmt = mysqli_stmt_init($con);
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $body->student_number);
-    mysqli_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "s", $body->student_number);
+    mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
     $sql2 = "DELETE FROM student WHERE student_number = ?";
     $stmt = mysqli_stmt_init($con);
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $body->student_number);
-    mysqli_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "s", $body->student_number);
+    mysqli_stmt_execute($stmt);
     $result2 = mysqli_stmt_get_result($stmt);
 
     $sql3 = "DELETE FROM committee_student WHERE student_number = ?";
     $stmt = mysqli_stmt_init($con);
     mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, "i", $body->student_number);
-    mysqli_execute($stmt);
+    mysqli_stmt_bind_param($stmt, "s", $body->student_number);
+    mysqli_stmt_execute($stmt);
     $result3 = mysqli_stmt_get_result($stmt);
 
     break;
@@ -115,8 +115,8 @@ switch ($body->action) {
         $sql = "UPDATE student SET status = ? WHERE student.student_number = ?";
         $stmt = mysqli_stmt_init($con);
         mysqli_stmt_prepare($stmt, $sql);
-        mysqli_stmt_bind_param($stmt, "si", $body->newStatus, $body->student_number);
-        mysqli_execute($stmt);
+        mysqli_stmt_bind_param($stmt, "ss", $body->newStatus, $body->student_number);
+        mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
         $result2 = True;
         $result3 = True;
@@ -133,7 +133,7 @@ switch ($body->action) {
     $stmt = mysqli_stmt_init($con);
     mysqli_stmt_prepare($stmt, $sql);
     mysqli_stmt_bind_param($stmt, "s", $body->term);
-    mysqli_execute($stmt);
+    mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     $result2 = True;
     $result3 = True;

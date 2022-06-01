@@ -37,8 +37,8 @@ foreach ($lst as $i) {
   $sql = "INSERT INTO student_record(student_number, course_number, grade, units, enrolled, running_total, term) VALUES (?, ?, ?, ?, ?, ?, ?)";
   $stmt = mysqli_stmt_init($con);
   mysqli_stmt_prepare($stmt, $sql);
-  mysqli_stmt_bind_param($stmt, "isssdds", $studno, $i[courseno], $grade, $units, $enrolled, $runningtotal, $i[term]);
-  mysqli_execute($stmt);
+  mysqli_stmt_bind_param($stmt, "sssssss", $studno, $i[courseno], $grade, $units, $enrolled, $runningtotal, $i[term]);
+  mysqli_stmt_execute($stmt);
 
   // run SQL statement
   //$result = mysqli_query($con, $sql);
