@@ -39,16 +39,10 @@ foreach ($ids as $id) {
 
     // TODO: Check if student record exists
     //query
-    //$sql = "DELETE FROM student_record WHERE id='$id'";
-    $sql = "DELETE FROM student_record WHERE id=?";
-    $stmt = mysqli_stmt_init($con);
-    mysqli_stmt_prepare($stmt, $sql);
-    mysqli_stmt_bind_param($stmt, "s", $id);
-    mysqli_stmt_execute($stmt);
+    $sql = "DELETE FROM student_record WHERE id='$id'";
 
     // run SQL statement
-    // $result = mysqli_query($con, $sql);
-    $result = mysqli_stmt_get_result($stmt);
+    $result = mysqli_query($con, $sql);
     if (!$result) $hasError = True;
 }
 

@@ -28,19 +28,11 @@ $studno = isset($data['studno']) ? (int)$data['studno'] : 0;
 $comment = isset($data['comment']) ? $data['comment'] : 0;
 
 //query
-//$sql = "INSERT INTO committee_student (committee_email, student_number, comments) VALUES ('$email','$studno','$comment')";
-$sql = "INSERT INTO committee_student (committee_email, student_number, comments) VALUES (?, ?, ?)";
-$stmt = mysqli_stmt_init($con);
-mysqli_stmt_prepare($stmt, $sql);
-mysqli_stmt_bind_param($stmt, "sss", $email, $studno, $comment);
-mysqli_stmt_execute($stmt);
-
-
+$sql = "INSERT INTO committee_student (committee_email, student_number, comments) VALUES ('$email','$studno','$comment')";
 if ($studno == 0) die();
 // run SQL statement
 
-//$result = mysqli_query($con, $sql);
-$result = mysqli_stmt_get_result($stmt);
+$result = mysqli_query($con, $sql);
 
 // die if SQL statement failed
 if (!$result) {

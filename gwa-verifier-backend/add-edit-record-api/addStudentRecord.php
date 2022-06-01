@@ -33,16 +33,10 @@ foreach ($lst as $i) {
   $runningtotal = (float)$i['total'];
 
   //query - insert student no, last name, first name, middle name, suffix, degree, recommended no units, credited units, gwa, status
-  //$sql = "INSERT INTO student_record(student_number, course_number, grade, units, enrolled, running_total, term) VALUES ('$studno','$i[courseno]','$grade','$units','$enrolled','$runningtotal','$i[term]')";
-  $sql = "INSERT INTO student_record(student_number, course_number, grade, units, enrolled, running_total, term) VALUES (?, ?, ?, ?, ?, ?, ?)";
-  $stmt = mysqli_stmt_init($con);
-  mysqli_stmt_prepare($stmt, $sql);
-  mysqli_stmt_bind_param($stmt, "sssssss", $studno, $i[courseno], $grade, $units, $enrolled, $runningtotal, $i[term]);
-  mysqli_stmt_execute($stmt);
+  $sql = "INSERT INTO student_record(student_number, course_number, grade, units, enrolled, running_total, term) VALUES ('$studno','$i[courseno]','$grade','$units','$enrolled','$runningtotal','$i[term]')";
 
   // run SQL statement
-  //$result = mysqli_query($con, $sql);
-  $result = mysqli_stmt_get_result($stmt);
+  $result = mysqli_query($con, $sql);
 }
 
 $con->close();
