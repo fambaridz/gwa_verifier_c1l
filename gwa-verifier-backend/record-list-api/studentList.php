@@ -79,6 +79,10 @@ else if ($method == 'POST') {
         $new[] = $r; 
     }
 
+    // delete from student_record
+    $sql = "DELETE FROM `student_record` WHERE student_number = '{$target->target}'";
+    $result = mysqli_query($con,$sql);
+
     //Update comments in committee_student
     $sql = "DELETE FROM `committee_student` WHERE student_number = '{$target->target}'";
     $result = mysqli_query($con,$sql);
