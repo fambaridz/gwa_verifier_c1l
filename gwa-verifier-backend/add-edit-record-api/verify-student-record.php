@@ -101,13 +101,14 @@ function categorize($con, $course, $general_degree_id, $specialized_degree_id, &
   }
 
   majors: //check specialized degree_id; if major units neeeded for this degree is 0, skip
-  //echo "checking if major\n";
-  // $sql = "SELECT course_number, number_units, required_choice
-  //         FROM subjects
-  //         WHERE degree_id = $specialized_degree_id AND course_number = '$course'";
-
-  // $result = mysqli_query($con, $sql);
+  
   if ($specialized_degree_id != $general_degree_id){
+    //echo "checking if major\n";
+    // $sql = "SELECT course_number, number_units, required_choice
+    //         FROM subjects
+    //         WHERE degree_id = $specialized_degree_id AND course_number = '$course'";
+
+    // $result = mysqli_query($con, $sql);
     $sql = "SELECT course_number, number_units, required_choice
             FROM subjects
             WHERE degree_id = ? AND course_number = ?";
@@ -125,9 +126,6 @@ function categorize($con, $course, $general_degree_id, $specialized_degree_id, &
       return 5; //is a major
     }
   }
-
-  //print_r(mysqli_fetch_assoc($result));
-  
 
   electives: //lastly, check if elective
   //echo "checking if elective\n";
@@ -534,12 +532,12 @@ foreach ($student_record as $entry) {
 
     check_if_exceed:  //has to be numerical passing grade to check if it will exceed
     if (strcmp($grade, 'P') != 0) {
-      if (($total_units_taken + (int)$units) > (float)$recommended_required) {
-        $remarks .= "Exceed: $courseno cannot be added to database, will exceed total units required\n - total units taken: $total_units_taken\n - recommended units required: $recommended_required";
-        $error = 1;
-        goto compilation;
-      }
-      //secondly, check if subject is a majors/ge/elective and check if the taken units won't exceed yet
+      // if (($total_units_taken + (int)$units) > (float)$recommended_required) {
+      //   $remarks .= "Exceed: $courseno cannot be added to database, will exceed total units required\n - total units taken: $total_units_taken\n - recommended units required: $recommended_required";
+      //   $error = 1;
+      //   goto compilation;
+      // } 
+      // secondly, check if subject is a majors/ge/elective and check if the taken units won't exceed yet
       switch ($subject_elective) {
         case 0:   //check if student already took HK 11
           if ($hk11_taken + 1 > $hk11_required) {
@@ -732,8 +730,8 @@ if ($total_units_taken == 0) {
 //echo "taken: $total_units_taken; total: $verified_running_total; GWA: " .(float)$verified_running_total / (float)$total_units_taken ."\n";
 //final additions to the response
 if (
-  $total_units_taken == $recommended_required &&
-  $major_units_taken == $major_units_required &&
+  $total_units_taken >= $recommended_required &&
+  $major_units_taken >= $major_units_required &&
   $ge_units_taken == $ge_units_required &&
   $elective_units_taken == $elective_units_required &&
   $hk11_taken == $hk11_required &&
