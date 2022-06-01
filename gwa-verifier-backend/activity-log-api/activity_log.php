@@ -16,9 +16,9 @@ header("Access-Control-Allow-Methods: *");
 // constants
 $DEFAULT_STATUS = 'INCOMPLETE';
 $SUCCESS_RESPONSE = 200;
-$DATE_DEFAULT_TIME_ZONE = 'Singapore';
+$DATE_DEFAULT_TIME_ZONE = 'Asia/Hong_Kong';
 
-
+date_default_timezone_set($DATE_DEFAULT_TIME_ZONE);
 
 $host = "localhost"; 
 $user = "root"; 
@@ -41,17 +41,24 @@ function insertActivitylog ($email, $activity, $studno, $con){
     // This would return
     // $date = '2012-03-06 17:33:07';
     // reference: https://stackoverflow.com/questions/470617/how-do-i-get-the-current-date-and-time-in-php
-
+    $stmt = mysqli_stmt_init($con);
     // if the activity was not a student record
     if ($studno !=0){
         $activity_studno = $activity. ' Student number: '. (string)$studno;
-        $sql = "INSERT INTO activity_log (email, date, activity) VALUES('$email', '$date', '$activity_studno')";
+        $sql = "INSERT INTO activity_log (email, date, activity) VALUES(?, ?, ?)";
+        mysqli_stmt_prepare($stmt, $sql);
+        mysqli_stmt_bind_param($stmt, "sss", $email, $date, $activity_studno);
+        //
         
     } else{
-        $sql = "INSERT INTO activity_log (email, date, activity) VALUES('$email', '$date', '$activity')";
+        $sql = "INSERT INTO activity_log (email, date, activity) VALUES(?, ?, ?)";
+        mysqli_stmt_prepare($stmt, $sql);
+        mysqli_stmt_bind_param($stmt, "sss", $email, $date, $activity);
+        
     }
     // echo $sql;
-    $result = mysqli_query($con, $sql);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
     
     // if (!$result) {
     //     echo "Activity Log unsuccesful";

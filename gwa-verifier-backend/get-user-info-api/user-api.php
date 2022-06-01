@@ -41,9 +41,12 @@ if( array_key_exists("email",$_COOKIE) and isset($_COOKIE["email"]) ){
     switch("$method") {
         //Only accepts GET requests
         case 'GET':
-            $sql = "SELECT firstname, middlename, lastname, account_made_by, suffix FROM committee WHERE email='$_COOKIE[$cookie_email]' limit 1";
-
-            $result = mysqli_query($con,$sql);
+            $sql = "SELECT firstname, middlename, lastname, account_made_by, suffix FROM committee WHERE email=? limit 1";
+            $stmt = mysqli_stmt_init($con);
+            mysqli_stmt_prepare($stmt, $sql);
+            mysqli_stmt_bind_param($stmt, "s", $_COOKIE[$cookie_email]);
+            mysqli_stmt_execute($stmt);
+            $result = mysqli_stmt_get_result($stmt);
             
             //Check if user exists
             //CASE 2: User does not exist, Throw 403 error
