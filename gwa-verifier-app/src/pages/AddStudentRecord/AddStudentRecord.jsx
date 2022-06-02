@@ -24,6 +24,7 @@ import { useDialog } from "../../hooks";
 import { StudentHandler, CommentHandler, RecordHandler } from "../../handlers";
 import { Verifiers } from "../../utils/verifiers.js";
 import { useAuth } from "../../context/AuthContext.jsx";
+import { Pages } from "./utils.js";
 
 const acceptedFiles = ["text/csv"];
 
@@ -38,7 +39,7 @@ function AddStudentRecord() {
   const { open: deleteDialogStatus, toggle: toggleDeleteDialog } = useDialog();
   const [studentRecords, setStudentRecords] = useState({});
   const [gradeRecords, setGradeRecords] = useState({});
-  const [page, setPage] = useState(0);
+  const [currentPage, setPage] = useState(0);
 
   const [saving, setSaving] = useState(false);
 
@@ -57,12 +58,12 @@ function AddStudentRecord() {
   const [studentRecordErrors, setStudentRecordErrors] = useState({});
 
   /*
-  the index represents the page number
+  the index represents the currentPage number
   0, 1, 2, ..., pageNum = length - 1 
   [ uid1, uid2, uid3]
    */
   // sruid stands for "Student Record UID"
-  const [srUidPageMap, setSrUidPageMap] = useState([]);
+  const [pages, setPages] = useState(new Pages());
 
   const [showForceSave, setShowForceSave] = useState(false);
 
@@ -71,15 +72,18 @@ function AddStudentRecord() {
     // get the content of all files
     setParsing(true);
     try {
-      const [_studentRecords, _srUidPageMap, _gradeRecords, _srUidTermMap] =
+      const [_studentRecords, _pages, _gradeRecords, _srUidTermMap] =
         await extractFromFile(files);
 
-      const firstRecord = _srUidPageMap[0];
+      const firstRecord = _pages[0];
       const terms = _srUidTermMap[firstRecord];
       const firstTerm = terms[0];
 
       setStudentRecords(_studentRecords);
-      setSrUidPageMap(_srUidPageMap);
+
+      const newPages = new Pages();
+      newPages.fromIter(_pages);
+      setPages(newPages);
       setGradeRecords(_gradeRecords);
       setTerms(terms);
       setTerm(firstTerm);
@@ -91,7 +95,8 @@ function AddStudentRecord() {
   }
 
   function handleStudentRecordsChange({ name, value }) {
-    const uuid = srUidPageMap[page];
+    const pageNode = pages.getAtIndex(currentPage);
+    const uuid = pageNode.getData();
     const copy = {
       ...studentRecords[uuid],
       [name]: value,
@@ -103,12 +108,14 @@ function AddStudentRecord() {
   // REFACTOR: changed prop from Event e to a string
   function handleCommentChange(newComment) {
     const updateComment = [...comments];
-    updateComment[page] = newComment;
+    updateComment[currentPage] = newComment;
     setComment(updateComment);
   }
 
   function getField(name) {
-    const uid = srUidPageMap[page];
+    const node = pages.getAtIndex(currentPage);
+    if (!node) return "";
+    const uid = node.getData();
     if (!uid) return "";
 
     const studentRecord = studentRecords[uid];
@@ -119,14 +126,14 @@ function AddStudentRecord() {
     return res;
   }
   function nextPage() {
-    if (page === studentRecords.length - 1) return;
-    const newPage = page + 1;
+    if (currentPage === studentRecords.length - 1) return;
+    const newPage = currentPage + 1;
     updateTerms(newPage);
     setPage(newPage);
   }
   function prevPage() {
-    if (page === 0) return;
-    const newPage = page - 1;
+    if (currentPage === 0) return;
+    const newPage = currentPage - 1;
     updateTerms(newPage);
     setPage(newPage);
   }
@@ -135,7 +142,8 @@ function AddStudentRecord() {
    * @param {number} nextPage
    */
   function updateTerms(nextPage) {
-    const srUid = srUidPageMap[nextPage];
+    const node = pages.getAtIndex(nextPage);
+    const srUid = node.getData();
     const _terms = srUidTermMap[srUid];
     const [firstTerm] = _terms;
 
@@ -149,15 +157,19 @@ function AddStudentRecord() {
 
   function popStack() {
     // TODO: extract this logic to a separate function and just import it
-    const uid = srUidPageMap[page];
+    const node = pages.getAtIndex(currentPage);
+    if (!node) return null;
+    const uid = node.getData();
+
     const copyOfStudentRecords = { ...studentRecords };
 
-    const copyOfUidPageMap = [...srUidPageMap];
+    const copyOfPages = pages;
     delete copyOfStudentRecords[uid];
-    copyOfUidPageMap.splice(page, 1);
+
+    copyOfPages.removeAtIndex(currentPage);
 
     const newLength = Object.keys(studentRecords).length - 1;
-    const newPage = page === 0 ? page : page - 1;
+    const newPage = currentPage === 0 ? currentPage : currentPage - 1;
 
     const copyOfGradeRecords = Object.keys(gradeRecords)
       .filter((grUid) => gradeRecords[grUid].srUid !== uid)
@@ -173,15 +185,16 @@ function AddStudentRecord() {
 
     setStudentRecords(copyOfStudentRecords);
     setPage(newPage);
-    setSrUidPageMap(copyOfUidPageMap);
+
+    setPages(copyOfPages);
     if (newLength === 0) {
       redirectToStudentRecords();
       return;
     }
     updateTerms(newPage);
-    // pop the comment at index `page`
+    // pop the comment at index `currentPage`
     const updateComment = [...comments];
-    updateComment.splice(page, 1);
+    updateComment.splice(currentPage, 1);
 
     setComment(updateComment);
   }
@@ -195,31 +208,24 @@ function AddStudentRecord() {
     setGradeRecords({ ...gradeRecords, [uid]: record });
   }
   const presentData = useMemo(() => {
-    const srUid = srUidPageMap[page];
+    const node = pages.getAtIndex(currentPage);
+    if (!node) return [];
+    const srUid = node.getData();
 
     const records = fromMapToArray(gradeRecords, "uid").filter(
       (record) => record.term === term && record.srUid === srUid
     );
     return records;
-  }, [page, srUidPageMap, gradeRecords, term]);
-  // function presentData() {
-  //   // const records = gradeRecords.filter(record => record.term === term);
-
-  //   // get studentUid
-  //   const srUid = srUidPageMap[page];
-
-  //   const records = fromMapToArray(gradeRecords, "uid").filter(
-  //     (record) => record.term === term && record.srUid === srUid
-  //   );
-  //   return records;
-  // }
+  }, [currentPage, pages, gradeRecords, term]);
 
   async function safeSave() {
-    // save the data w/ respect to the current page
+    // save the data w/ respect to the current currentPage
     const verifiers = new Verifiers();
 
     console.log("SAVING?");
-    const uid = srUidPageMap[page];
+    const node = pages.getAtIndex(currentPage);
+    if (!node) return;
+    const uid = node.getData();
 
     const studentRecord = studentRecords[uid];
     let { studNo: studno, recommended, degree } = studentRecord;
@@ -305,9 +311,11 @@ function AddStudentRecord() {
   }
 
   async function forceSave() {
-    // save the data w/ respect to the current page
+    // save the data w/ respect to the current currentPage
     const verifiers = new Verifiers();
-    const uid = srUidPageMap[page];
+    const node = pages.getAtIndex(currentPage);
+    if (!node) return;
+    const uid = node.getData();
 
     const studentRecord = studentRecords[uid];
     let { studNo: studno, recommended } = studentRecord;
@@ -365,7 +373,10 @@ function AddStudentRecord() {
     const studentHandler = new StudentHandler();
     const recordHandler = new RecordHandler();
     const commentHandler = new CommentHandler();
-    const uid = srUidPageMap[page];
+
+    const node = pages.getAtIndex(currentPage);
+    if (!node) return;
+    const uid = node.getData();
 
     const studentRecord = studentRecords[uid];
     let { studNo: studno } = studentRecord;
@@ -411,13 +422,13 @@ function AddStudentRecord() {
       return;
     }
 
-    // // save comments (if any)
-    if (comments[page] && comments[page].trim() !== "") {
+    // save comments (if any)
+    if (comments[currentPage] && comments[currentPage].trim() !== "") {
       try {
         await commentHandler.save({
           email,
           studno,
-          comment: comments[page].trim(),
+          comment: comments[currentPage].trim(),
         });
       } catch (error) {}
     }
@@ -431,7 +442,9 @@ function AddStudentRecord() {
   }
 
   function addRow() {
-    const currSrUid = srUidPageMap[page];
+    const node = pages.getAtIndex(currentPage);
+    if (!node) return;
+    const currSrUid = node.getData();
     const newRecord = {
       term,
       courseno: "",
@@ -459,7 +472,10 @@ function AddStudentRecord() {
     const newTerms = terms.map((term) =>
       term === prevValue ? currValue : term
     );
-    const srUid = srUidPageMap[page];
+
+    const node = pages.getAtIndex(currentPage);
+    if (!node) return;
+    const rUid = node.getData();
     const srUidTermMapCopy = { ...srUidTermMap };
     Object.assign(srUidTermMapCopy, {
       [srUid]: newTerms,
@@ -496,7 +512,7 @@ function AddStudentRecord() {
     const gradeRecordsCopy = {};
     Object.keys(gradeRecords).forEach((grUid) => {
       const record = gradeRecords[grUid];
-      // const { srUid: recordSrUid, term: t } = record;
+
       if (record.srUid === srUid && record.term === term) return;
       Object.assign(gradeRecordsCopy, {
         [grUid]: record,
@@ -517,7 +533,9 @@ function AddStudentRecord() {
   }
 
   function renderErrors({ title, messages }) {
-    const uid = srUidPageMap[page];
+    const node = pages.getAtIndex(currentPage);
+    if (!node) return;
+    const uid = node.getData();
     const keys = Object.keys(messages);
     const listItems =
       keys.length !== 0 && keys.includes(uid)
@@ -542,7 +560,7 @@ function AddStudentRecord() {
           }}
         >
           <CarouselButtons
-            currPage={page}
+            currPage={currentPage}
             maxPage={Object.keys(studentRecords).length}
             saving={saving}
             prevPage={prevPage}
@@ -570,7 +588,7 @@ function AddStudentRecord() {
           handleEditTerm={toggleDialog}
           handleDeleteTerm={toggleDeleteDialog}
           handleComment={handleCommentChange}
-          comment={comments[page] || ""}
+          comment={comments[currentPage] || ""}
           table={
             <>
               {renderErrors({
@@ -626,7 +644,11 @@ function AddStudentRecord() {
       <DeleteTermDialog
         open={deleteDialogStatus}
         term={term}
-        srUid={srUidPageMap[page] || ""}
+        srUid={
+          (pages.getAtIndex(currentPage) &&
+            pages.getAtIndex(currentPage).getData()) ||
+          ""
+        }
         name={`${getField("lname")} ${getField("fname")}`}
         handleCancel={toggleDeleteDialog}
         handleDelete={deleteTerm}
