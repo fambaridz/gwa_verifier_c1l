@@ -80,7 +80,7 @@ function AddStudentRecord() {
       const firstTerm = terms[0];
 
       setStudentRecords(_studentRecords);
-      // setSrUidPageMap(_srUidPageMap);
+
       const newPages = new Pages();
       newPages.fromIter(_pages);
       setPages(newPages);
