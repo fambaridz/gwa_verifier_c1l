@@ -1,4 +1,5 @@
 import * as validators from "./validators.js";
+import { sortGradeRecordsArray } from "./transformers.js";
 import { BACKEND_URI } from "../constants.js";
 export class Verifiers {
   getErrorMessages(data) {
@@ -144,6 +145,7 @@ export class Verifiers {
         gradeRecordsReady
       );
       try {
+        gradeRecordsReady = sortGradeRecordsArray(gradeRecordsReady);
         const student_record = gradeRecordsReady.map((record) => {
           const { courseno, total, grade, units, enrolled, term } = record;
           return {
