@@ -26,6 +26,7 @@ const createWindow = () => {
     width: 800,
     height: 600,
     minWidth: 800,
+    icon: __dirname + '/assets/appLogo.ico',
     // Uncomment webPreferences to disable devtools (for presenting/demo)
     // webPreferences: {
     //   devTools: false
