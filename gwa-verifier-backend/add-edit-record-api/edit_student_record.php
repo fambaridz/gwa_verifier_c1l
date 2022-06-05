@@ -21,6 +21,8 @@ $query = "SELECT * FROM student WHERE student_number=?";
 
 // prepare stamtent
 $stmt = mysqli_stmt_init($conn);
+
+// checks if prepare sql statement is successful
 if (!mysqli_stmt_prepare($stmt, $query)) {
     http_response_code(500);
     echo json_encode([
@@ -29,9 +31,7 @@ if (!mysqli_stmt_prepare($stmt, $query)) {
     return;
 }
 
-// check if student exists
-
-
+// bind, executes and gets restult of sql statements
 // check if student number exists
 mysqli_stmt_bind_param($stmt, "s", $studno);
 mysqli_stmt_execute($stmt);
@@ -48,6 +48,7 @@ if (mysqli_num_rows($result) == 0) {
     return;
 }
 
+// for loop to update student records
 foreach ($data_list as $row) {
     $id = $row["id"];
     $studno = $row['student_number'];
@@ -58,6 +59,7 @@ foreach ($data_list as $row) {
     $runtotal = $row['running_total'];
     $term = $row['term'];
 
+    //sql statement for edit student record
     $sql_2 = "UPDATE student_record SET student_number=?, course_number=?, grade=?, units=?, enrolled=?, running_total=?, term=? WHERE id=?";
     $stmt_2 = mysqli_stmt_init($conn);
     if (!mysqli_stmt_prepare($stmt_2, $sql_2)) {
