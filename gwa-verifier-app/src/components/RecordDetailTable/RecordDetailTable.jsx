@@ -1,3 +1,9 @@
+/*
+  Component: Record details table
+  Description:
+    Displays courses + grades per semester
+*/
+
 import React from "react";
 import {
   Box,
@@ -9,6 +15,13 @@ import {
   TableRow,
 } from "@mui/material";
 
+  /*
+    Function name: RecordDetailTable
+    Description:
+      Responsible for display of courses + grades table
+    Parameter:
+      courses = Holds all courses per semester/all semester
+  */
 function RecordDetailTable({ courses }) {
   if (courses == null) {
     return (
@@ -20,6 +33,7 @@ function RecordDetailTable({ courses }) {
     );
   } else {
     return (
+      // Courses Table
       <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
         <Table size="medium">
           <TableHead>
@@ -39,7 +53,6 @@ function RecordDetailTable({ courses }) {
                 </TableCell>
                 <TableCell>{row.units}</TableCell>
                 <TableCell>{row.grade}</TableCell>
-                {/* To Follow Computation for next rows */}
                 <TableCell>{row.enrolled}</TableCell>
                 <TableCell>{row.running_total}</TableCell>
               </TableRow>

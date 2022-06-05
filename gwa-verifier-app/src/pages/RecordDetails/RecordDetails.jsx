@@ -1,3 +1,19 @@
+/*
+  Page: Record Details page
+  Description:
+    The student record details page shows the student's:
+      Grades per subject and semester
+      GWA
+      Comments
+      Status
+  Features:
+    1. Sorting of subject per semester
+    2. Changing of status of student
+    3. Delete student record
+    4. Display GWA Computation per semester
+    5. Display comments
+*/
+
 import React, { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams, Link } from "react-router-dom";
 import {
@@ -26,13 +42,9 @@ import { BACKEND_URI } from "../../constants.js";
 function RecordDetails() {
   let navigate = useNavigate();
   const studno = useParams().id;
-  let textStatus = "SATISFACTORY";
-  const prevStatus = "UNSATISFACTORY";
-  // const prevStatus = useParams().status;
   const {
     user: { email },
   } = useAuth();
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
   const [comments, setComments] = React.useState(null);
   const [courses, setCourses] = React.useState(null);
   const [details, setDetails] = React.useState(null);
@@ -48,7 +60,7 @@ function RecordDetails() {
     alertSeverity: "",
     isAlert: false,
   });
-
+  // Edit page redirect
   function redirectToEditStudentRecords() {
     navigate("/records/" + studno + "/edit");
   }
@@ -58,6 +70,13 @@ function RecordDetails() {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  /*
+    Function name: handleClose
+    Description:
+      Changing of student status
+    Parameter:
+      e = holds what type of status currently holds
+  */
   const handleClose = (e) => {
     let newStatus = details.status;
     let prevStatus = details.status;
@@ -136,10 +155,17 @@ function RecordDetails() {
           setTimeout(() => {}, 1000);
           setTimeout(window.location.reload(), 5000);
         }
+      })
+      .catch(err => {
+        <Navigate to="/records" />
       });
     setAnchorEl(null);
   };
-
+  /*
+    Function name: handleDeleteRecord
+    Description:
+      Deletes student record
+  */
   const handleDeleteRecord = () => {
     const record = {
       action: "delete-record",
@@ -156,7 +182,7 @@ function RecordDetails() {
         body: JSON.stringify(record),
       });
 
-      const body = await res.text();
+      const body = await res.text().catch(<Navigate to="/records" />);
       if (res.ok) {
         setIsDeleted(true);
         toggleDeleteDialog();
@@ -165,82 +191,108 @@ function RecordDetails() {
 
     deleteRecord().catch(console.error);
   };
-
+  /*
+  Function name: RecordDetails
+  Description:
+    Fetch the following data:
+      Comments
+      Courses (Semesters)
+      Student details
+  */
   useEffect(() => {
+    // Fetching of comments
     const student = {
       action: "get-comments",
       student_number: studno,
     };
 
     const fetchComments = async () => {
-      const res = await fetch(`${BACKEND_URI}/record-details-api/details.php`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(student),
-      });
-
-      const body = await res.text();
-      setComments(JSON.parse(body));
+      try {
+        const res = await fetch(`${BACKEND_URI}/record-details-api/details.php`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(student),
+        }).catch((err) => {
+          <Navigate to="/records" />
+        });
+  
+        const body = await res.text().catch(<Navigate to="/records" />);
+        setComments(JSON.parse(body));
+      } catch (err) {
+        <Navigate to="/records" />
+      }
     };
 
+    // Fetching of courses
     const course = {
       action: "get-courses",
       student_number: studno,
     };
-
     const fetchCourses = async () => {
-      const res = await fetch(`${BACKEND_URI}/record-details-api/details.php`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(course),
-      });
-
-      const body = await res.text();
-      const parsed = JSON.parse(body);
-
-      // loop through all courses, get terms
-      const _terms = ["All"];
-      parsed.forEach((course) => {
-        const { term } = course;
-        if (!term) return;
-        if (!_terms.includes(term)) _terms.push(term);
-      });
-
-      setTerms(_terms);
-      setCurrenTerm(_terms[0]);
-
-      setCourses(parsed);
+      try {
+        const res = await fetch(`${BACKEND_URI}/record-details-api/details.php`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(course),
+        }).catch((error) => {
+          <Navigate to="/records" />
+        });
+    
+        const body = await res.text().catch(<Navigate to="/records" />);
+        const parsed = JSON.parse(body);
+  
+        // loop through all courses, get terms
+        const _terms = ["All"];
+        parsed.forEach((course) => {
+          const { term } = course;
+          if (!term) return;
+          if (!_terms.includes(term)) _terms.push(term);
+        });
+  
+        setTerms(_terms);
+        setCurrenTerm(_terms[0]);
+  
+        setCourses(parsed);
+      } catch (err) {
+        <Navigate to="/records" />
+      }
     };
 
     const stud_details = {
       action: "get-student",
       student_number: studno,
     };
-
+    // Fetching of details
     const fetchDetails = async () => {
-      const res = await fetch(`${BACKEND_URI}/record-details-api/details.php`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(stud_details),
-      });
-
-      const body = await res.text();
-      const stud = JSON.parse(body)[0];
-      setDetails(stud);
-      setName(
-        [stud.firstname, stud.middlename, stud.lastname, stud.suffix].join(" ")
-      );
+      try {
+        const res = await fetch(`${BACKEND_URI}/record-details-api/details.php`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(stud_details),
+        }).catch((error) => {
+          <Navigate to="/records" />
+        });
+  
+        const body = await res.text().catch(<Navigate to="/records" />);
+        const stud = JSON.parse(body)[0];
+        setDetails(stud);
+        setName(
+          [stud.firstname, stud.middlename, stud.lastname, stud.suffix].join(" ")
+        );
+      } catch (err) {
+        <Navigate to="/records" />
+      }
     };
 
-    fetchComments().catch(console.error);
-    fetchCourses().catch(console.error);
-    fetchDetails().catch(console.error);
+    fetchComments().catch(<Navigate to="/records" />);
+    fetchCourses().catch(<Navigate to="/records" />);
+    fetchDetails().catch(<Navigate to="/records" />);
   }, []);
 
   // if student record was deleted
@@ -259,11 +311,13 @@ function RecordDetails() {
 
   return (
     <div>
+      {/* Mini header */}
       <Box sx={{ mt: 2.5, ml: 3, fontSize: 14 }}>
         <Link to="/records" className="back-link">
           &lt; Back to Student Records
         </Link>
       </Box>
+      {/* Body portion */}
       <Box sx={{ m: 3.5, flexGrow: 1 }}>
         {/* Toolbars for header */}
         <Toolbar>
@@ -357,7 +411,7 @@ function RecordDetails() {
             </Select>
           </FormControl>
         </Box>
-        {/* Table 1 */}
+        {/* Table 1 (Subjects + grades)*/}
         <RecordDetailTable
           courses={
             courses && currentTerm !== "All"
@@ -365,7 +419,7 @@ function RecordDetails() {
               : courses
           }
         />
-        {/* Table 2 */}
+        {/* Table 2 (GWA Computation)*/}
         <SummativeTable
           term={currentTerm}
           student_number={studno}

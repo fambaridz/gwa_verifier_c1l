@@ -1,4 +1,12 @@
+/*
+  Component: Summative Table Page 
+  Description:
+    Responsible for fetching computation of gwa per semester
+    Displays Summative Table
+*/
+
 import React, { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import {
   Box,
   CircularProgress,
@@ -11,7 +19,18 @@ import {
 } from "@mui/material";
 import { BACKEND_URI } from "../../constants.js";
 
+  /*
+    Function name: handleClose
+    Description:
+      Changing of student status
+    Parameter:
+      term = Current semester
+      student_number = Student number
+      all_courses = All courses (used in gwa computation for cumulative total)
+      sem_courses = Semestral courses (used in gwa computation for current semester)
+  */
 function SummativeTable({ term, student_number, all_courses, sem_courses }) {
+  let navigate = useNavigate();
   const [enrollTakenTowardGPA, setEnrollTakenTowardGPA] = useState([]);
   const [enrollPassedTowardGPA, setEnrollPassedTowardGPA] = useState([]);
 
@@ -21,14 +40,19 @@ function SummativeTable({ term, student_number, all_courses, sem_courses }) {
   const [enrollNonPass, setEnrollNonPass] = useState([]);
   const [totalNonPass, setTotalNonPass] = useState([]);
 
-  // const [takenTowardNonGPA, setTakenTowardNonGPA] = useState([]);
-  // const [passedTowardNonGPA, setPassedTowardNonGPA] = useState([]);
   const [enrollGPA, setEnrollGPA] = useState([]);
   const [totalGPA, setTotalGPA] = useState([]);
   const [hasError, setHasError] = useState(false);
-
-  // Refactored by Ian Salazar
-  // This is a bad practice; never make an asynchornous component
+  /*
+    Function name: fetchGWA
+    Description:
+      Fetches GWA depending on type
+    Parameter:
+      currentTerm = Current semester/All semesters
+      studno = Student number
+      type = 2 types: cumulative total/ semestral total
+      courses = All courses/ semestral courses
+  */
   const fetchGwa = async (currentTerm, studno, type, courses) => {
     let gwa = {};
     if (currentTerm == "All") {
@@ -96,13 +120,10 @@ function SummativeTable({ term, student_number, all_courses, sem_courses }) {
       </Box>
     );
   } else {
-    fetchGwa(term, student_number, "fromEnroll", sem_courses).catch(
-      console.error
-    );
-    fetchGwa("All", student_number, "cumTotal", all_courses).catch(
-      console.error
-    );
+    fetchGwa(term, student_number, "fromEnroll", sem_courses).catch(<Navigate to="/records" />);
+    fetchGwa("All", student_number, "cumTotal", all_courses).catch(<Navigate to="/records" />);
     return (
+      // Table 2 (Summative Table)
       <Box sx={{ ml: 3, mr: 3, mt: 2, flexGrow: 1 }}>
         <Table size="small" aria-label="a dense table">
           <TableHead>
