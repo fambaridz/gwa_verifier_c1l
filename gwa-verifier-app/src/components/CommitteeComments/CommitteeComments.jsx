@@ -1,6 +1,14 @@
 import React from "react";
 import { Box, CircularProgress, Typography } from "@mui/material";
 
+/*
+  Component: CommitteeComments
+  Description:
+    A component that renders an individual comment of a committee member.
+    It also renders a circluar progress icon when the comments are still 
+    being fetched.
+*/
+
 function CommitteeComments({ comments }) {
   if (comments == null) {
     return (

@@ -21,8 +21,8 @@ import "./LogIn.css";
   Page: Login Page
 
   Description:
-    This page is where the users submit their valid login credentials 
-    to be able to access the system.
+    The login page is the gateway that allows access to the main 
+    application through valid credentials.
 
   Login Credentials:
     - Email
@@ -41,12 +41,20 @@ function LogIn() {
   });
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
-  // handleChange() - handle changes in input values, password visibility status and alert status
+  /*
+    Function name: handleChange()
+    Description:
+      Handle changes the input values, password visibility status and alert status
+  */
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
   };
 
-  // handleClickShowPassword() - toggles the visibility of password when the icon button is clicked
+  /*
+    Function name: handleClickShowPassword
+    Description:
+      Toggles the visibility of password when the icon button is clicked
+  */ 
   const handleClickShowPassword = () => {
     setValues({
       ...values,
@@ -54,11 +62,21 @@ function LogIn() {
     });
   };
 
+  /*
+    Function name: handleMouseDownPassword()
+    Description:
+      Handle mouse down event for password input field
+  */
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
-  // handleSubmit() - a function that is called when Login button is clicked
+  /*
+    Function name: handleSubmit()
+    Description:
+      Sends a POST request to the LogIn API with the login credentials.
+      The function is called when the login button is clicked.
+  */
   const handleSubmit = (e) => {
     e.preventDefault();
 

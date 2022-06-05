@@ -4,6 +4,12 @@ import GenericDialog from "../GenericDialog";
 import DialogContentText from "@mui/material/DialogContentText";
 import { Button } from "@mui/material";
 
+/*
+  Component: DeleteRecordDialog
+  Description:
+    A Dialog component that is displayed when deleting a record.
+*/
+
 function DeleteRecordDialog({
   open,
   name,
