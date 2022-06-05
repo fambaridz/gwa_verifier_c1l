@@ -50,6 +50,7 @@ foreach ($ids as $id) {
     if (mysqli_errno($con)!=0) $hasError = True;
 }
 
+// return response
 if ($hasError) {
     http_response_code(400);
     echo json_encode([

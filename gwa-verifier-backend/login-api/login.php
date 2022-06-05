@@ -44,14 +44,17 @@ if (!isset($data->Email) || !isset($data->Password)){
                 $json_object = json_encode($object);
                 echo $json_object;
             } else {
+                //check if the one who logged in is a user or superuser
                  if(is_null($row["account_made_by"])){
                     $superuser_flag = True;
                 } else {
                     $superuser_flag = False;
                 }
 
+                 //insert activity to activity_log
                 insertActivitylog($data->Email, "Logged in", 0, $conn);
 
+                //return successful login
                 $object = array("success"=>True, "firstname"=>$row['firstname'], "middlename"=>$row['middlename'], "lastname"=>$row['lastname'], "suffix"=>$row['suffix'], "superuser"=>$superuser_flag);
                 $json_object = json_encode($object);
                 echo $json_object;

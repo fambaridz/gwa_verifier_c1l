@@ -1,5 +1,4 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
 import {
   Typography,
   Button,
@@ -11,11 +10,24 @@ import {
   Alert,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import logo from "Assets/logo.png";
-import appLogo from "Assets/appLogo.png";
-import "./LogIn.css";
 import { BACKEND_URI } from "../../constants.js";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext.jsx";
+import appLogo from "Assets/appLogo.png";
+import logo from "Assets/logo.png";
+import "./LogIn.css";
+
+/*
+  Page: Login Page
+
+  Description:
+    This page is where the users submit their valid login credentials 
+    to be able to access the system.
+
+  Login Credentials:
+    - Email
+    - Password
+*/
 
 function LogIn() {
   const { updateUser } = useAuth();
@@ -27,13 +39,14 @@ function LogIn() {
     isAlert: false,
     showPassword: false,
   });
-
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
 
+  // handleChange() - handle changes in input values, password visibility status and alert status
   const handleChange = (prop) => (event) => {
     setValues({ ...values, [prop]: event.target.value });
   };
 
+  // handleClickShowPassword() - toggles the visibility of password when the icon button is clicked
   const handleClickShowPassword = () => {
     setValues({
       ...values,
@@ -45,13 +58,16 @@ function LogIn() {
     event.preventDefault();
   };
 
+  // handleSubmit() - a function that is called when Login button is clicked
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // prepare payload for login
     const credentials = {
       Email: values.email,
       Password: values.password,
     };
-    console.log(credentials);
+    // send POST request to login API
     fetch(`${BACKEND_URI}/login-api/login.php`, {
       method: "POST",
       headers: {
@@ -61,7 +77,8 @@ function LogIn() {
     })
       .then((response) => response.json())
       .then((body) => {
-        console.log(body.success);
+
+        // failed to login
         if (!body.success) {
           //show failed login alert
           setValues({
@@ -70,6 +87,8 @@ function LogIn() {
             alertSeverity: "error",
             alertMessage: "Failed to log in. Please check your email/password",
           });
+
+        // successful login
         } else {
           const {
             firstname: firstName,
@@ -79,6 +98,7 @@ function LogIn() {
             superuser: superUser,
           } = body;
 
+          // update user details
           updateUser({
             email: values.email,
             firstName,
@@ -88,20 +108,24 @@ function LogIn() {
             superUser,
           });
 
-          //show successful login alert
+          // show successful login alert
           setValues({
             ...values,
             isAlert: true,
             alertSeverity: "success",
             alertMessage: "You are now logged in!",
           });
+
+          // set successsful login to redirect to records page 
+          // after 3s delay for time to alert status to user 
           setTimeout(() => {
             setIsLoggedIn(true);
           }, 1000);
         }
       });
   };
-
+  
+  // Renders the Password input field with toggle password visibility
   const Password = () => {
     return (
       <FormControl sx={{ m: 1, width: "25ch" }} variant="outlined">
@@ -129,6 +153,8 @@ function LogIn() {
       </FormControl>
     );
   };
+
+  // Redirect to Student Records Page after successful login
   if (isLoggedIn) {
     return (
       <>
@@ -136,14 +162,12 @@ function LogIn() {
       </>
     );
   }
+
+  // Renders the Login Page
   return (
     <div className="login-container">
       <div className="login-left">
         <img src={appLogo} className="app-logo" />
-        {/* <div className="login-left-caption">
-          <Typography variant="" className="login-welcome">WELCOME TO</Typography><br />
-          <Typography variant="" className="login-appname">GWA Verifier</Typography>
-        </div> */}
       </div>
       <div className="login-right">
         <img src={logo} className="login-logo" />
