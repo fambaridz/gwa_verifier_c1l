@@ -14,6 +14,7 @@ $con = mysqli_connect($host, $user, $password, $dbname);
 $method = $_SERVER['REQUEST_METHOD'];
 $body = json_decode(file_get_contents('php://input'));
 
+//checks form submissions / gets request method
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
   header("HTTP/1.1 200 OK");
   return;
@@ -22,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 // expected method and body:
 // POST, { term: <"all" or specific semester>, student_number: <student no.> }
 
+// die if connection failed
 if (!$con) {
   die("Connection failed: " . mysqli_connect_error());
 }
