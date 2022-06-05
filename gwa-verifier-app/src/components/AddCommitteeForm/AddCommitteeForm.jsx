@@ -17,6 +17,7 @@ import {
 import { BACKEND_URI } from "../../constants.js";
 import validator from "validator";
 
+//style for the modal box
 const style = {
   position: "absolute",
   top: "50%",
@@ -30,9 +31,14 @@ const style = {
   p: 3,
 };
 
+/*
+  Component: AddCommitteeForm
+  Description:
+    Component that contains the add modal, its contents and functionality.
+*/
 function AddCommitteeForm(props) {
+//state variables
   const [existingEmails, setexistingEmails] = React.useState(props.data);
-
   const [addvalues, setaddvalues] = React.useState({
     email: "",
     lastname: "",
@@ -48,8 +54,21 @@ function AddCommitteeForm(props) {
   const [dirtyEmail, setDirtyEmail] = React.useState(false);
   const [dirtyPass, setDirtyPass] = React.useState(false);
   const passError = dirtyPass && isPassValid === false;
-
   const isAddFormValid = !(isEmailValid && isPassValid && isPassMatch);
+  const [openSuccessDialog, setOpenSuccessDialog] = React.useState(false);
+  const [openExistsDialog, setOpenExistsDialog] = React.useState(false);
+  const handleCloseSuccessDialog = () => {
+    setTimeout(window.location.reload(), 5000);
+  };
+  const handleCloseExistsDialog = () => {
+    setOpenExistsDialog(false);
+  };
+  /*
+    Function Name: handleAddChange
+    Description:
+     Handles all of the changes made in the textfield of the edit form, also validates.
+    Parameter/s: event
+  */
   const handleAddChange = (prop) => (event) => {
     setaddvalues({ ...addvalues, [prop]: event.target.value });
     if (prop == "email") {
@@ -78,7 +97,13 @@ function AddCommitteeForm(props) {
       setisPassMatch(true);
     }
   };
-
+  
+ /*
+    Function Name: handleEditSubmit
+    Description:
+     Handles the submit button of add modal, contains the api of adding the information of the account in the database.
+    Parameter/s: event
+  */
   async function handleAddSubmit(event) {
     event.preventDefault();
     const addAccountInfo = {
@@ -118,15 +143,6 @@ function AddCommitteeForm(props) {
     }
   }
 
-  const [openSuccessDialog, setOpenSuccessDialog] = React.useState(false);
-  const [openExistsDialog, setOpenExistsDialog] = React.useState(false);
-  const handleCloseSuccessDialog = () => {
-    setTimeout(window.location.reload(), 5000);
-  };
-
-  const handleCloseExistsDialog = () => {
-    setOpenExistsDialog(false);
-  };
 
   return (
     <Modal

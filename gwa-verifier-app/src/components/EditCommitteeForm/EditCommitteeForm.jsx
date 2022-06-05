@@ -17,6 +17,7 @@ import {
 import { BACKEND_URI } from "../../constants.js";
 import validator from "validator";
 
+//style for the modal box
 const style = {
   position: "absolute",
   top: "50%",
@@ -30,7 +31,14 @@ const style = {
   p: 3,
 };
 
+/*
+  Component: EditCommitteeForm
+  Description:
+    Component that contains the edit modal, its contents and functionality.
+*/
+
 function EditCommitteeForm(props) {
+	//state variables
   const [editvalues, setEditValues] = React.useState({
     email: props.email,
     session_email: props.account_made_by,
@@ -47,6 +55,16 @@ function EditCommitteeForm(props) {
   const [dirtyEmail, setDirtyEmail] = React.useState(false);
   const [dirtyPass, setDirtyPass] = React.useState(false);
   const passError = dirtyPass && isPassValid === false;
+  const [openSuccessDialog, setOpenSuccessDialog] = React.useState(false);
+  const handleCloseSuccessDialog = () => {
+    setTimeout(window.location.reload(), 5000);
+  };
+    /*
+    Function Name: handleEditChange
+    Description:
+     Handles all of the changes made in the textfield of the edit form, also validates.
+    Parameter/s: event
+  */
   const handleEditChange = (prop) => (event) => {
     setEditValues({ ...editvalues, [prop]: event.target.value });
 
@@ -76,7 +94,12 @@ function EditCommitteeForm(props) {
       setisPassMatch(true);
     }
   };
-
+ /*
+    Function Name: handleEditSubmit
+    Description:
+     Handles the submit button of edit modal, contains the api of editing the information of the account in the database.
+    Parameter/s: event
+  */
   async function handleEditSubmit(event) {
     event.preventDefault();
     const editAccountInfo = {
@@ -103,10 +126,7 @@ function EditCommitteeForm(props) {
     }
   }
 
-  const [openSuccessDialog, setOpenSuccessDialog] = React.useState(false);
-  const handleCloseSuccessDialog = () => {
-    setTimeout(window.location.reload(), 5000);
-  };
+
 
   return (
     <Modal

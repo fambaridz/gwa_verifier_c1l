@@ -4,6 +4,7 @@ import { Box, Typography, Modal, TextField, Button } from "@mui/material";
 import { BACKEND_URI } from "../../constants.js";
 import { useAuth } from "../../context/AuthContext.jsx";
 
+//style for the modal box
 const style = {
   position: "absolute",
   top: "50%",
@@ -17,10 +18,21 @@ const style = {
   p: 3,
 };
 
+/*
+  Component: DeleteCommitteeForm
+  Description:
+    Component that contains the delete modal, its contents and functionality.
+*/
 function DeleteCommitteeForm(props) {
   const {
     user: { email },
   } = useAuth();
+  /*
+    Function Name: handleSubmit
+    Description:
+     Handles the function of submit button, contains the api for deleting the account in the database.
+    Parameter/s: event
+  */
   async function handleSubmit(event) {
     event.preventDefault();
     const credentials = {
