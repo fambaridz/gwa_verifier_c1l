@@ -17,6 +17,18 @@ import appLogo from "Assets/appLogo.png";
 import logo from "Assets/logo.png";
 import "./LogIn.css";
 
+/*
+  Page: Login Page
+
+  Description:
+    This page is where the users submit their valid login credentials 
+    to be able to access the system.
+
+  Login Credentials:
+    - Email
+    - Password
+*/
+
 function LogIn() {
   const { updateUser } = useAuth();
   const [values, setValues] = React.useState({
