@@ -27,15 +27,32 @@ import DeleteCommitteeForm from "Components/DeleteCommitteeForm";
 import { useAuth } from "../../context/AuthContext.jsx";
 import { BACKEND_URI } from "../../constants.js";
 
-//used gwa_verifier_c1l_db, committee table for testing
-
-//Known Issues
-//Can edit anything but email ~api side problem (might be just dumb and wrong) ~Zenn
+/*
+  Page: Manage Committe Accounts
+  Description:
+    The Manage Committe Accounts Page is only accessible to a superuser.
+	This page displays all the accounts along with their email and name.
+  Features:
+    1. Adding a basic/committee account
+    2. Editing information of an account
+    3. Deleting an account
+*/
 
 function ManageCommitteeAccounts() {
+  
+  //state variables
   const { user } = useAuth();
   const [openAdd, setOpenAdd] = React.useState(false);
-
+  const [rows, setRow] = React.useState([]);
+  const dataRows = [];
+  const emailExisting = [];
+  /*
+    Function Name: EditCell
+    Description:
+      Makes a modal for a user and a table cell for the edit button designated to the modal of that user.
+    Parameter/s: props
+    Return Type: <></>
+  */
   function EditCell(props) {
     const [openEdit, setOpenEdit] = React.useState(false);
     return (
@@ -59,6 +76,13 @@ function ManageCommitteeAccounts() {
       </>
     );
   }
+    /*
+    Function Name: EditCell
+    Description:
+      Makes a table cell for the delete button designated to the email of the prop.
+    Parameter/s: props
+    Return Type: <></>
+  */
   function DeleteCell(props) {
     const [openDelete, setOpenDelete] = React.useState(false);
     return (
@@ -81,6 +105,19 @@ function ManageCommitteeAccounts() {
       </>
     );
   }
+   /*
+    Function Name: createData
+    Description:
+      Creates the data for the accounts to be used in the table.
+    Parameter/s: 
+		email: email of the account
+		firstname: first name of the account
+		lastname: last name of the account	
+		middlename: middle name of the account
+		suffix: suffix of the account
+		account_made_by: user who made the account
+    Return Type: String
+  */
   function createData(
     email,
     firstname,
@@ -91,11 +128,11 @@ function ManageCommitteeAccounts() {
   ) {
     return { email, firstname, lastname, middlename, suffix, account_made_by };
   }
-
-  const [rows, setRow] = React.useState([]);
-  const dataRows = [];
-  const emailExisting = [];
+ 
+ 
+	
   useEffect(() => {
+	 //calls API to get the information of existing accounts from the database
     fetch(`${BACKEND_URI}/committee-api/committee-api.php`, {
       method: "GET",
     })
@@ -127,6 +164,7 @@ function ManageCommitteeAccounts() {
 
   return (
     <div>
+	//Form for the add committee modal
       <AddCommitteeForm
         open={openAdd}
         data={emailExisting}
@@ -148,8 +186,7 @@ function ManageCommitteeAccounts() {
           >
             Manage Committee Accounts
           </Typography>
-          {/* omitted ThemeProvider since it's unnecessary */}
-
+		  
           <Button
             onClick={() => setOpenAdd(true)}
             variant="contained"
