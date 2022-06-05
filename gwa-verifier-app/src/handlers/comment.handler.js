@@ -1,8 +1,11 @@
 import { BACKEND_URI } from "../constants.js";
 
+/**
+ * A class to handle all comment-related transactions
+ */
 export default class CommentHandler {
   /**
-   *
+   * Saves a new comment to the database by sending a POST request to the backend.
    * @param {Object} kwargs
    * @param {string} kwargs.email
    * @param {number} kwargs.studno

@@ -2,8 +2,20 @@ import { v4 as uuidv4 } from "uuid";
 import { csvToArray, fileReader } from "./parsers.js";
 
 /**
- *
+ * A utility function to extract student information in a CSV file
  * @param {string} text content of csv file the user uploaded
+ * @returns {{
+ *  lname: string;
+ *  fname: string;
+ *  mname: string;
+ *  suffix: string;
+ *  degree: string;
+ *  studNo: string;
+ *  gwa: string;
+ *  recommended: string;
+ *  grades: Array<Object>;
+ *  terms: Array<string>;
+ * }}
  */
 export async function csvExtracter(text) {
   text = text.replaceAll("\r", "");

@@ -16,7 +16,17 @@ import AlertTitle from "@mui/material/AlertTitle";
 import { useSnackbar } from "notistack";
 import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "../../context/AuthContext.jsx";
-// edit this to create the edit student record page
+
+/*
+  Page: Edit Student Record Page
+  Description:
+    This page allows the committee user to edit an existing record in the database. Most features in the add student record page are also available in this page
+
+  Features:
+    1. Record checking in an excel-like manner wherein grade records are displayed on a table with editable cells
+    2. A two-step verifcation process wherein the data is checked locally first before double-checked by the backend
+    3. Committee user can either check first if the record is valid and savable or force save the record without validating its content.
+*/
 function EditStudentRecord() {
   const {
     user: { email },

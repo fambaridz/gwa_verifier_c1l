@@ -1,11 +1,14 @@
 import { BACKEND_URI } from "../constants.js";
 
+/**
+ * A class to handle all student-related transactions
+ */
 export default class StudentHandler {
   /**
-   *
+   * Get student info from the backend
    * @param {Object} kwargs
    * @param {number} kwargs.studno
-   * @returns Student record
+   * @returns {Object} Student record fetched from the backend.
    */
   async getInfo(kwargs) {
     const { studno } = kwargs;
@@ -45,7 +48,7 @@ export default class StudentHandler {
     };
   }
   /**
-   *
+   * A method to save a new student in the database. It sends a POST request to the backend.
    * @param {Object} kwargs
    * @param {Object} kwargs.studentRecord
    * @param {string} kwargs.email
@@ -93,7 +96,7 @@ export default class StudentHandler {
     }
   }
   /**
-   *
+   * Updates a student's information by sending a request to the backend
    * @param {Object} kwargs
    * @param {string} kwargs.email
    * @param {Object} kwargs.studentRecord
