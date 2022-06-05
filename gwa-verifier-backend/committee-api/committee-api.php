@@ -121,6 +121,7 @@ if($verified){
                 mysqli_stmt_execute($stmt);
                 $result = mysqli_stmt_get_result($stmt);
 
+                // insert activity to activity_log
                 insertActivitylog($committee->session_email, "Added committee account: ".$committee->email, 0, $conn);
             } else {
                 echo $committee->email . "already exists";
@@ -183,6 +184,8 @@ if($verified){
                     mysqli_stmt_execute($stmt);
                     $result = mysqli_stmt_get_result($stmt);
                 }
+                
+                // insert activity to activity_log
                 insertActivitylog($committee->session_email, "Edited committee account: ".$committee->email, 0, $conn);
 
             } else {
@@ -211,6 +214,8 @@ if($verified){
                 mysqli_stmt_bind_param($stmt, "s", $committee->email);
                 mysqli_stmt_execute($stmt);
                 $result = mysqli_stmt_get_result($stmt);
+                
+                //insert activity to activity_log
                 insertActivitylog($committee->session_email, "Deleted committee account: ".$committee->email, 0, $conn);
             } else {
                 //else, exit
