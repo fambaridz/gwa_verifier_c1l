@@ -29,12 +29,15 @@ $comment = isset($data['comment']) ? $data['comment'] : 0;
 
 //query
 $sql = "INSERT INTO committee_student (committee_email, student_number, comments) VALUES (?, ?, ?)";
+
+//run SQL statement
 $stmt = mysqli_stmt_init($con);
 mysqli_stmt_prepare($stmt, $sql);
 mysqli_stmt_bind_param($stmt, "sss", $email, $studno, $comment);
 mysqli_stmt_execute($stmt);
+
+//die if student number is 0
 if ($studno == 0) die();
-// run SQL statement
 
 $result = mysqli_stmt_get_result($stmt);
 
@@ -45,6 +48,7 @@ if (mysqli_errno($con)!=0) {
     "msg" => "Server error: cannot save comment"
   ]);
 } else {
+  //return 201 when successful
   http_response_code(201);
   echo json_encode([
     "msg" => "Successfully created comment"

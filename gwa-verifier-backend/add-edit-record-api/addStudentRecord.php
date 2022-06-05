@@ -26,6 +26,7 @@ $data = json_decode(file_get_contents('php://input'), true);  //json_decode == j
 $lst = $data['lst'];    //get list of inputs
 $studno = (int)$data['studno'];  //student number
 
+//loop through every record and insert to database
 foreach ($lst as $i) {
   $grade = $i['grade'];
   $units = $i['units'];
@@ -34,6 +35,8 @@ foreach ($lst as $i) {
 
   //query - insert student no, last name, first name, middle name, suffix, degree, recommended no units, credited units, gwa, status
   $sql = "INSERT INTO student_record(student_number, course_number, grade, units, enrolled, running_total, term) VALUES (?, ?, ?, ?, ?, ?, ?)";
+  
+  //run query
   $stmt = mysqli_stmt_init($con);
   mysqli_stmt_prepare($stmt, $sql);
   mysqli_stmt_bind_param($stmt, "sssssss", $studno, $i['courseno'], $grade, $units, $enrolled, $runningtotal, $i['term']);

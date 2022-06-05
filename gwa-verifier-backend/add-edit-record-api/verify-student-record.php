@@ -23,9 +23,9 @@ For front-end requests:
               "total":<double>,
               "term":<string>
             ], 
-            .
-            .
-            .
+            ...
+            ...
+            ...
             [
               "courseno":<string>,
               "grade":<string>,
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 functions:
 function categorize($con, $course, $general_degree_id, $specialized_degree_id, &$expected_units, $major_units_required)
-{
+{ // function categorizes courses between non-majors (additionally HK, NSTP), majors, electives (ge or free)
 
   non_majors:   //check under general degree
   //echo "checking if non-major\n";
@@ -161,7 +161,7 @@ function categorize($con, $course, $general_degree_id, $specialized_degree_id, &
   return 7;
 }
 function getDegreeIds($degree_nickname, $studno, $student_record, $con, &$general_degree_id)
-{
+{ // function finds the specific degree id of the student based on the passed student record; if no specialization is found, it is the "general" degree by default
   // thank u xyrk and francis <3 - Allen
 
   // check if it needs new or old curriculum
@@ -264,7 +264,7 @@ function getDegreeIds($degree_nickname, $studno, $student_record, $con, &$genera
   echo "Cannot detect major due to incomplete subjects";
 }
 function getDegree($degree_id, $con)
-{
+{ // function retrieves all degree details given the specialized degree id
   // $sql = "SELECT * FROM degree_curriculums WHERE degree_id = $degree_id";
   // $result = mysqli_query($con, $sql);
   $sql = "SELECT * FROM degree_curriculums WHERE degree_id = ?";
@@ -359,19 +359,20 @@ $specialized_degree_id = getDegreeIds($degree, $studno, $student_record, $con, $
 $student_degree = getDegree($specialized_degree_id, $con);  //array that contains all relevant information regarding the degree program
 //echo "degree id: $specialized_degree_id\n";
 
+//each element in the array to be put into their own variables
 $degree_program = $student_degree['degree_nickname'];
 $old_new = $student_degree['old_new'];
 $major = $student_degree['major'];
 $options = $student_degree['options'];
-$major_units_required = (int)$student_degree['major_units'];             //major units required based on degree id
-$ge_units_required = (int)$student_degree['ge_electives_units'];          //ge units required based on degree id
-$elective_units_required = (int)$student_degree['electives_units'];       //elective units required based on degree id
+$major_units_required = (int)$student_degree['major_units'];              
+$ge_units_required = (int)$student_degree['ge_electives_units'];          
+$elective_units_required = (int)$student_degree['electives_units'];       
 $hk11_required = 1;
 $hk1213_required = 3;
 $nstp1_required = 1;
 $nstp2_required = 1;
-$recommended_required = (int)$student_degree['recommended_units'];  //total units required
-
+$recommended_required = (int)$student_degree['recommended_units'];  
+//counters for units taken
 $major_units_taken = 0;
 $ge_units_taken = 0;
 $elective_units_taken = 0;
@@ -380,7 +381,7 @@ $hk1213_taken = 0;
 $nstp1_taken = 0;
 $nstp2_taken = 0;
 $total_units_taken = 0;
-
+//status of student record if it is complete/error found; 0 for false, 1 for true
 $complete = 0;
 $error = 0;
 
@@ -414,14 +415,15 @@ $response = array(
 
 $records_remarks = array();   // will contain all records that have been checked for validation and it's remarks, to be later inserted into $response
 $passed_courses = array();    // contains courses that have a passing grade; used to make sure a student doesn't take the same course when it was already taken
-$taken_per_term = array();    // will contain elements of "term" -> array("courseno1", "courseno2", ...); 
+$taken_per_term = array();    // will contain elements of "term" -> array("courseno1", "courseno2", ...); to make sure the student didn't take the same course again in the same semester
 $passing_grade = array('1.00', '1.25', '1.50', '1.75', '2.00', '2.25', '2.5', '2.75', '3.0', 'P');
 $non_passing_grade = array('4.00', '5.00', 'INC', 'DRP', 'DFG', 'U', 'S');
 
 foreach ($student_record as $entry) {
 
   init: //intializations needed for verification
-  $courseno = $entry->courseno;   //fields from entry
+  //fields from entry
+  $courseno = $entry->courseno;   
   $grade = $entry->grade;
   $units = $entry->units;
   $enrolled = $entry->enrolled;
@@ -434,7 +436,7 @@ foreach ($student_record as $entry) {
         total: $total
         enrolled: $enrolled
         term: $term\n";*/
-  $valid_entry = 0;  //to know if this entry has valid values and format, and can be safely added to the database
+  $valid_entry = 0;  //to know if this entry has valid values and format
 
   $subject_elective = NULL;
   /**
@@ -452,8 +454,8 @@ foreach ($student_record as $entry) {
    */
   $expected_units = NULL;        //stores expected number of units once cross-referenced with either subjects or electives
   $passing = 0;
-  //do i even need any of these tbh
-  $valid_grade = 0;           //set to 1/TRUE once field has been to checked to be correct and valid, default 0/FALSE
+
+  $valid_grade = 0;              //set to 1/TRUE once field has been to checked to be correct and valid, default 0/FALSE
   $valid_units = 0;
   $valid_enrolled = 0;
   $valid_total = 0;
@@ -461,17 +463,18 @@ foreach ($student_record as $entry) {
   $calculated_enrolled = 0;           //stores value of grade * units; set 0
 
   //various error flags for entries, use as needed
-  $duplicate = 0; //duplicate entry 
+  $duplicate = 0;  //duplicate entry 
   $exceed = 0;     //units taken will exceed
-  $remarks = '';
+  $remarks = '';   //reinitialize remarks to an empty string, concatinate later remarks about this entry
 
   categorize: //program section that finds if a record is a subject/elective/hk/nstp
   //function calls pass by reference $expected_units, will return subject_elective
   $subject_elective = categorize($con, $courseno, $general_degree_id, $specialized_degree_id, $expected_units, $major_units_required);
 
-  valid_format_values:  //program section where format and values are verified
+  valid_format_values:  //program section where format and values of each field in the entry are verified
   units:
-  if ((int)$expected_units == 6 && strcmp($units,'(1)6') ==  0 && !in_array($grade, array('S', 'U'))) {
+  //a passing 
+  if ((int)$expected_units == 6 && strcmp($units,'(1)6') ==  0 && in_array($grade, $passing_grade)) {
     $valid_units = 1;
     $units = 6;
   }
@@ -481,7 +484,7 @@ foreach ($student_record as $entry) {
   else if ($units == $expected_units) $valid_units = 1;
   else $error = 1;
   //echo "valid units: $valid_units, units: $units\n";
-  //echo
+
   grades:
   //if grade is passing
   if (in_array($grade, $passing_grade)) {
@@ -496,7 +499,8 @@ foreach ($student_record as $entry) {
   //else, grade is invalid
   else $error = 1;
   //echo "valid grades: $valid_grade, grades: $grade echo calculated enrolled: $calculated_enrolled \n";
-  enrolled: //calculated $enrolled here should be equal to the value in the entry->enrolled AND should follow the format (either whole number or float with at most 2 decimal digits)
+  
+  enrolled: //$calculated_enrolled here should be equal to the value in the entry->enrolled AND should follow the format (either whole number or float with at most 2 decimal digits)
   if ($calculated_enrolled == (float)$enrolled && preg_match("/\b^[0-9]+(\.[0-9]{1,2}){0,1}$/", $enrolled)) $valid_enrolled = 1;
   else $error = 1;
 
@@ -505,7 +509,7 @@ foreach ($student_record as $entry) {
   if ($calculated_running_total == (float)$total && preg_match("/\b^[0-9]+(\.[0-9]{1,2}){0,1}$/", $total)) $valid_total = 1;
   else $error = 1;
 
-  term: // to update: midyear case, over/underload
+  term: // to update: over/underload
   if (preg_match("/\b(I{1,2}|M)\/[0-9]{2}\/[0-9]{2}$/", $term)) $valid_term = 1;
   else $error = 1;
 
@@ -529,7 +533,7 @@ foreach ($student_record as $entry) {
   insertability: //if everything has been valid thus far
   if ($valid_grade && $valid_units && $valid_enrolled && $valid_total && $valid_term) {
 
-    check_if_exceed:  //has to be numerical passing grade to check if it will exceed
+    //check_if_passing:
     if($passing) {
       //if grade of P
       if (strcmp($grade, 'P') == 0) {
@@ -555,8 +559,9 @@ foreach ($student_record as $entry) {
         }
         $recommended_required -= $units; //reduce units required
       }
-      //else, numerical grade
+     //else, a numerical grade
       else {
+        //check_if_exceed:  has to be numerical passing grade to check if it will exceed
         switch ($subject_elective) {
           case 0:
             if ($hk11_taken + 1 > $hk11_required) {
@@ -634,7 +639,7 @@ foreach ($student_record as $entry) {
     $valid_entry = 1;
   } 
   else {
-    //this should be fine, total_units_taken naman unang chinecheck
+    //prevent further verifying if an early entry will result to inconsistencies later on in the record 
     if ($total_units_taken == 0 && !in_array($subject_elective, array(0, 1, 2, 3))) {
       $msg = "stopping verification early because of an inconsistency found in $courseno, please make sure the following are correct:";
       if (!$valid_grade)
@@ -647,7 +652,7 @@ foreach ($student_record as $entry) {
         $msg .= " running total: $total; expected: $calculated_running_total;";
       if (!$valid_term)
         $msg .= " term: $term; unexpected value/format;";
-      $msg .= " continuing verification will result in total units taken of 0. notice: total units taken will only start adding if (1) entry has valid formatting (2) the entry has a passing grade (3) the entry has non-zero units";
+      $msg .= " continuing verification will result in total units taken of 0. notice: total units taken will only start adding if (1) entry has valid formatting and values (2) the entry has a passing grade (3) the entry has non-zero units";
       $payload = array('msg' => $msg);
       //hoo boy that is a long boi
       header('Content-type: application/json');
@@ -701,7 +706,7 @@ if ($total_units_taken == 0) {
 //final additions to the response
 if (
   $total_units_taken >= $recommended_required &&
-  $major_units_taken >= $major_units_required &&
+  $major_units_taken >= $major_units_required && //majors can exceed
   $ge_units_taken == $ge_units_required &&
   $elective_units_taken == $elective_units_required &&
   $hk11_taken == $hk11_required &&
@@ -725,7 +730,6 @@ $response['gwa'] = (float)$verified_running_total / (float)$total_units_taken;
 $response['records_remarks'] = $records_remarks;
 //$response['courses_taken_per_term'] = $taken_per_term;
 
-//print_r($taken_per_term);
 //print_r($response); //uncomment to see a pretty/cleaner version of what the response looks like :>
 echo json_encode($response);
 
