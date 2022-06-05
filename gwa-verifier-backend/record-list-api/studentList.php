@@ -27,6 +27,7 @@ if(!$con) {
     die("Connection failed: " . mysqli_connect_error()); 
 }
 
+// gets the list of students to be displayed at the student list page
 // return query as array of JSON objects
 if ($method == 'GET') {
     // query statement
@@ -62,6 +63,7 @@ else if ($method == 'POST') {
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
+    //insert activity to activity_log
     insertActivitylog($target->email, "Deleted student record with ", $target->target, $con);
 
     // resource not found if query returns empty
