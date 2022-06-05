@@ -1,4 +1,10 @@
 // code not mine, got it from https://sebhastian.com/javascript-csv-to-array/#:~:text=To%20convert%20or%20parse%20CSV,the%20string%20into%20an%20array%20.
+/**
+ *
+ * @param {string} str String of text you want to convert to an array
+ * @param {string} delimiter
+ * @returns {Promise<Array<Object>>} A promise that resolves an array of grade records, terms, gwa, and recommended units
+ */
 export function csvToArray(str, delimiter = ",") {
   // slice from start of text to the first \n index
   // use split to create an array from string by delimiter
@@ -64,6 +70,11 @@ export function csvToArray(str, delimiter = ",") {
   });
 }
 
+/**
+ * A utility function to extract a file's content
+ * @param {File} file
+ * @returns {string | ArrayBuffer} Content of the file passed
+ */
 export function fileReader(file) {
   const reader = new FileReader();
 

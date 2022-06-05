@@ -1,7 +1,33 @@
 import * as validators from "./validators.js";
 import { sortGradeRecordsArray } from "./transformers.js";
 import { BACKEND_URI } from "../constants.js";
+/**
+ * A class to handle all verification-related transactions of a student or grade record
+ */
 export class Verifiers {
+  /**
+   * A utility function to transform the backend's response to a more human-friendly message
+   * @param {{
+   * hk11_required: number
+   * hk11_taken: number
+   * hk1213_required: number
+   * hk1213_taken: number
+   * nstp1_required: number
+   * nstp1_taken: number
+   * nstp2_required: number
+   * nstp2_taken: number
+   * recommended_required: number
+   * recommended: number
+   * major_units_required: number
+   * major_units_taken: number
+   * ge_units_required: number
+   * ge_units_taken: number
+   * elective_units_required: number
+   * elective_units_taken: number
+   * records_remarks: Array<object>
+   * }} data
+   * @returns {[ Array<string>, Array<string> ]} An array of errors, the first element is the record errors while the second element is the student info errors
+   */
   getErrorMessages(data) {
     const {
       hk11_required,
@@ -87,6 +113,11 @@ export class Verifiers {
     return [studentInfoErrors, studentRecordErrors];
   }
 
+  /**
+   *
+   * @param {{ studno: string, recommended: string | number }} param0
+   * @returns Either true or false if the student info is valid in format or not
+   */
   locallyVerifyStudent({ studno, recommended }) {
     if (
       !validators.studentNoRegex.test(studno) ||
@@ -96,6 +127,12 @@ export class Verifiers {
     }
     return true;
   }
+
+  /**
+   *
+   * @param {{ gradeRecords: Array<Object> }} param0
+   * @returns {Promise<Array<Object>>} A promise that resolves to an array of grade records that are valid in format
+   */
   locallyVerifyGradeRecords({ gradeRecords }) {
     return new Promise((resolve, reject) => {
       const gradeRecordsReady = Object.keys(gradeRecords)

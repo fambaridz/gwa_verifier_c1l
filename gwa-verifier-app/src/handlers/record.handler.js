@@ -1,8 +1,11 @@
 import { BACKEND_URI } from "../constants.js";
 
+/**
+ * A class to handle all student-record-related transactions
+ */
 export default class RecordHandler {
   /**
-   *
+   * Fetches records from the database
    * @param {number} studno Student number
    * @returns An array, first element is terms, second element is the courses in Object / Hashmap form
    */
@@ -57,7 +60,7 @@ export default class RecordHandler {
   }
 
   /**
-   *
+   *  Saves a list of grade records to the database by sending a POST request to the backend.
    * @param {Object} kwargs
    * @param {number} kwargs.studno
    * @param {string} kwargs.email
@@ -91,7 +94,7 @@ export default class RecordHandler {
   }
 
   /**
-   *
+   * Updates a list of grade records by sending this list to the backend.
    * @param {Object} kwargs
    * @param {number} kwargs.studno
    * @param {Array.<{id: number, student_number: number, course_number: string, grade: number | string, units: number | string, enrolled: number | string, runnnig_total: number | string}>} kwargs.list
@@ -122,7 +125,7 @@ export default class RecordHandler {
   }
 
   /**
-   *
+   * Deletes records deleted by the user in edit student record page.
    * @param {Array<string | number>} ids IDs of records to delete
    */
   async deleteGradeRecords(ids) {

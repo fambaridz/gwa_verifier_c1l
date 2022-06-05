@@ -28,6 +28,18 @@ import { Pages } from "./utils.js";
 
 const acceptedFiles = ["text/csv"];
 
+/*
+  Page: Add Student Record Page
+  Description:
+    This page allows the committee user to add student records to the database. They can upload a single file or upload multiple files
+
+  Features:
+    1. Single or bulk upload of CSV file/s
+    2. Record checking in an excel-like manner wherein grade records are displayed on a table with editable cells
+    3. A two-step verifcation process wherein the data is checked locally first before double-checked by the backend
+    4. Committee user can either check first if the record is valid and savable or force save the record without validating its content.
+*/
+
 function AddStudentRecord() {
   const navigate = useNavigate();
   const {
@@ -156,7 +168,6 @@ function AddStudentRecord() {
   }
 
   function popStack() {
-    // TODO: extract this logic to a separate function and just import it
     const node = pages.getAtIndex(currentPage);
     if (!node) return null;
     const uid = node.getData();
@@ -467,7 +478,7 @@ function AddStudentRecord() {
     delete gradeRecordCopy[uid];
     setGradeRecords(gradeRecordCopy);
   }
-  // TODO: refactor this; extract logic to separate function
+
   function updateTerm(prevValue, currValue) {
     const newTerms = terms.map((term) =>
       term === prevValue ? currValue : term
@@ -475,7 +486,7 @@ function AddStudentRecord() {
 
     const node = pages.getAtIndex(currentPage);
     if (!node) return;
-    const rUid = node.getData();
+    const srUid = node.getData();
     const srUidTermMapCopy = { ...srUidTermMap };
     Object.assign(srUidTermMapCopy, {
       [srUid]: newTerms,
@@ -501,7 +512,7 @@ function AddStudentRecord() {
     setGradeRecords(gradeRecordsCopy);
     toggleDialog();
   }
-  // TODO: refactor this; extract logic to separate function
+
   function deleteTerm(srUid, term) {
     let termsCopy = srUidTermMap[srUid];
     if (!termsCopy) return;

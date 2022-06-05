@@ -1,3 +1,6 @@
+/**
+ * A node that is used internally by Pages class
+ */
 class PageNode {
   constructor(data) {
     this.data = data;
@@ -21,6 +24,9 @@ class PageNode {
   }
 }
 
+/**
+ * A linked list that will be used for pagination
+ */
 export class Pages {
   length = 0;
 

@@ -3,6 +3,7 @@ export function fromMapToArray(obj, keyName) {
 }
 
 /**
+ * A utility function used to convert a semester to a numerical equivalent
  * @param {I | II | M} sem
  * @returns {number} a numerical equivalent of the semester
  */
@@ -18,7 +19,7 @@ function convertSemToNumeric(sem) {
 }
 
 /**
- *
+ * A utility function to extract the semester, start year, and end year in a string
  * @param {string} term The term of a grade record, must follow the regex /^(I|II|M)\/[0-9]{2}\/[0-9]{2}$/
  */
 function extractData(term) {
@@ -38,7 +39,7 @@ function extractData(term) {
 }
 
 /**
- *
+ * A utility function to sort grade records by term. Internally it calls convertSemToNumeric() and extractData()
  * @param {Array<{
  *  courseno: string;
  *  total: string;

@@ -1,3 +1,6 @@
+/**
+ * Regexp used in the app to test if a string is valid or not
+ */
 export const studentNoRegex = /^[0-9]{4}-[0-9]{5}$/;
 export const recommendedUnitsRegex = /^[0-9]+$/;
 export const defaultRegex = /^[0-9]+(\.[0-9]{0,4})?$/;
