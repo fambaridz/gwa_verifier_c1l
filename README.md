@@ -1,5 +1,8 @@
-# Amilaude App
-- This repo holds the source code for the desktop application `Amilaude`
+# AmILaude GWA Verifier
+- This repo holds the source code for the desktop application `AmILaude`
+## Purpose
+The application is a requirement for CMSC 128. The goal is to provide a GWA Verifier that SHAC members can utilize, especially new members who are unfamiliar with the computations. Given the substantial number of students being reviewed, it tries to speed up the verification process.
+
 
 # Building the App
 ### On windows:
