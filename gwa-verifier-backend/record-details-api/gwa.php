@@ -1,5 +1,10 @@
 <?php
-// Author: Tomboc, Ma. Zeit Elizha
+/* 
+
+Author: Tomboc, Ma. Zeit Elizha
+Description: API for computing the General Weighted Average (GWA) of a student for all semesters or for one semester
+
+ */
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");

@@ -1,5 +1,14 @@
 <?php
-// Author: Tomboc, Ma. Zeit Elizha
+/* 
+
+Author: Tomboc, Ma. Zeit Elizha
+Description:
+  API of the Record Details Page for:
+    1. Getting a student's details, courses, or comments
+    2. Changing a student record's status
+    3. Deleting a student record
+
+ */
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
@@ -21,13 +30,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 $body = json_decode(file_get_contents('php://input'));
-// expected body contents and methods:
-// { action: 'get-student', student_number: this.state.student_number }, METHOD: POST
-// { action: 'get-courses', student_number: this.state.student_number }, METHOD: POST
-// { action: 'get-comments', student_number: this.state.student_number }, METHOD: POST
-// { action: 'status-change', student_number: this.state.student_number,  prevStatus: this.state.status, newStatus: value}, METHOD: POST
-// { action: 'delete-record', student_number: this.state.student_number}, METHOD: DELETE
-// { action: 'record-per-semester', term: term}, METHOD: POST
+/*
+expected body contents and methods:
+  { action: 'get-student', student_number: <student_number> }, METHOD: POST
+  { action: 'get-courses', student_number: <student_number> }, METHOD: POST
+  { action: 'get-comments', student_number: <student_number> }, METHOD: POST
+  { action: 'status-change', student_number: <student_number>,  prevStatus: <previous status>, newStatus: <new status>}, METHOD: POST
+  { action: 'delete-record', student_number: <student_number>}, METHOD: DELETE
+  { action: 'record-per-semester', term: term}, METHOD: POST
+*/
 
 if (!$con) {
   die("Connection failed: " . mysqli_connect_error());
@@ -101,26 +112,50 @@ switch ($body->action) {
     break;
   case 'status-change':
     // changes the status of a student record
-    // valid status changes: UNCHECKED <-> PENDING <-> SATISFACTORY or UNSATISFACTORY
-    if(
-      ($body->prevStatus == "UNCHECKED" and $body->newStatus == "PENDING") or
-      ($body->prevStatus == "SATISFACTORY" and $body->newStatus != "UNCHECKED") or
-      ($body->prevStatus == "UNSATISFACTORY" and $body->newStatus != "UNCHECKED") or
-      ($body->prevStatus == "PENDING")
-      ) {
-        $sql = "UPDATE student SET status = ? WHERE student.student_number = ?";
-        $stmt = mysqli_stmt_init($con);
-        mysqli_stmt_prepare($stmt, $sql);
-        mysqli_stmt_bind_param($stmt, "ss", $body->newStatus, $body->student_number);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
+
+    // get the student's GWA
+    $gwasql = "SELECT gwa FROM student WHERE student_number = ?";
+    $gwastmt = mysqli_stmt_init($con);
+    mysqli_stmt_prepare($gwastmt, $gwasql);
+    mysqli_stmt_bind_param($gwastmt, "s", $body->student_number);
+    mysqli_stmt_execute($gwastmt);
+    $gwa = mysqli_fetch_object(mysqli_stmt_get_result($gwastmt))->gwa;
+
+    /* valid status changes:
+      UNCHECKED <-> PENDING <-> UNSATISFACTORY
+      SATISFACTORY -> PENDING or UNSATISFACTORY
+      PENDING or UNSATISFACTORY -> SATISFACTORY if GWA is higher than or equal to 1.75
+    */
+    if($body->prevStatus == $body->newStatus) {
+      // exits if previous status is the same with new status
+      exit(json_encode("Please select a new status."));
+    } else if (
+      ($body->prevStatus == "UNCHECKED" and $body->newStatus != "PENDING") or
+      ($body->prevStatus == "SATISFACTORY" and $body->newStatus == "UNCHECKED") or
+      ($body->prevStatus == "UNSATISFACTORY" and $body->newStatus == "UNCHECKED")
+    ) {
+      // exits if status change is UNCHECKED <-> SATISFACTORY or UNSATISFACTORY
+      exit(json_encode("Invalid status."));
+    } else if (
+      ($body->prevStatus == "UNSATISFACTORY" and $body->newStatus == "SATISFACTORY" and $gwa > 1.75) or
+      ($body->prevStatus == "PENDING" and $body->newStatus == "SATISFACTORY" and $gwa > 1.75)
+    ){
+      // exits if status change is PENDING or UNSATISFACTORY -> SATISFACTORY while GWA > 1.75
+      exit(json_encode("Status cannot be changed to SATISFACTORY. GWA must be higher than or equal to 1.75."));  
     } else {
-      exit(json_encode("Invalid status"));
+      // updates status
+      $sql = "UPDATE student SET status = ? WHERE student.student_number = ?";
+      $stmt = mysqli_stmt_init($con);
+      mysqli_stmt_prepare($stmt, $sql);
+      mysqli_stmt_bind_param($stmt, "ss", $body->newStatus, $body->student_number);
+      mysqli_stmt_execute($stmt);
+      $result = mysqli_stmt_get_result($stmt);
     }
     break;
   
   //added by: Francis Bejosano
   case 'record-per-semester':
+    // get the student's record for a semester
     $sql = "SELECT * FROM student_record WHERE term = ?";
     $stmt = mysqli_stmt_init($con);
     mysqli_stmt_prepare($stmt, $sql);
@@ -138,15 +173,18 @@ if (mysqli_errno($con)!=0) {
  
 // return result to frontend
 if ($body->action == "get-courses" or $body->action == "get-comments" or $body->action == "get-student") {
+  // return courses, comments, or student details
   echo '[';
   for ($i=0 ; $i<mysqli_num_rows($result) ; $i++) {
     echo ($i>0?',':'').json_encode(mysqli_fetch_object($result));
   }
   echo ']';
 } elseif ($body->action == "status-change") {
+  // return successful update in status
   insertActivityLog($body->email, "Updated record to ".$body->newStatus, $body->student_number, $con);
   echo json_encode('Successfully updated '.$body->student_number.' student record status to '.$body->newStatus);
 } elseif ($body->action == "delete-record") {
+  // return successful deletion of record
   echo json_encode('Successfully deleted ' . $body->student_number.' student record');
 }
 else {
