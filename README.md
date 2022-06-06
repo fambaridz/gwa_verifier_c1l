@@ -23,7 +23,7 @@ Prerequisite:
 ### Note: The server should be running Windows 10 OS
 
 1.	Open XAMPP Control Panel.
-2.	Proceed to Apache -> Config -> httpd.conf <br \>
+2.	Proceed to Apache -> Config -> httpd.conf <br />
 	![image](https://user-images.githubusercontent.com/52350611/172166616-6da6746c-e69f-46d0-a177-135030f24eed.png)  <br />
 3.  Search for `Listen 80`, then change the value to `Listen 8080` and in the above line kindly put the `IP address of the server pc` with the correct `port 8080`. <br />
   ![image](https://user-images.githubusercontent.com/52350611/172166762-811352a5-8d6e-4d7a-be40-4dc7ea14de12.png)  <br />
@@ -37,7 +37,7 @@ Prerequisite:
 	![image](https://user-images.githubusercontent.com/52350611/172167218-213df5ad-472d-4e73-baae-70b1aa537e69.png)  ![image](https://user-images.githubusercontent.com/52350611/172167236-c7528e3f-f9f2-4472-89ca-b8b78781d3ca.png) <br />
 8.	Open the src folder of the application then open constant.js. Change `http://localhost/gwa-verifier-backend` to `http://<your.ip.address>:8080/gwa-verifier-backend.`
 9.	Either `rebuild the executable file` or `fork the repository` to have a local copy for each machine. 
-10.	Type in your command prompt console the commands: npm install and npm start to open the application.
+10.	Type in your command prompt console the commands: `npm install` and `npm start` to open the application.
 11.	You should now be able to use the application, however, if you cannot still access or at least visit the `<your.ip.address:8080>` on another machine, please proceed with the next steps.
 12.	Open Windows Firewall via Control Panel -> System and Security -> Windows Defender Firewall.
 13.	Click Advanced Settings on the side navigation bar on the left.
