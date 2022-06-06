@@ -164,7 +164,7 @@ function ManageCommitteeAccounts() {
 
   return (
     <div>
-	//Form for the add committee modal
+	    {/* Form for the add committee modal */}
       <AddCommitteeForm
         open={openAdd}
         data={emailExisting}

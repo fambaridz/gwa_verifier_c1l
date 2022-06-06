@@ -60,6 +60,12 @@ function RecordDetails() {
     alertSeverity: "",
     isAlert: false,
   });
+
+  const statusErrors = [
+    "Please select a new status.",
+    ""
+  ]
+
   // Edit page redirect
   function redirectToEditStudentRecords() {
     navigate("/records/" + studno + "/edit");
@@ -110,12 +116,28 @@ function RecordDetails() {
       .then((response) => response.json())
       .then((body) => {
         console.log(body);
-        if (body == "Invalid status") {
+        if (body == "Please select a new status.") {
           setValues({
             ...values,
             isAlert: true,
             alertSeverity: "error",
-            alertMessage: "Failed to change status",
+            alertMessage: body,
+          });
+          setTimeout(() => {}, 1000);
+        } else if (body == "Status cannot be changed to SATISFACTORY. GWA must be higher than or equal to 1.75.") {
+          setValues({
+            ...values,
+            isAlert: true,
+            alertSeverity: "error",
+            alertMessage: body,
+          });
+          setTimeout(() => {}, 1000);
+        } else if (body == "Invalid status.") {
+          setValues({
+            ...values,
+            isAlert: true,
+            alertSeverity: "error",
+            alertMessage: "Status cannot be changed to " + newStatus + ". Please change status to PENDING first.",
           });
           setTimeout(() => {}, 1000);
         } else if (e.target.id == 1) {
