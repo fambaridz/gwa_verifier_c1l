@@ -197,7 +197,7 @@ function EditStudentRecord() {
     }
     handleSave({
       gradeRecordsReady,
-      status: "UNCHECKED",
+      status: studentRecord.status,
       gwa,
       total_units_taken,
     });
