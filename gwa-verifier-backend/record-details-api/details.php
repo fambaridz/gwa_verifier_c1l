@@ -135,7 +135,7 @@ switch ($body->action) {
       ($body->prevStatus == "UNSATISFACTORY" and $body->newStatus == "UNCHECKED")
     ) {
       // exits if status change is UNCHECKED <-> SATISFACTORY or UNSATISFACTORY
-      exit(json_encode("Status cannot be changed to ".$body->newStatus.". Please change status to PENDING first."));
+      exit(json_encode("Invalid status."));
     } else if (
       ($body->prevStatus == "UNSATISFACTORY" and $body->newStatus == "SATISFACTORY" and $gwa > 1.75) or
       ($body->prevStatus == "PENDING" and $body->newStatus == "SATISFACTORY" and $gwa > 1.75)
