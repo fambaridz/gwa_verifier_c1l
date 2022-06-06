@@ -61,11 +61,6 @@ function RecordDetails() {
     isAlert: false,
   });
 
-  const statusErrors = [
-    "Please select a new status.",
-    ""
-  ]
-
   // Edit page redirect
   function redirectToEditStudentRecords() {
     navigate("/records/" + studno + "/edit");
