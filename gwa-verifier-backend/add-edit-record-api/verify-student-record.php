@@ -473,14 +473,13 @@ foreach ($student_record as $entry) {
 
   valid_format_values:  //program section where format and values of each field in the entry are verified
   units:
-  //a passing 
-  if ((int)$expected_units == 6 && strcmp($units,'(1)6') ==  0 && in_array($grade, $passing_grade)) {
-    $valid_units = 1;
-    $units = 6;
-  }
-  if ((int)$expected_units == 6 && strcmp($units,'0') == 0 && in_array($grade, array('S', 'U'))) {
-    $valid_units = 1;
-  }
+  if (preg_match("/190|200/", $courseno)){
+    if (strcmp($units,'(1)'.$expected_units) ==  0 && in_array($grade, $passing_grade)) {
+      $valid_units = 1;
+      $units = $expected_units;
+    }
+    else if (strcmp($units,'0') == 0 && in_array($grade, array('S', 'U'))) $valid_units = 1;
+  } 
   else if ($units == $expected_units) $valid_units = 1;
   else $error = 1;
   //echo "valid units: $valid_units, units: $units\n";
