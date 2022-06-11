@@ -138,7 +138,7 @@ function AddStudentRecord() {
     return res;
   }
   function nextPage() {
-    if (currentPage === studentRecords.length - 1) return;
+    if (currentPage === Object.key(studentRecords).length - 1) return;
     const newPage = currentPage + 1;
     updateTerms(newPage);
     setPage(newPage);
