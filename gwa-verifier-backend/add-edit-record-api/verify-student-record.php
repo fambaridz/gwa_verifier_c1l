@@ -42,6 +42,16 @@ function string_contains($haystack, $needle) { //accomodate php 7 below that can
   return $needle !== '' && mb_strpos($haystack, $needle) !== false;
 }
 
+function endsWith($haystack,$needle,$case=true)
+{
+    $expectedPosition = strlen($haystack) - strlen($needle);
+
+    if ($case)
+        return strrpos($haystack, $needle, 0) === $expectedPosition;
+
+    return strripos($haystack, $needle, 0) === $expectedPosition;
+}
+
 
 header("Access-Control-Allow-Origin: *"); //add this CORS header to enable any domain to send HTTP requests to these endpoints:
 header("Access-Control-Allow-Headers: *");
@@ -474,7 +484,7 @@ foreach ($student_record as $entry) {
 
   valid_format_values:  //program section where format and values of each field in the entry are verified
   units:
-  if (($subject_elective == 4 || $subject_elective == 5) && (str_ends_with($courseno, " 190") || str_ends_with($courseno, " 200"))){
+  if (($subject_elective == 4 || $subject_elective == 5) && (endsWith($courseno, " 190") || endsWith($courseno, " 200") )){
     if (strcmp($units,'(1)'.$expected_units) ==  0 && (in_array($grade, $passing_grade) || in_array($grade, $non_passing_grade))) {
       $valid_units = 1;
       $units = $expected_units;
@@ -496,7 +506,7 @@ foreach ($student_record as $entry) {
   }
   //else, if grade is non-passing
   else if (in_array($grade, $non_passing_grade)) $valid_grade = 1;
-  else if (in_array($grade, $S_U) && ($subject_elective == 4 || $subject_elective == 5) && (str_ends_with($courseno, " 190") || str_ends_with($courseno, " 200"))) $valid_grade = 1;
+  else if (in_array($grade, $S_U) && (endsWith($courseno, " 199") || (($subject_elective == 4 || $subject_elective == 5) && (endsWith($courseno, " 190") || endsWith($courseno, " 200"))))) $valid_grade = 1;
   //else, grade is invalid
   else $error = 1;
   //echo "valid grades: $valid_grade, grades: $grade echo calculated enrolled: $calculated_enrolled \n";
@@ -534,8 +544,13 @@ foreach ($student_record as $entry) {
   insertability: //if everything has been valid thus far
   if ($valid_grade && $valid_units && $valid_enrolled && $valid_total && $valid_term) {
 
+    //special case for 199
+    if(strcmp($grade, 'S') == 0 && endsWith($courseno, " 199"))  {
+      $major_units_taken += $units;
+      $passed_courses[] = $courseno;
+    }
     //check_if_passing:
-    if($passing) {
+    else if($passing) {
       //if grade of P
       if (strcmp($grade, 'P') == 0) {
         switch ($subject_elective) {
@@ -616,7 +631,7 @@ foreach ($student_record as $entry) {
             break;
           case 6:
             if ($ge_units_taken + (int)$units > (float)$ge_units_required) {
-              $remarks .= "Exceed: $courseno cannot added to database, will exceed ge units required\n - ge units taken: $ge_units_taken\n - ge units required: $ge_units_required";
+              $remarks .= "Exceed: $courseno cannot be added to database, will exceed ge units required\n - ge units taken: $ge_units_taken\n - ge units required: $ge_units_required";
               $exceed = 1;
               $error = 1;
               goto compilation;
@@ -626,7 +641,7 @@ foreach ($student_record as $entry) {
             break;
           case 7:
             if ($elective_units_taken + (int)$units > (float)$elective_units_required) {
-              $remarks .= "Exceed: $courseno cannot added to database, will exceed elective units required\n - elective units taken: $elective_units_taken\n - elective units required: $elective_units_required";
+              $remarks .= "Exceed: $courseno cannot be added to database, will exceed elective units required\n - elective units taken: $elective_units_taken\n - elective units required: $elective_units_required";
               $exceed = 1;
               $error = 1;
               goto compilation;
