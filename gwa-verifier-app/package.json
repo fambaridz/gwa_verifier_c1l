@@ -32,7 +32,23 @@
           ]
         },
         {
-          "name": "@electron-forge/maker-deb"
+          "name": "@electron-forge/maker-deb",
+          "config": {
+            "options": {
+              "categories": [
+                "Office",
+                "Education"
+              ],
+              "description": "The goal is to provide a GWA Verifier that SHAC members can utilize, especially new members who are unfamiliar with the computations. Given the substantial number of students being reviewed, it tries to speed up the verification process.",
+              "genericName": "GWA Verifier App",
+              "homepage": "https://github.com/fambaridz/gwa_verifier_c1l",
+              "icon": "./src/assets/appLogo.ico",
+              "name": "amilaude",
+              "productDescription": "The application is a requirement for CMSC 128. The goal is to provide a GWA Verifier that SHAC members can utilize, especially new members who are unfamiliar with the computations. Given the substantial number of students being reviewed, it tries to speed up the verification process.",
+              "productName": "AmILaude",
+              "version": "1.0.0"
+            }
+          }
         },
         {
           "name": "@electron-forge/maker-wix",
