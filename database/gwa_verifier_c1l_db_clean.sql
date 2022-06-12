@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 02, 2022 at 12:21 PM
+-- Generation Time: Jun 12, 2022 at 05:03 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 7.4.29
 
@@ -55,7 +55,7 @@ CREATE TABLE `committee` (
 --
 
 INSERT INTO `committee` (`email`, `account_made_by`, `password`, `lastname`, `firstname`, `middlename`, `suffix`) VALUES
-('CMSC128@C1L.com', NULL, '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'verifier', 'gwa', 'g', '');
+('CMSC128@C1L.com', NULL, '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'Barida', 'Famela', 'D.', '');
 
 -- --------------------------------------------------------
 
@@ -336,7 +336,6 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Play Production', 4, 'THEA 157', '', 3),
 ('Critical Perspectives in the Arts', 5, 'ARTS 1', '', 3),
 ('Critical Perspectives in Communication', 5, 'COMM 10', '', 3),
-('General Economics', 5, 'ECON 11', '', 3),
 ('Ethics and Moral Reasoning in Everyday Life', 5, 'ETHICS 1', '', 3),
 ('Philippine History', 5, 'HIST 1', '', 3),
 ('Wellness and Basic Injury Management', 5, 'HK 11', '', 0),
@@ -363,8 +362,10 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Philosophy and Semiotics', 5, 'PHLO 182', '', 3),
 ('Feminist Philosophy', 5, 'PHLO 184', '', 3),
 ('Critical Perspectives in Filipino Philosophy', 5, 'PHLO 185', '', 3),
+('Special Problem', 5, 'PHLO 190', '', 3),
 ('Philosophy of Language', 5, 'PHLO 195', '', 3),
 ('Philosophic Problems', 5, 'PHLO 197', '', 3),
+('Undergraduate Thesis', 5, 'PHLO 200', '', 6),
 ('The Life and Works of Jose Rizal', 5, 'PI 10', '', 3),
 ('Principles of Government and Politics', 5, 'POSC 10', '', 3),
 ('Readings in Speculative Thought', 5, 'SPEC', '', 3),
@@ -455,6 +456,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Physic of Scientific Instruments', 8, 'APHY 101', '', 3),
 ('Physics of Electronic Devices', 8, 'APHY 102', '', 3),
 ('Special Topics', 8, 'APHY 191', '', 3),
+('Practicum', 8, 'APHY 198', '', 3),
 ('Undergraduate Seminar', 8, 'APHY 199', '', 1),
 ('Undergraduate Thesis', 8, 'APHY 200', '', 6),
 ('Critical Perspective in Arts', 8, 'ARTS 1', '', 3),
@@ -470,7 +472,8 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Kasaysayan ng Pilipinas', 8, 'KAS 1', '', 3),
 ('Analytic Geometry and Calculus II', 8, 'MATH 27', '', 3),
 ('Analytic Geometry and Calculus III', 8, 'MATH 28', '', 3),
-('National Service Training Program', 8, 'NSTP 1', '', 0),
+('National Service Training Program I', 8, 'NSTP 1', '', 0),
+('National Service Training Program II', 8, 'NSTP 2', '', 0),
 ('Newtonian Mechanics', 8, 'PHYS 101', '', 4),
 ('Electromagnetism and Optics', 8, 'PHYS 102', '', 4),
 ('Mechanical Waves, Optics and Thermodynamics', 8, 'PHYS 103', '', 4),
@@ -796,7 +799,6 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Introduction to Aquaculture', 17, 'ZOO 185', 'Other', 3),
 ('Special Topic', 17, 'ZOO 191', 'Other', 3),
 ('Zoological Techniques', 17, 'ZOO 91', 'Other', 3),
-('Fundamentals of Mathematical Computing', 18, 'AMAT 152', '', 3),
 ('Critical Perspectives in the Arts', 18, 'ARTS 1', '', 3),
 ('Physical Chemistry I', 18, 'CHEM 111', '', 3),
 ('Physical Chemistry I Laboratory', 18, 'CHEM 111.1', '', 2),
@@ -917,6 +919,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Special Problem', 20, 'MATH 190', '', 3),
 ('Foundations of Mathematics', 20, 'MATH 192', '', 3),
 ('Research Methods in Mathematics', 20, 'MATH 195', '', 3),
+('Practicum', 20, 'MATH 198', '', 3),
 ('Undergraduate Seminar', 20, 'MATH 199', '', 1),
 ('The Landscape of Mathematics', 20, 'MATH 20', '', 3),
 ('Undergraduate Thesis', 20, 'MATH 200', '', 6),
@@ -1096,7 +1099,6 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('File Processing and Database Systems', 26, 'CMSC 127', '', 3),
 ('Fundamentals of Programming', 26, 'CMSC 21', '', 3),
 ('Object-Oriented Programming', 26, 'CMSC 22', '', 3),
-('Practicum', 26, 'COMA 198', '', 3),
 ('Critical Perspectives in Communication', 26, 'COMM 10', '', 3),
 ('General Economics', 26, 'ECON 11', '', 3),
 ('Writing Scientific Papers', 26, 'ENG 10', '', 3),
@@ -1133,14 +1135,15 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Statistical Computing', 26, 'STAT 181', '', 3),
 ('Statistical Packages', 26, 'STAT 182', '', 3),
 ('Introductory Data Analytics', 26, 'STAT 183', '', 3),
-('Special Problems', 26, 'STAT 190', '', 1),
+('Special Problems', 26, 'STAT 190', '', 3),
 ('Special Topics', 26, 'STAT 191', '', 3),
-('Statistical Consulting Laboratory', 26, 'STAT 192.1', '', 3),
+('Statistical Consulting Laboratory', 26, 'STAT 192.1', '', 1),
+('Practicum', 26, 'STAT 198', '', 3),
 ('Undergraduate Seminar', 26, 'STAT 199', '', 1),
 ('Science, Technology, and Society', 26, 'STS 1', '', 3),
 ('Farm Management', 27, 'AAE 111', '', 3),
 ('Agricultural Marketing I', 27, 'AAE 120', '', 3),
-('Undergraduate Thesis', 27, 'ACHM 200', '', 3),
+('Undergraduate Thesis', 27, 'ACHM 200', '', 6),
 ('Ethics, Laws and Policies in Agriculture', 27, 'AGRI 171', '', 3),
 ('Colloquium in Agriculture', 27, 'AGRI 199', '', 1),
 ('Introduction to Animal Science', 27, 'AGRI 21', '', 3),
@@ -1170,7 +1173,7 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('Biochemistry I', 27, 'CHEM 161a', '', 3),
 ('Biochemistry II', 27, 'CHEM 161b', '', 3),
 ('University Chemistry', 27, 'CHEM 18', '', 3),
-('University Chemistry Laboratory', 27, 'CHEM 18.1', '', 3),
+('University Chemistry Laboratory', 27, 'CHEM 18.1', '', 2),
 ('General Environmental Chemistry', 27, 'CHEM 180', '', 3),
 ('Structure and Reactivity of Agricultural Chemicals', 27, 'CHEM 185', '', 3),
 ('Chemical Structure and Properties', 27, 'CHEM 19', '', 3),
@@ -1201,11 +1204,11 @@ INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_c
 ('University Physics Laboratory', 27, 'PHYS 71.1', '', 1),
 ('University Physics II', 27, 'PHYS 72', '', 4),
 ('University Physics II Laboratory', 27, 'PHYS 72.1', '', 1),
-('The Life, Works and Writings of Jose Rizal', 27, 'PI 10', '', 3),
+('The Life, Works and Writings of Jose Rizal', 27, 'PI 10', '', 3);
+INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
 ('Science, Technology and Society', 27, 'STS 1', '', 3),
 ('Language and Communication', 28, 'COMA 101', '', 3),
-('Language and Culture', 28, 'COMA 104', '', 3);
-INSERT INTO `subjects` (`course_name`, `degree_id`, `course_number`, `required_choice`, `number_units`) VALUES
+('Language and Culture', 28, 'COMA 104', '', 3),
 ('Principles of Public Relations', 28, 'COMA 105', '', 3),
 ('Introduction to Research', 28, 'COMA 192', '', 3),
 ('Workshop in Communication Arts', 28, 'COMA 193', '', 3),
@@ -2127,13 +2130,13 @@ ALTER TABLE `subjects`
 -- AUTO_INCREMENT for table `activity_log`
 --
 ALTER TABLE `activity_log`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=200;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=422;
 
 --
 -- AUTO_INCREMENT for table `committee_student`
 --
 ALTER TABLE `committee_student`
-  MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `degree_curriculums`
@@ -2145,7 +2148,7 @@ ALTER TABLE `degree_curriculums`
 -- AUTO_INCREMENT for table `student_record`
 --
 ALTER TABLE `student_record`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=322720;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=326614;
 
 --
 -- Constraints for dumped tables
