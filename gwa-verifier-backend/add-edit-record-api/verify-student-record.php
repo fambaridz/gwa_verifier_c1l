@@ -140,8 +140,8 @@ function categorize($con, $course, $general_degree_id, $specialized_degree_id, &
       $expected_units = $result['number_units'];
       //echo "expected units: $expected_units\n";
       //echo "IF 190/200 SUBJECT\N";
-      if(preg_match("/ 190/", $result['course_number'])) return 8;
-      if(preg_match("/ 200/", $result['course_number'])) return 9;
+      if(str_ends_with($courseno, " 190")) return 8;
+      if(str_ends_with($courseno, " 200")) return 9;
       return 5; //is a major
     }
   }
@@ -682,6 +682,9 @@ foreach ($student_record as $entry) {
             $nstp2_taken++;
             break;
           case 4:
+            if($specialized_degree_id == $general_degree_id) {
+              $major_units_taken += $units;
+            }
             $passed_courses[] = $courseno;
             break;
           case 5:
