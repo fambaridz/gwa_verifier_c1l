@@ -417,7 +417,8 @@ $records_remarks = array();   // will contain all records that have been checked
 $passed_courses = array();    // contains courses that have a passing grade; used to make sure a student doesn't take the same course when it was already taken
 $taken_per_term = array();    // will contain elements of "term" -> array("courseno1", "courseno2", ...); to make sure the student didn't take the same course again in the same semester
 $passing_grade = array('1.00', '1.25', '1.50', '1.75', '2.00', '2.25', '2.5', '2.75', '3.0', 'P');
-$non_passing_grade = array('4.00', '5.00', 'INC', 'DRP', 'DFG', 'U', 'S');
+$non_passing_grade = array('4.00', '5.00', 'INC', 'DRP', 'DFG');
+$S_U = array('S', 'U');
 
 foreach ($student_record as $entry) {
 
@@ -473,12 +474,12 @@ foreach ($student_record as $entry) {
 
   valid_format_values:  //program section where format and values of each field in the entry are verified
   units:
-  if (preg_match("/190|200/", $courseno)){
-    if (strcmp($units,'(1)'.$expected_units) ==  0 && in_array($grade, $passing_grade)) {
+  if (($subject_elective == 4 || $subject_elective == 5) && (str_ends_with($courseno, " 190") || str_ends_with($courseno, " 200"))){
+    if (strcmp($units,'(1)'.$expected_units) ==  0 && (in_array($grade, $passing_grade) || in_array($grade, $non_passing_grade))) {
       $valid_units = 1;
       $units = $expected_units;
     }
-    else if (strcmp($units,'0') == 0 && in_array($grade, array('S', 'U'))) $valid_units = 1;
+    else if (in_array($grade, $S_U)) $valid_units = 1;
   } 
   else if ($units == $expected_units) $valid_units = 1;
   else $error = 1;
@@ -495,6 +496,7 @@ foreach ($student_record as $entry) {
   }
   //else, if grade is non-passing
   else if (in_array($grade, $non_passing_grade)) $valid_grade = 1;
+  else if (in_array($grade, $S_U) && ($subject_elective == 4 || $subject_elective == 5) && (str_ends_with($courseno, " 190") || str_ends_with($courseno, " 200"))) $valid_grade = 1;
   //else, grade is invalid
   else $error = 1;
   //echo "valid grades: $valid_grade, grades: $grade echo calculated enrolled: $calculated_enrolled \n";
@@ -558,7 +560,7 @@ foreach ($student_record as $entry) {
         }
         $recommended_required -= $units; //reduce units required
       }
-     //else, a numerical grade
+     //else, a numerical grade/S
       else {
         //check_if_exceed:  has to be numerical passing grade to check if it will exceed
         switch ($subject_elective) {
@@ -603,6 +605,9 @@ foreach ($student_record as $entry) {
             $nstp2_taken++;
             break;
           case 4:
+            if($specialized_degree_id == $general_degree_id) {
+              $major_units_taken += $units;
+            }
             $passed_courses[] = $courseno;
             break;
           case 5:
